@@ -1,0 +1,87 @@
+Command: ninja flash
+[1/5] cd /home/tpreseau/esp32_projects/lora_ttn_temp/build/esp-idf/esptool_py && /home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/bin/python /home/tpreseau/.espressif/v5.5.2/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/tpreseau/esp32_projects/lora_ttn_temp/build/partition_table/partition-table.bin /home/tpreseau/esp32_projects/lora_ttn_temp/build/lora_ttn_temp.bin
+lora_ttn_temp.bin binary size 0xe98f0 bytes. Smallest app partition is 0x100000 bytes. 0x16710 bytes (9%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] cd /home/tpreseau/esp32_projects/lora_ttn_temp/build/bootloader/esp-idf/esptool_py && /home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/bin/python /home/tpreseau/.espressif/v5.5.2/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/tpreseau/esp32_projects/lora_ttn_temp/build/bootloader/bootloader.bin
+Bootloader binary size 0x66c0 bytes. 0x940 bytes (8%) free.
+[3/5] No install step for 'bootloader'
+[4/5] Completed 'bootloader'
+[4/5] cd /home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py && /home/tpreseau/.espressif/tools/cmake/3.30.2/bin/cmake -D IDF_PATH=/home/tpreseau/.espressif/v5.5.2/esp-idf -D "SERIAL_TOOL=/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/bin/python;;/home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/home/tpreseau/esp32_projects/lora_ttn_temp/build -P /home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool.py --chip esp32 -p /dev/ttyUSB0 -b 115200 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB 0x1000 bootloader/bootloader.bin 0x10000 lora_ttn_temp.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.12.dev1
+Serial port /dev/ttyUSB0
+Connecting.....
+Chip is ESP32-D0WD-V3 (revision v3.1)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse, Coding Scheme None
+Crystal is 40MHz
+MAC: d4:8c:49:6a:27:b0
+Uploading stub...
+Running stub...
+Stub running...
+Configuring flash size...
+Flash will be erased from 0x00001000 to 0x00007fff...
+Flash will be erased from 0x00010000 to 0x000f9fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+SHA digest in image updated
+Compressed 26304 bytes to 16558...
+Writing at 0x00001000... (50 %)
+Writing at 0x000075d9... (100 %)
+Wrote 26304 bytes (16558 compressed) at 0x00001000 in 1.9 seconds (effective 113.1 kbit/s)...
+Hash of data verified.
+Compressed 956656 bytes to 604588...
+Writing at 0x00010000... (2 %)
+Writing at 0x0001d29e... (5 %)
+Writing at 0x0002732c... (8 %)
+Writing at 0x0002fefc... (10 %)
+Writing at 0x0003970b... (13 %)
+Writing at 0x0003f08a... (16 %)
+Writing at 0x00044bcf... (18 %)
+Writing at 0x0004ac85... (21 %)
+Writing at 0x0005021e... (24 %)
+Writing at 0x00055ea6... (27 %)
+Writing at 0x0005bd8f... (29 %)
+Writing at 0x00061921... (32 %)
+Writing at 0x00067601... (35 %)
+Writing at 0x0006de05... (37 %)
+Writing at 0x00073a30... (40 %)
+Writing at 0x00079941... (43 %)
+Writing at 0x0007f0b7... (45 %)
+Writing at 0x000844bc... (48 %)
+Writing at 0x00089fba... (51 %)
+Writing at 0x0008fb09... (54 %)
+Writing at 0x000952ec... (56 %)
+Traceback (most recent call last):
+  File "/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/lib/python3.13/site-packages/esptool/__init__.py", line 1381, in _main
+    main()
+    ~~~~^^
+  File "/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/lib/python3.13/site-packages/esptool/__init__.py", line 1085, in main
+    operation_func(esp, args)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/lib/python3.13/site-packages/esptool/cmds.py", line 668, in write_flash
+    esp.flash_defl_block(block, seq, timeout=timeout)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/lib/python3.13/site-packages/esptool/loader.py", line 127, in inner
+    return func(*args, **kwargs)
+  File "/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/lib/python3.13/site-packages/esptool/loader.py", line 1315, in flash_defl_block
+    self.check_command(
+    ~~~~~~~~~~~~~~~~~~^
+        "write compressed data to flash after seq %d" % seq,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        timeout=timeout,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/lib/python3.13/site-packages/esptool/loader.py", line 547, in check_command
+    val, data = self.command(op, data, chk, timeout=timeout)
+                ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/lib/python3.13/site-packages/esptool/loader.py", line 477, in command
+    p = self.read()
+  File "/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/lib/python3.13/site-packages/esptool/loader.py", line 410, in read
+    return next(self._slip_reader)
+StopIteration
+
+A fatal error occurred: The chip stopped responding.
+FAILED: CMakeFiles/flash /home/tpreseau/esp32_projects/lora_ttn_temp/build/CMakeFiles/flash 
+cd /home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py && /home/tpreseau/.espressif/tools/cmake/3.30.2/bin/cmake -D IDF_PATH=/home/tpreseau/.espressif/v5.5.2/esp-idf -D "SERIAL_TOOL=/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/bin/python;;/home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/home/tpreseau/esp32_projects/lora_ttn_temp/build -P /home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py/run_serial_tool.cmake
+ninja: build stopped: subcommand failed.

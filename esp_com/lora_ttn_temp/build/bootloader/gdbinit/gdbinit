@@ -1,0 +1,2 @@
+source /home/tpreseau/esp32_projects/lora_ttn_temp/build/bootloader/gdbinit/symbols
+source /home/tpreseau/esp32_projects/lora_ttn_temp/build/bootloader/gdbinit/connect

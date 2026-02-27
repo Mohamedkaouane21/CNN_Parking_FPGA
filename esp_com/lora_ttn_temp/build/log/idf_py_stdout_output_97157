@@ -1,0 +1,18 @@
+Command: ninja flash
+[1/5] cd /home/tpreseau/esp32_projects/lora_ttn_temp/build/esp-idf/esptool_py && /home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/bin/python /home/tpreseau/.espressif/v5.5.2/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/tpreseau/esp32_projects/lora_ttn_temp/build/partition_table/partition-table.bin /home/tpreseau/esp32_projects/lora_ttn_temp/build/lora_ttn_temp.bin
+lora_ttn_temp.bin binary size 0xe98f0 bytes. Smallest app partition is 0x100000 bytes. 0x16710 bytes (9%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] cd /home/tpreseau/esp32_projects/lora_ttn_temp/build/bootloader/esp-idf/esptool_py && /home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/bin/python /home/tpreseau/.espressif/v5.5.2/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/tpreseau/esp32_projects/lora_ttn_temp/build/bootloader/bootloader.bin
+Bootloader binary size 0x66c0 bytes. 0x940 bytes (8%) free.
+[3/5] No install step for 'bootloader'
+[4/5] Completed 'bootloader'
+[4/5] cd /home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py && /home/tpreseau/.espressif/tools/cmake/3.30.2/bin/cmake -D IDF_PATH=/home/tpreseau/.espressif/v5.5.2/esp-idf -D "SERIAL_TOOL=/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/bin/python;;/home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/home/tpreseau/esp32_projects/lora_ttn_temp/build -P /home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool.py --chip esp32 -p /dev/ttyUSB0 -b 115200 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB 0x1000 bootloader/bootloader.bin 0x10000 lora_ttn_temp.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.12.dev1
+Serial port /dev/ttyUSB0
+Connecting....
+
+A fatal error occurred: No serial data received.
+FAILED: CMakeFiles/flash /home/tpreseau/esp32_projects/lora_ttn_temp/build/CMakeFiles/flash 
+cd /home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py && /home/tpreseau/.espressif/tools/cmake/3.30.2/bin/cmake -D IDF_PATH=/home/tpreseau/.espressif/v5.5.2/esp-idf -D "SERIAL_TOOL=/home/tpreseau/.espressif/python_env/idf5.5_py3.13_env/bin/python;;/home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/home/tpreseau/esp32_projects/lora_ttn_temp/build -P /home/tpreseau/.espressif/v5.5.2/esp-idf/components/esptool_py/run_serial_tool.cmake
+ninja: build stopped: subcommand failed.

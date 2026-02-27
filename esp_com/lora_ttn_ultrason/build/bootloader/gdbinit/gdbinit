@@ -1,0 +1,2 @@
+source /home/tpreseau/esp32_projects/lora_ttn_ultrason/build/bootloader/gdbinit/symbols
+source /home/tpreseau/esp32_projects/lora_ttn_ultrason/build/bootloader/gdbinit/connect
