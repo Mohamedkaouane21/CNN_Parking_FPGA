@@ -1,0 +1,48 @@
+<profile>
+
+<section name = "Vitis HLS Report for 'conv1_pool1'" level="0">
+<item name = "Date">Thu Feb 26 11:15:08 2026
+</item>
+<item name = "Version">2024.2 (Build 5238294 on Nov  8 2024)</item>
+<item name = "Project">hls_prj</item>
+<item name = "Solution">solution1 (Vitis Kernel Flow Target)</item>
+<item name = "Product family">zynq</item>
+<item name = "Target device">xc7z020-clg400-1</item>
+</section>
+
+<section name = "Performance Estimates" level="0">
+<item name = "Timing">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="4">Clock, Target, Estimated, Uncertainty</keys>
+<column name="ap_clk">10.00 ns, 7.404 ns, 2.70 ns</column>
+</table>
+</item>
+</section>
+</item>
+<item name = "Latency">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="8">, min, max, min, max, min, max, Type</keys>
+<column name="">44859, 44859, 0.449 ms, 0.449 ms, 44860, 44860, no</column>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="0">
+<keys size="9">Instance, Module, min, max, min, max, min, max, Type</keys>
+<column name="grp_conv1_pool1_Pipeline_LOAD_fu_353">conv1_pool1_Pipeline_LOAD, 2315, 2315, 23.150 us, 23.150 us, 2305, 2305, loop auto-rewind stp (delay=0 clock cycles(s))</column>
+<column name="grp_conv1_pool1_Pipeline_CONV_OC_CONV_OY_CONV_OX_fu_384">conv1_pool1_Pipeline_CONV_OC_CONV_OY_CONV_OX, 33922, 33922, 0.339 ms, 0.339 ms, 33857, 33857, loop auto-rewind stp (delay=0 clock cycles(s))</column>
+<column name="grp_conv1_pool1_Pipeline_POOL_OC_POOL_PY_POOL_PX_fu_464">conv1_pool1_Pipeline_POOL_OC_POOL_PY_POOL_PX, 8477, 8477, 84.770 us, 84.770 us, 8465, 8465, loop auto-rewind stp (delay=0 clock cycles(s))</column>
+</table>
+</item>
+<item name = "Loop"><table name="" hasTotal="0">
+<keys size="8">Loop Name, min, max, Latency, achieved, target, Count, Pipelined</keys>
+</table>
+</item>
+</section>
+</item>
+</section>
+</item>
+</section>
+</profile>

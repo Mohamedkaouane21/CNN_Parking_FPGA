@@ -1,0 +1,358 @@
+
+
+================================================================
+== Vitis HLS Report for 'conv2_pool2_Pipeline_POOL_PY_POOL_PX'
+================================================================
+* Date:           Thu Feb 26 16:24:08 2026
+
+* Version:        2024.2 (Build 5238294 on Nov  8 2024)
+* Project:        hls_prj
+* Solution:       solution1 (Vitis Kernel Flow Target)
+* Product family: zynq
+* Target device:  xc7z020-clg400-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  |  10.00 ns|  7.300 ns|     2.70 ns|
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+----------+-----+-----+------------------------------------------------+
+    |  Latency (cycles) |  Latency (absolute) |  Interval |                    Pipeline                    |
+    |   min   |   max   |    min   |    max   | min | max |                      Type                      |
+    +---------+---------+----------+----------+-----+-----+------------------------------------------------+
+    |      114|      114|  1.140 us|  1.140 us|  101|  101|  loop auto-rewind stp (delay=0 clock cycles(s))|
+    +---------+---------+----------+----------+-----+-----+------------------------------------------------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +-------------------+---------+---------+----------+-----------+-----------+------+----------+
+        |                   |  Latency (cycles) | Iteration|  Initiation Interval  | Trip |          |
+        |     Loop Name     |   min   |   max   |  Latency |  achieved |   target  | Count| Pipelined|
+        +-------------------+---------+---------+----------+-----------+-----------+------+----------+
+        |- POOL_PY_POOL_PX  |      112|      112|        14|          1|          1|   100|       yes|
+        +-------------------+---------+---------+----------+-----------+-----------+------+----------+
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 0
+ResetActiveHigh: 1
+IsCombinational: 0
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 2
+HasVarLatency: 1
+IsPipeline: 0
+IsRtlPipelined: 0
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
++ Individual pipeline summary: 
+  * Pipeline-0: initiation interval (II) = 1, depth = 14
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states : 14
+* Pipeline : 1
+  Pipeline-0 : II = 1, D = 14, States = { 1 2 3 4 5 6 7 8 9 10 11 12 13 14 }
+* Dataflow Pipeline: 0
+
+* FSM state transitions: 
+1 --> 2 
+2 --> 3 
+3 --> 4 
+4 --> 5 
+5 --> 6 
+6 --> 7 
+7 --> 8 
+8 --> 9 
+9 --> 10 
+10 --> 11 
+11 --> 12 
+12 --> 13 
+13 --> 14 
+14 --> 
+
+* FSM state operations: 
+
+State 1 <SV = 0> <Delay = 5.04>
+ST_1 : Operation 17 [1/1] (0.00ns)   --->   "%phi_ln77 = alloca i32 1"   --->   Operation 17 'alloca' 'phi_ln77' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 18 [1/1] (0.00ns)   --->   "%px = alloca i32 1" [src/conv2_pool2.cpp:66]   --->   Operation 18 'alloca' 'px' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 19 [1/1] (0.00ns)   --->   "%py = alloca i32 1" [src/conv2_pool2.cpp:64]   --->   Operation 19 'alloca' 'py' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 20 [1/1] (0.00ns)   --->   "%indvar_flatten90 = alloca i32 1"   --->   Operation 20 'alloca' 'indvar_flatten90' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 21 [1/1] (0.00ns)   --->   "%sext_ln42_read = read i61 @_ssdm_op_Read.ap_auto.i61, i61 %sext_ln42"   --->   Operation 21 'read' 'sext_ln42_read' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 22 [1/1] (0.00ns)   --->   "%sext_ln42_cast = sext i61 %sext_ln42_read"   --->   Operation 22 'sext' 'sext_ln42_cast' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 23 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %AXI_OUT, void @empty_9, i32 0, i32 0, void @empty, i32 64, i32 1600, void @empty_2, void @empty_1, void @empty, i32 16, i32 16, i32 16, i32 16, void @empty, void @empty, i32 4294967295, i32 0, i32 0"   --->   Operation 23 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 24 [1/1] (1.58ns)   --->   "%store_ln0 = store i7 0, i7 %indvar_flatten90"   --->   Operation 24 'store' 'store_ln0' <Predicate = true> <Delay = 1.58>
+ST_1 : Operation 25 [1/1] (1.58ns)   --->   "%store_ln64 = store i4 0, i4 %py" [src/conv2_pool2.cpp:64]   --->   Operation 25 'store' 'store_ln64' <Predicate = true> <Delay = 1.58>
+ST_1 : Operation 26 [1/1] (1.58ns)   --->   "%store_ln66 = store i4 0, i4 %px" [src/conv2_pool2.cpp:66]   --->   Operation 26 'store' 'store_ln66' <Predicate = true> <Delay = 1.58>
+ST_1 : Operation 27 [1/1] (1.58ns)   --->   "%store_ln0 = store i32 0, i32 %phi_ln77"   --->   Operation 27 'store' 'store_ln0' <Predicate = true> <Delay = 1.58>
+ST_1 : Operation 28 [1/1] (0.00ns)   --->   "%br_ln0 = br void %for.body96"   --->   Operation 28 'br' 'br_ln0' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 29 [1/1] (0.00ns)   --->   "%indvar_flatten90_load = load i7 %indvar_flatten90" [src/conv2_pool2.cpp:64]   --->   Operation 29 'load' 'indvar_flatten90_load' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 30 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i64 %AXI_OUT"   --->   Operation 30 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 31 [1/1] (1.87ns)   --->   "%icmp_ln64 = icmp_eq  i7 %indvar_flatten90_load, i7 100" [src/conv2_pool2.cpp:64]   --->   Operation 31 'icmp' 'icmp_ln64' <Predicate = true> <Delay = 1.87> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.87> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_1 : Operation 32 [1/1] (1.87ns)   --->   "%add_ln64_1 = add i7 %indvar_flatten90_load, i7 1" [src/conv2_pool2.cpp:64]   --->   Operation 32 'add' 'add_ln64_1' <Predicate = true> <Delay = 1.87> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 1.87> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_1 : Operation 33 [1/1] (0.00ns)   --->   "%br_ln64 = br i1 %icmp_ln64, void %for.inc136, void %for.inc139.exitStub" [src/conv2_pool2.cpp:64]   --->   Operation 33 'br' 'br_ln64' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 34 [1/1] (1.58ns)   --->   "%store_ln64 = store i7 %add_ln64_1, i7 %indvar_flatten90" [src/conv2_pool2.cpp:64]   --->   Operation 34 'store' 'store_ln64' <Predicate = (!icmp_ln64)> <Delay = 1.58>
+
+State 2 <SV = 1> <Delay = 6.08>
+ST_2 : Operation 35 [1/1] (0.00ns)   --->   "%px_load = load i4 %px" [src/conv2_pool2.cpp:66]   --->   Operation 35 'load' 'px_load' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 36 [1/1] (0.00ns)   --->   "%py_load = load i4 %py" [src/conv2_pool2.cpp:64]   --->   Operation 36 'load' 'py_load' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 37 [1/1] (1.73ns)   --->   "%add_ln64 = add i4 %py_load, i4 1" [src/conv2_pool2.cpp:64]   --->   Operation 37 'add' 'add_ln64' <Predicate = true> <Delay = 1.73> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 1.73> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_2 : Operation 38 [1/1] (1.73ns)   --->   "%icmp_ln66 = icmp_eq  i4 %px_load, i4 10" [src/conv2_pool2.cpp:66]   --->   Operation 38 'icmp' 'icmp_ln66' <Predicate = true> <Delay = 1.73> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.73> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_2 : Operation 39 [1/1] (1.02ns)   --->   "%select_ln64 = select i1 %icmp_ln66, i4 0, i4 %px_load" [src/conv2_pool2.cpp:64]   --->   Operation 39 'select' 'select_ln64' <Predicate = true> <Delay = 1.02> <CoreInst = "Sel">   --->   Core 73 'Sel' <Latency = 0> <II = 1> <Delay = 1.02> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_2 : Operation 40 [1/1] (1.02ns)   --->   "%select_ln64_2 = select i1 %icmp_ln66, i4 %add_ln64, i4 %py_load" [src/conv2_pool2.cpp:64]   --->   Operation 40 'select' 'select_ln64_2' <Predicate = true> <Delay = 1.02> <CoreInst = "Sel">   --->   Core 73 'Sel' <Latency = 0> <II = 1> <Delay = 1.02> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_2 : Operation 41 [1/1] (0.00ns)   --->   "%tmp_s = bitconcatenate i5 @_ssdm_op_BitConcatenate.i5.i4.i1, i4 %select_ln64_2, i1 0" [src/conv2_pool2.cpp:64]   --->   Operation 41 'bitconcatenate' 'tmp_s' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 42 [1/1] (0.00ns)   --->   "%tmp_27_cast = zext i5 %tmp_s" [src/conv2_pool2.cpp:64]   --->   Operation 42 'zext' 'tmp_27_cast' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 43 [3/3] (1.05ns) (grouped into DSP with root node add_ln69)   --->   "%mul_ln69 = mul i8 %tmp_27_cast, i8 11" [src/conv2_pool2.cpp:64]   --->   Operation 43 'mul' 'mul_ln69' <Predicate = true> <Delay = 1.05> <CoreInst = "DSP48">   --->   Core 116 'DSP48' <Latency = 3> <II = 1> <Delay = 2.15> <IPBlock> <Opcode : '' 'add' 'sub' 'mul' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+ST_2 : Operation 44 [1/1] (0.00ns)   --->   "%tmp_10 = bitconcatenate i5 @_ssdm_op_BitConcatenate.i5.i4.i1, i4 %select_ln64_2, i1 1" [src/conv2_pool2.cpp:64]   --->   Operation 44 'bitconcatenate' 'tmp_10' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 45 [1/1] (0.00ns)   --->   "%zext_ln66 = zext i5 %tmp_10" [src/conv2_pool2.cpp:66]   --->   Operation 45 'zext' 'zext_ln66' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 46 [3/3] (1.05ns) (grouped into DSP with root node add_ln71)   --->   "%mul_ln66 = mul i8 %zext_ln66, i8 11" [src/conv2_pool2.cpp:66]   --->   Operation 46 'mul' 'mul_ln66' <Predicate = true> <Delay = 1.05> <CoreInst = "DSP48">   --->   Core 116 'DSP48' <Latency = 3> <II = 1> <Delay = 2.15> <IPBlock> <Opcode : '' 'add' 'sub' 'mul' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+ST_2 : Operation 47 [1/1] (0.00ns)   --->   "%trunc_ln66 = trunc i4 %select_ln64" [src/conv2_pool2.cpp:66]   --->   Operation 47 'trunc' 'trunc_ln66' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 48 [1/1] (0.00ns)   --->   "%br_ln77 = br i1 %trunc_ln66, void %for.body96.split._crit_edge, void" [src/conv2_pool2.cpp:77]   --->   Operation 48 'br' 'br_ln77' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 49 [1/1] (1.73ns)   --->   "%add_ln66 = add i4 %select_ln64, i4 1" [src/conv2_pool2.cpp:66]   --->   Operation 49 'add' 'add_ln66' <Predicate = true> <Delay = 1.73> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 1.73> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_2 : Operation 50 [1/1] (1.58ns)   --->   "%store_ln64 = store i4 %select_ln64_2, i4 %py" [src/conv2_pool2.cpp:64]   --->   Operation 50 'store' 'store_ln64' <Predicate = true> <Delay = 1.58>
+ST_2 : Operation 51 [1/1] (1.58ns)   --->   "%store_ln66 = store i4 %add_ln66, i4 %px" [src/conv2_pool2.cpp:66]   --->   Operation 51 'store' 'store_ln66' <Predicate = true> <Delay = 1.58>
+
+State 3 <SV = 2> <Delay = 1.05>
+ST_3 : Operation 52 [2/3] (1.05ns) (grouped into DSP with root node add_ln69)   --->   "%mul_ln69 = mul i8 %tmp_27_cast, i8 11" [src/conv2_pool2.cpp:64]   --->   Operation 52 'mul' 'mul_ln69' <Predicate = true> <Delay = 1.05> <CoreInst = "DSP48">   --->   Core 116 'DSP48' <Latency = 3> <II = 1> <Delay = 2.15> <IPBlock> <Opcode : '' 'add' 'sub' 'mul' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+ST_3 : Operation 53 [2/3] (1.05ns) (grouped into DSP with root node add_ln71)   --->   "%mul_ln66 = mul i8 %zext_ln66, i8 11" [src/conv2_pool2.cpp:66]   --->   Operation 53 'mul' 'mul_ln66' <Predicate = true> <Delay = 1.05> <CoreInst = "DSP48">   --->   Core 116 'DSP48' <Latency = 3> <II = 1> <Delay = 2.15> <IPBlock> <Opcode : '' 'add' 'sub' 'mul' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+
+State 4 <SV = 3> <Delay = 2.10>
+ST_4 : Operation 54 [1/3] (0.00ns) (grouped into DSP with root node add_ln69)   --->   "%mul_ln69 = mul i8 %tmp_27_cast, i8 11" [src/conv2_pool2.cpp:64]   --->   Operation 54 'mul' 'mul_ln69' <Predicate = true> <Delay = 0.00> <CoreInst = "DSP48">   --->   Core 116 'DSP48' <Latency = 3> <II = 1> <Delay = 2.15> <IPBlock> <Opcode : '' 'add' 'sub' 'mul' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+ST_4 : Operation 55 [1/3] (0.00ns) (grouped into DSP with root node add_ln71)   --->   "%mul_ln66 = mul i8 %zext_ln66, i8 11" [src/conv2_pool2.cpp:66]   --->   Operation 55 'mul' 'mul_ln66' <Predicate = true> <Delay = 0.00> <CoreInst = "DSP48">   --->   Core 116 'DSP48' <Latency = 3> <II = 1> <Delay = 2.15> <IPBlock> <Opcode : '' 'add' 'sub' 'mul' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+ST_4 : Operation 56 [1/1] (0.00ns)   --->   "%zext_ln69 = zext i4 %select_ln64" [src/conv2_pool2.cpp:69]   --->   Operation 56 'zext' 'zext_ln69' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 57 [2/2] (2.10ns) (root node of the DSP)   --->   "%add_ln69 = add i8 %mul_ln69, i8 %zext_ln69" [src/conv2_pool2.cpp:69]   --->   Operation 57 'add' 'add_ln69' <Predicate = true> <Delay = 2.10> <CoreInst = "DSP48">   --->   Core 116 'DSP48' <Latency = 3> <II = 1> <Delay = 2.15> <IPBlock> <Opcode : '' 'add' 'sub' 'mul' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+ST_4 : Operation 58 [2/2] (2.10ns) (root node of the DSP)   --->   "%add_ln71 = add i8 %mul_ln66, i8 %zext_ln69" [src/conv2_pool2.cpp:71]   --->   Operation 58 'add' 'add_ln71' <Predicate = true> <Delay = 2.10> <CoreInst = "DSP48">   --->   Core 116 'DSP48' <Latency = 3> <II = 1> <Delay = 2.15> <IPBlock> <Opcode : '' 'add' 'sub' 'mul' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+
+State 5 <SV = 4> <Delay = 5.35>
+ST_5 : Operation 59 [1/2] (2.10ns) (root node of the DSP)   --->   "%add_ln69 = add i8 %mul_ln69, i8 %zext_ln69" [src/conv2_pool2.cpp:69]   --->   Operation 59 'add' 'add_ln69' <Predicate = true> <Delay = 2.10> <CoreInst = "DSP48">   --->   Core 116 'DSP48' <Latency = 3> <II = 1> <Delay = 2.15> <IPBlock> <Opcode : '' 'add' 'sub' 'mul' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+ST_5 : Operation 60 [1/1] (0.00ns)   --->   "%zext_ln69_1 = zext i8 %add_ln69" [src/conv2_pool2.cpp:69]   --->   Operation 60 'zext' 'zext_ln69_1' <Predicate = true> <Delay = 0.00>
+ST_5 : Operation 61 [1/1] (0.00ns)   --->   "%conv_buf_addr = getelementptr i32 %conv_buf, i64 0, i64 %zext_ln69_1" [src/conv2_pool2.cpp:69]   --->   Operation 61 'getelementptr' 'conv_buf_addr' <Predicate = true> <Delay = 0.00>
+ST_5 : Operation 62 [1/2] (2.10ns) (root node of the DSP)   --->   "%add_ln71 = add i8 %mul_ln66, i8 %zext_ln69" [src/conv2_pool2.cpp:71]   --->   Operation 62 'add' 'add_ln71' <Predicate = true> <Delay = 2.10> <CoreInst = "DSP48">   --->   Core 116 'DSP48' <Latency = 3> <II = 1> <Delay = 2.15> <IPBlock> <Opcode : '' 'add' 'sub' 'mul' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+ST_5 : Operation 63 [1/1] (0.00ns)   --->   "%conv_buf_1_addr = getelementptr i32 %conv_buf_1, i64 0, i64 %zext_ln69_1" [src/conv2_pool2.cpp:70]   --->   Operation 63 'getelementptr' 'conv_buf_1_addr' <Predicate = true> <Delay = 0.00>
+ST_5 : Operation 64 [2/2] (3.25ns)   --->   "%v00 = load i8 %conv_buf_addr" [src/conv2_pool2.cpp:69]   --->   Operation 64 'load' 'v00' <Predicate = true> <Delay = 3.25> <CoreInst = "RAM">   --->   Core 81 'RAM' <Latency = 1> <II = 1> <Delay = 3.25> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 231> <RAM>
+ST_5 : Operation 65 [2/2] (3.25ns)   --->   "%v01 = load i8 %conv_buf_1_addr" [src/conv2_pool2.cpp:70]   --->   Operation 65 'load' 'v01' <Predicate = true> <Delay = 3.25> <CoreInst = "RAM">   --->   Core 81 'RAM' <Latency = 1> <II = 1> <Delay = 3.25> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 231> <RAM>
+
+State 6 <SV = 5> <Delay = 3.25>
+ST_6 : Operation 66 [1/2] ( I:3.25ns O:3.25ns )   --->   "%v00 = load i8 %conv_buf_addr" [src/conv2_pool2.cpp:69]   --->   Operation 66 'load' 'v00' <Predicate = true> <Delay = 3.25> <CoreInst = "RAM">   --->   Core 81 'RAM' <Latency = 1> <II = 1> <Delay = 3.25> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 231> <RAM>
+ST_6 : Operation 67 [1/2] ( I:3.25ns O:3.25ns )   --->   "%v01 = load i8 %conv_buf_1_addr" [src/conv2_pool2.cpp:70]   --->   Operation 67 'load' 'v01' <Predicate = true> <Delay = 3.25> <CoreInst = "RAM">   --->   Core 81 'RAM' <Latency = 1> <II = 1> <Delay = 3.25> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 231> <RAM>
+
+State 7 <SV = 6> <Delay = 5.43>
+ST_7 : Operation 68 [1/1] (0.00ns)   --->   "%zext_ln71 = zext i8 %add_ln71" [src/conv2_pool2.cpp:71]   --->   Operation 68 'zext' 'zext_ln71' <Predicate = true> <Delay = 0.00>
+ST_7 : Operation 69 [1/1] (0.00ns)   --->   "%conv_buf_addr_1 = getelementptr i32 %conv_buf, i64 0, i64 %zext_ln71" [src/conv2_pool2.cpp:71]   --->   Operation 69 'getelementptr' 'conv_buf_addr_1' <Predicate = true> <Delay = 0.00>
+ST_7 : Operation 70 [2/2] (3.25ns)   --->   "%v10 = load i8 %conv_buf_addr_1" [src/conv2_pool2.cpp:71]   --->   Operation 70 'load' 'v10' <Predicate = true> <Delay = 3.25> <CoreInst = "RAM">   --->   Core 81 'RAM' <Latency = 1> <II = 1> <Delay = 3.25> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 231> <RAM>
+ST_7 : Operation 71 [2/2] (5.43ns)   --->   "%tmp_3 = fcmp_ogt  i32 %v01, i32 %v00" [src/conv2_pool2.cpp:74]   --->   Operation 71 'fcmp' 'tmp_3' <Predicate = true> <Delay = 5.43> <CoreInst = "FCompare">   --->   Core 19 'FCompare' <Latency = 1> <II = 1> <Delay = 5.43> <FuncUnit> <Opcode : 'fcmp'> <InPorts = 2> <OutPorts = 1>
+
+State 8 <SV = 7> <Delay = 7.10>
+ST_8 : Operation 72 [1/2] ( I:3.25ns O:3.25ns )   --->   "%v10 = load i8 %conv_buf_addr_1" [src/conv2_pool2.cpp:71]   --->   Operation 72 'load' 'v10' <Predicate = true> <Delay = 3.25> <CoreInst = "RAM">   --->   Core 81 'RAM' <Latency = 1> <II = 1> <Delay = 3.25> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 231> <RAM>
+ST_8 : Operation 73 [1/1] (0.00ns)   --->   "%bitcast_ln74 = bitcast i32 %v01" [src/conv2_pool2.cpp:74]   --->   Operation 73 'bitcast' 'bitcast_ln74' <Predicate = true> <Delay = 0.00>
+ST_8 : Operation 74 [1/1] (0.00ns)   --->   "%tmp_1 = partselect i8 @_ssdm_op_PartSelect.i8.i32.i32.i32, i32 %bitcast_ln74, i32 23, i32 30" [src/conv2_pool2.cpp:74]   --->   Operation 74 'partselect' 'tmp_1' <Predicate = true> <Delay = 0.00>
+ST_8 : Operation 75 [1/1] (0.00ns)   --->   "%trunc_ln74 = trunc i32 %bitcast_ln74" [src/conv2_pool2.cpp:74]   --->   Operation 75 'trunc' 'trunc_ln74' <Predicate = true> <Delay = 0.00>
+ST_8 : Operation 76 [1/1] (0.00ns)   --->   "%bitcast_ln74_1 = bitcast i32 %v00" [src/conv2_pool2.cpp:74]   --->   Operation 76 'bitcast' 'bitcast_ln74_1' <Predicate = true> <Delay = 0.00>
+ST_8 : Operation 77 [1/1] (0.00ns)   --->   "%tmp_2 = partselect i8 @_ssdm_op_PartSelect.i8.i32.i32.i32, i32 %bitcast_ln74_1, i32 23, i32 30" [src/conv2_pool2.cpp:74]   --->   Operation 77 'partselect' 'tmp_2' <Predicate = true> <Delay = 0.00>
+ST_8 : Operation 78 [1/1] (0.00ns)   --->   "%trunc_ln74_1 = trunc i32 %bitcast_ln74_1" [src/conv2_pool2.cpp:74]   --->   Operation 78 'trunc' 'trunc_ln74_1' <Predicate = true> <Delay = 0.00>
+ST_8 : Operation 79 [1/1] (1.91ns)   --->   "%icmp_ln74 = icmp_ne  i8 %tmp_1, i8 255" [src/conv2_pool2.cpp:74]   --->   Operation 79 'icmp' 'icmp_ln74' <Predicate = true> <Delay = 1.91> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.91> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_8 : Operation 80 [1/1] (2.28ns)   --->   "%icmp_ln74_1 = icmp_eq  i23 %trunc_ln74, i23 0" [src/conv2_pool2.cpp:74]   --->   Operation 80 'icmp' 'icmp_ln74_1' <Predicate = true> <Delay = 2.28> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 2.28> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_8 : Operation 81 [1/1] (0.00ns) (grouped into LUT with out node and_ln74_1)   --->   "%or_ln74 = or i1 %icmp_ln74_1, i1 %icmp_ln74" [src/conv2_pool2.cpp:74]   --->   Operation 81 'or' 'or_ln74' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_8 : Operation 82 [1/1] (1.91ns)   --->   "%icmp_ln74_2 = icmp_ne  i8 %tmp_2, i8 255" [src/conv2_pool2.cpp:74]   --->   Operation 82 'icmp' 'icmp_ln74_2' <Predicate = true> <Delay = 1.91> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.91> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_8 : Operation 83 [1/1] (2.28ns)   --->   "%icmp_ln74_3 = icmp_eq  i23 %trunc_ln74_1, i23 0" [src/conv2_pool2.cpp:74]   --->   Operation 83 'icmp' 'icmp_ln74_3' <Predicate = true> <Delay = 2.28> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 2.28> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_8 : Operation 84 [1/1] (0.00ns) (grouped into LUT with out node and_ln74_1)   --->   "%or_ln74_1 = or i1 %icmp_ln74_3, i1 %icmp_ln74_2" [src/conv2_pool2.cpp:74]   --->   Operation 84 'or' 'or_ln74_1' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_8 : Operation 85 [1/1] (0.00ns) (grouped into LUT with out node and_ln74_1)   --->   "%and_ln74 = and i1 %or_ln74, i1 %or_ln74_1" [src/conv2_pool2.cpp:74]   --->   Operation 85 'and' 'and_ln74' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_8 : Operation 86 [1/2] (5.43ns)   --->   "%tmp_3 = fcmp_ogt  i32 %v01, i32 %v00" [src/conv2_pool2.cpp:74]   --->   Operation 86 'fcmp' 'tmp_3' <Predicate = true> <Delay = 5.43> <CoreInst = "FCompare">   --->   Core 19 'FCompare' <Latency = 1> <II = 1> <Delay = 5.43> <FuncUnit> <Opcode : 'fcmp'> <InPorts = 2> <OutPorts = 1>
+ST_8 : Operation 87 [1/1] (0.97ns) (out node of the LUT)   --->   "%and_ln74_1 = and i1 %and_ln74, i1 %tmp_3" [src/conv2_pool2.cpp:74]   --->   Operation 87 'and' 'and_ln74_1' <Predicate = true> <Delay = 0.97> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_8 : Operation 88 [1/1] (0.69ns)   --->   "%maxv_2 = select i1 %and_ln74_1, i32 %v01, i32 %v00" [src/conv2_pool2.cpp:74]   --->   Operation 88 'select' 'maxv_2' <Predicate = true> <Delay = 0.69> <CoreInst = "Sel">   --->   Core 73 'Sel' <Latency = 0> <II = 1> <Delay = 0.69> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+
+State 9 <SV = 8> <Delay = 5.43>
+ST_9 : Operation 89 [1/1] (0.00ns)   --->   "%conv_buf_1_addr_1 = getelementptr i32 %conv_buf_1, i64 0, i64 %zext_ln71" [src/conv2_pool2.cpp:72]   --->   Operation 89 'getelementptr' 'conv_buf_1_addr_1' <Predicate = true> <Delay = 0.00>
+ST_9 : Operation 90 [2/2] (3.25ns)   --->   "%v11 = load i8 %conv_buf_1_addr_1" [src/conv2_pool2.cpp:72]   --->   Operation 90 'load' 'v11' <Predicate = true> <Delay = 3.25> <CoreInst = "RAM">   --->   Core 81 'RAM' <Latency = 1> <II = 1> <Delay = 3.25> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 231> <RAM>
+ST_9 : Operation 91 [2/2] (5.43ns)   --->   "%tmp_6 = fcmp_ogt  i32 %v10, i32 %maxv_2" [src/conv2_pool2.cpp:75]   --->   Operation 91 'fcmp' 'tmp_6' <Predicate = true> <Delay = 5.43> <CoreInst = "FCompare">   --->   Core 19 'FCompare' <Latency = 1> <II = 1> <Delay = 5.43> <FuncUnit> <Opcode : 'fcmp'> <InPorts = 2> <OutPorts = 1>
+
+State 10 <SV = 9> <Delay = 7.10>
+ST_10 : Operation 92 [1/2] ( I:3.25ns O:3.25ns )   --->   "%v11 = load i8 %conv_buf_1_addr_1" [src/conv2_pool2.cpp:72]   --->   Operation 92 'load' 'v11' <Predicate = true> <Delay = 3.25> <CoreInst = "RAM">   --->   Core 81 'RAM' <Latency = 1> <II = 1> <Delay = 3.25> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 231> <RAM>
+ST_10 : Operation 93 [1/1] (0.00ns)   --->   "%bitcast_ln75 = bitcast i32 %v10" [src/conv2_pool2.cpp:75]   --->   Operation 93 'bitcast' 'bitcast_ln75' <Predicate = true> <Delay = 0.00>
+ST_10 : Operation 94 [1/1] (0.00ns)   --->   "%tmp_4 = partselect i8 @_ssdm_op_PartSelect.i8.i32.i32.i32, i32 %bitcast_ln75, i32 23, i32 30" [src/conv2_pool2.cpp:75]   --->   Operation 94 'partselect' 'tmp_4' <Predicate = true> <Delay = 0.00>
+ST_10 : Operation 95 [1/1] (0.00ns)   --->   "%trunc_ln75 = trunc i32 %bitcast_ln75" [src/conv2_pool2.cpp:75]   --->   Operation 95 'trunc' 'trunc_ln75' <Predicate = true> <Delay = 0.00>
+ST_10 : Operation 96 [1/1] (0.00ns)   --->   "%bitcast_ln75_1 = bitcast i32 %maxv_2" [src/conv2_pool2.cpp:75]   --->   Operation 96 'bitcast' 'bitcast_ln75_1' <Predicate = true> <Delay = 0.00>
+ST_10 : Operation 97 [1/1] (0.00ns)   --->   "%tmp_5 = partselect i8 @_ssdm_op_PartSelect.i8.i32.i32.i32, i32 %bitcast_ln75_1, i32 23, i32 30" [src/conv2_pool2.cpp:75]   --->   Operation 97 'partselect' 'tmp_5' <Predicate = true> <Delay = 0.00>
+ST_10 : Operation 98 [1/1] (0.00ns)   --->   "%trunc_ln75_1 = trunc i32 %bitcast_ln75_1" [src/conv2_pool2.cpp:75]   --->   Operation 98 'trunc' 'trunc_ln75_1' <Predicate = true> <Delay = 0.00>
+ST_10 : Operation 99 [1/1] (1.91ns)   --->   "%icmp_ln75 = icmp_ne  i8 %tmp_4, i8 255" [src/conv2_pool2.cpp:75]   --->   Operation 99 'icmp' 'icmp_ln75' <Predicate = true> <Delay = 1.91> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.91> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 100 [1/1] (2.28ns)   --->   "%icmp_ln75_1 = icmp_eq  i23 %trunc_ln75, i23 0" [src/conv2_pool2.cpp:75]   --->   Operation 100 'icmp' 'icmp_ln75_1' <Predicate = true> <Delay = 2.28> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 2.28> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 101 [1/1] (0.00ns) (grouped into LUT with out node and_ln75_1)   --->   "%or_ln75 = or i1 %icmp_ln75_1, i1 %icmp_ln75" [src/conv2_pool2.cpp:75]   --->   Operation 101 'or' 'or_ln75' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 102 [1/1] (1.91ns)   --->   "%icmp_ln75_2 = icmp_ne  i8 %tmp_5, i8 255" [src/conv2_pool2.cpp:75]   --->   Operation 102 'icmp' 'icmp_ln75_2' <Predicate = true> <Delay = 1.91> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.91> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 103 [1/1] (2.28ns)   --->   "%icmp_ln75_3 = icmp_eq  i23 %trunc_ln75_1, i23 0" [src/conv2_pool2.cpp:75]   --->   Operation 103 'icmp' 'icmp_ln75_3' <Predicate = true> <Delay = 2.28> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 2.28> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 104 [1/1] (0.00ns) (grouped into LUT with out node and_ln75_1)   --->   "%or_ln75_1 = or i1 %icmp_ln75_3, i1 %icmp_ln75_2" [src/conv2_pool2.cpp:75]   --->   Operation 104 'or' 'or_ln75_1' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 105 [1/1] (0.00ns) (grouped into LUT with out node and_ln75_1)   --->   "%and_ln75 = and i1 %or_ln75, i1 %or_ln75_1" [src/conv2_pool2.cpp:75]   --->   Operation 105 'and' 'and_ln75' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 106 [1/2] (5.43ns)   --->   "%tmp_6 = fcmp_ogt  i32 %v10, i32 %maxv_2" [src/conv2_pool2.cpp:75]   --->   Operation 106 'fcmp' 'tmp_6' <Predicate = true> <Delay = 5.43> <CoreInst = "FCompare">   --->   Core 19 'FCompare' <Latency = 1> <II = 1> <Delay = 5.43> <FuncUnit> <Opcode : 'fcmp'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 107 [1/1] (0.97ns) (out node of the LUT)   --->   "%and_ln75_1 = and i1 %and_ln75, i1 %tmp_6" [src/conv2_pool2.cpp:75]   --->   Operation 107 'and' 'and_ln75_1' <Predicate = true> <Delay = 0.97> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 108 [1/1] (0.69ns)   --->   "%maxv_4 = select i1 %and_ln75_1, i32 %v10, i32 %maxv_2" [src/conv2_pool2.cpp:75]   --->   Operation 108 'select' 'maxv_4' <Predicate = true> <Delay = 0.69> <CoreInst = "Sel">   --->   Core 73 'Sel' <Latency = 0> <II = 1> <Delay = 0.69> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+
+State 11 <SV = 10> <Delay = 5.43>
+ST_11 : Operation 109 [2/2] (5.43ns)   --->   "%tmp_9 = fcmp_ogt  i32 %v11, i32 %maxv_4" [src/conv2_pool2.cpp:76]   --->   Operation 109 'fcmp' 'tmp_9' <Predicate = true> <Delay = 5.43> <CoreInst = "FCompare">   --->   Core 19 'FCompare' <Latency = 1> <II = 1> <Delay = 5.43> <FuncUnit> <Opcode : 'fcmp'> <InPorts = 2> <OutPorts = 1>
+
+State 12 <SV = 11> <Delay = 7.10>
+ST_12 : Operation 110 [1/1] (0.00ns)   --->   "%bitcast_ln76 = bitcast i32 %v11" [src/conv2_pool2.cpp:76]   --->   Operation 110 'bitcast' 'bitcast_ln76' <Predicate = true> <Delay = 0.00>
+ST_12 : Operation 111 [1/1] (0.00ns)   --->   "%tmp_7 = partselect i8 @_ssdm_op_PartSelect.i8.i32.i32.i32, i32 %bitcast_ln76, i32 23, i32 30" [src/conv2_pool2.cpp:76]   --->   Operation 111 'partselect' 'tmp_7' <Predicate = true> <Delay = 0.00>
+ST_12 : Operation 112 [1/1] (0.00ns)   --->   "%trunc_ln76 = trunc i32 %bitcast_ln76" [src/conv2_pool2.cpp:76]   --->   Operation 112 'trunc' 'trunc_ln76' <Predicate = true> <Delay = 0.00>
+ST_12 : Operation 113 [1/1] (0.00ns)   --->   "%bitcast_ln76_1 = bitcast i32 %maxv_4" [src/conv2_pool2.cpp:76]   --->   Operation 113 'bitcast' 'bitcast_ln76_1' <Predicate = true> <Delay = 0.00>
+ST_12 : Operation 114 [1/1] (0.00ns)   --->   "%tmp_8 = partselect i8 @_ssdm_op_PartSelect.i8.i32.i32.i32, i32 %bitcast_ln76_1, i32 23, i32 30" [src/conv2_pool2.cpp:76]   --->   Operation 114 'partselect' 'tmp_8' <Predicate = true> <Delay = 0.00>
+ST_12 : Operation 115 [1/1] (0.00ns)   --->   "%trunc_ln76_1 = trunc i32 %bitcast_ln76_1" [src/conv2_pool2.cpp:76]   --->   Operation 115 'trunc' 'trunc_ln76_1' <Predicate = true> <Delay = 0.00>
+ST_12 : Operation 116 [1/1] (1.91ns)   --->   "%icmp_ln76 = icmp_ne  i8 %tmp_7, i8 255" [src/conv2_pool2.cpp:76]   --->   Operation 116 'icmp' 'icmp_ln76' <Predicate = true> <Delay = 1.91> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.91> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 117 [1/1] (2.28ns)   --->   "%icmp_ln76_1 = icmp_eq  i23 %trunc_ln76, i23 0" [src/conv2_pool2.cpp:76]   --->   Operation 117 'icmp' 'icmp_ln76_1' <Predicate = true> <Delay = 2.28> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 2.28> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 118 [1/1] (0.00ns) (grouped into LUT with out node and_ln76_1)   --->   "%or_ln76 = or i1 %icmp_ln76_1, i1 %icmp_ln76" [src/conv2_pool2.cpp:76]   --->   Operation 118 'or' 'or_ln76' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 119 [1/1] (1.91ns)   --->   "%icmp_ln76_2 = icmp_ne  i8 %tmp_8, i8 255" [src/conv2_pool2.cpp:76]   --->   Operation 119 'icmp' 'icmp_ln76_2' <Predicate = true> <Delay = 1.91> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.91> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 120 [1/1] (2.28ns)   --->   "%icmp_ln76_3 = icmp_eq  i23 %trunc_ln76_1, i23 0" [src/conv2_pool2.cpp:76]   --->   Operation 120 'icmp' 'icmp_ln76_3' <Predicate = true> <Delay = 2.28> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 2.28> <FuncUnit> <Opcode : 'seteq' 'setne' 'setle' 'setge' 'setlt' 'setgt'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 121 [1/1] (0.00ns) (grouped into LUT with out node and_ln76_1)   --->   "%or_ln76_1 = or i1 %icmp_ln76_3, i1 %icmp_ln76_2" [src/conv2_pool2.cpp:76]   --->   Operation 121 'or' 'or_ln76_1' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 122 [1/1] (0.00ns) (grouped into LUT with out node and_ln76_1)   --->   "%and_ln76 = and i1 %or_ln76, i1 %or_ln76_1" [src/conv2_pool2.cpp:76]   --->   Operation 122 'and' 'and_ln76' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 123 [1/2] (5.43ns)   --->   "%tmp_9 = fcmp_ogt  i32 %v11, i32 %maxv_4" [src/conv2_pool2.cpp:76]   --->   Operation 123 'fcmp' 'tmp_9' <Predicate = true> <Delay = 5.43> <CoreInst = "FCompare">   --->   Core 19 'FCompare' <Latency = 1> <II = 1> <Delay = 5.43> <FuncUnit> <Opcode : 'fcmp'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 124 [1/1] (0.97ns) (out node of the LUT)   --->   "%and_ln76_1 = and i1 %and_ln76, i1 %tmp_9" [src/conv2_pool2.cpp:76]   --->   Operation 124 'and' 'and_ln76_1' <Predicate = true> <Delay = 0.97> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.97> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 125 [1/1] (0.69ns)   --->   "%maxv_6 = select i1 %and_ln76_1, i32 %v11, i32 %maxv_4" [src/conv2_pool2.cpp:76]   --->   Operation 125 'select' 'maxv_6' <Predicate = true> <Delay = 0.69> <CoreInst = "Sel">   --->   Core 73 'Sel' <Latency = 0> <II = 1> <Delay = 0.69> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+
+State 13 <SV = 12> <Delay = 2.28>
+ST_13 : Operation 126 [1/1] (0.00ns)   --->   "%phi_ln77_load = load i32 %phi_ln77" [src/conv2_pool2.cpp:64]   --->   Operation 126 'load' 'phi_ln77_load' <Predicate = (!icmp_ln66)> <Delay = 0.00>
+ST_13 : Operation 127 [1/1] (0.69ns)   --->   "%select_ln64_1 = select i1 %icmp_ln66, i32 0, i32 %phi_ln77_load" [src/conv2_pool2.cpp:64]   --->   Operation 127 'select' 'select_ln64_1' <Predicate = true> <Delay = 0.69> <CoreInst = "Sel">   --->   Core 73 'Sel' <Latency = 0> <II = 1> <Delay = 0.69> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_13 : Operation 128 [1/1] (0.00ns)   --->   "%bitcast_ln77 = bitcast i32 %maxv_6" [src/conv2_pool2.cpp:77]   --->   Operation 128 'bitcast' 'bitcast_ln77' <Predicate = true> <Delay = 0.00>
+ST_13 : Operation 129 [1/1] (0.69ns)   --->   "%select_ln66 = select i1 %trunc_ln66, i32 0, i32 %bitcast_ln77" [src/conv2_pool2.cpp:66]   --->   Operation 129 'select' 'select_ln66' <Predicate = true> <Delay = 0.69> <CoreInst = "Sel">   --->   Core 73 'Sel' <Latency = 0> <II = 1> <Delay = 0.69> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_13 : Operation 130 [1/1] (1.58ns)   --->   "%store_ln66 = store i32 %select_ln66, i32 %phi_ln77" [src/conv2_pool2.cpp:66]   --->   Operation 130 'store' 'store_ln66' <Predicate = true> <Delay = 1.58>
+ST_13 : Operation 131 [1/1] (0.00ns)   --->   "%br_ln66 = br void %for.body96" [src/conv2_pool2.cpp:66]   --->   Operation 131 'br' 'br_ln66' <Predicate = true> <Delay = 0.00>
+ST_13 : Operation 139 [1/1] (1.58ns)   --->   "%ret_ln0 = ret"   --->   Operation 139 'ret' 'ret_ln0' <Predicate = (icmp_ln64)> <Delay = 1.58>
+
+State 14 <SV = 13> <Delay = 7.30>
+ST_14 : Operation 132 [1/1] (0.00ns)   --->   "%AXI_OUT_addr = getelementptr i64 %AXI_OUT, i64 %sext_ln42_cast" [src/conv2_pool2.cpp:42]   --->   Operation 132 'getelementptr' 'AXI_OUT_addr' <Predicate = true> <Delay = 0.00>
+ST_14 : Operation 133 [1/1] (0.00ns)   --->   "%specloopname_ln0 = specloopname void @_ssdm_op_SpecLoopName, void @POOL_PY_POOL_PX_str"   --->   Operation 133 'specloopname' 'specloopname_ln0' <Predicate = true> <Delay = 0.00>
+ST_14 : Operation 134 [1/1] (0.00ns)   --->   "%speclooptripcount_ln0 = speclooptripcount void @_ssdm_op_SpecLoopTripCount, i64 100, i64 100, i64 100"   --->   Operation 134 'speclooptripcount' 'speclooptripcount_ln0' <Predicate = true> <Delay = 0.00>
+ST_14 : Operation 135 [1/1] (0.00ns)   --->   "%specpipeline_ln67 = specpipeline void @_ssdm_op_SpecPipeline, i32 1, i32 0, i32 0, i32 0, void @empty" [src/conv2_pool2.cpp:67]   --->   Operation 135 'specpipeline' 'specpipeline_ln67' <Predicate = true> <Delay = 0.00>
+ST_14 : Operation 136 [1/1] (0.00ns)   --->   "%or_ln = bitconcatenate i64 @_ssdm_op_BitConcatenate.i64.i32.i32, i32 %bitcast_ln77, i32 %select_ln64_1" [src/conv2_pool2.cpp:77]   --->   Operation 136 'bitconcatenate' 'or_ln' <Predicate = true> <Delay = 0.00>
+ST_14 : Operation 137 [1/1] (7.30ns)   --->   "%write_ln77 = write void @_ssdm_op_Write.m_axi.p1i64, i64 %AXI_OUT_addr, i64 %or_ln, i8 255" [src/conv2_pool2.cpp:77]   --->   Operation 137 'write' 'write_ln77' <Predicate = (trunc_ln66)> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 111 'm_axi' <Latency = 5> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_14 : Operation 138 [1/1] (0.00ns)   --->   "%br_ln77 = br void %for.body96.split._crit_edge" [src/conv2_pool2.cpp:77]   --->   Operation 138 'br' 'br_ln77' <Predicate = (trunc_ln66)> <Delay = 0.00>
+
+
+============================================================
++ Verbose Summary: Timing violations
+============================================================
+Target clock period: 10.000ns, clock uncertainty: 2.700ns.
+
+ <State 1>: 5.046ns
+The critical path consists of the following:
+	'store' operation 0 bit ('store_ln0') of constant 0 on local variable 'indvar_flatten90' [12]  (1.588 ns)
+	'load' operation 7 bit ('indvar_flatten90_load', src/conv2_pool2.cpp:64) on local variable 'indvar_flatten90' [18]  (0.000 ns)
+	'icmp' operation 1 bit ('icmp_ln64', src/conv2_pool2.cpp:64) [20]  (1.870 ns)
+	'store' operation 0 bit ('store_ln64', src/conv2_pool2.cpp:64) of variable 'add_ln64_1', src/conv2_pool2.cpp:64 on local variable 'indvar_flatten90' [113]  (1.588 ns)
+
+ <State 2>: 6.082ns
+The critical path consists of the following:
+	'load' operation 4 bit ('px_load', src/conv2_pool2.cpp:66) on local variable 'px', src/conv2_pool2.cpp:66 [25]  (0.000 ns)
+	'icmp' operation 1 bit ('icmp_ln66', src/conv2_pool2.cpp:66) [31]  (1.735 ns)
+	'select' operation 4 bit ('select_ln64', src/conv2_pool2.cpp:64) [32]  (1.024 ns)
+	'add' operation 4 bit ('add_ln66', src/conv2_pool2.cpp:66) [111]  (1.735 ns)
+	'store' operation 0 bit ('store_ln66', src/conv2_pool2.cpp:66) of variable 'add_ln66', src/conv2_pool2.cpp:66 on local variable 'px', src/conv2_pool2.cpp:66 [115]  (1.588 ns)
+
+ <State 3>: 1.050ns
+The critical path consists of the following:
+	'mul' operation 8 bit of DSP[42] ('mul_ln69', src/conv2_pool2.cpp:64) [37]  (1.050 ns)
+
+ <State 4>: 2.100ns
+The critical path consists of the following:
+	'mul' operation 8 bit of DSP[42] ('mul_ln69', src/conv2_pool2.cpp:64) [37]  (0.000 ns)
+	'add' operation 8 bit of DSP[42] ('add_ln69', src/conv2_pool2.cpp:69) [42]  (2.100 ns)
+
+ <State 5>: 5.354ns
+The critical path consists of the following:
+	'add' operation 8 bit of DSP[42] ('add_ln69', src/conv2_pool2.cpp:69) [42]  (2.100 ns)
+	'getelementptr' operation 8 bit ('conv_buf_addr', src/conv2_pool2.cpp:69) [44]  (0.000 ns)
+	'load' operation 32 bit ('v00', src/conv2_pool2.cpp:69) on array 'conv_buf' [52]  (3.254 ns)
+
+ <State 6>: 3.254ns
+The critical path consists of the following:
+	'load' operation 32 bit ('v00', src/conv2_pool2.cpp:69) on array 'conv_buf' [52]  (3.254 ns)
+
+ <State 7>: 5.431ns
+The critical path consists of the following:
+	'fcmp' operation 1 bit ('tmp_3', src/conv2_pool2.cpp:74) [69]  (5.431 ns)
+
+ <State 8>: 7.107ns
+The critical path consists of the following:
+	'fcmp' operation 1 bit ('tmp_3', src/conv2_pool2.cpp:74) [69]  (5.431 ns)
+	'and' operation 1 bit ('and_ln74_1', src/conv2_pool2.cpp:74) [70]  (0.978 ns)
+	'select' operation 32 bit ('maxv', src/conv2_pool2.cpp:74) [71]  (0.698 ns)
+
+ <State 9>: 5.431ns
+The critical path consists of the following:
+	'fcmp' operation 1 bit ('tmp_6', src/conv2_pool2.cpp:75) [85]  (5.431 ns)
+
+ <State 10>: 7.107ns
+The critical path consists of the following:
+	'fcmp' operation 1 bit ('tmp_6', src/conv2_pool2.cpp:75) [85]  (5.431 ns)
+	'and' operation 1 bit ('and_ln75_1', src/conv2_pool2.cpp:75) [86]  (0.978 ns)
+	'select' operation 32 bit ('maxv', src/conv2_pool2.cpp:75) [87]  (0.698 ns)
+
+ <State 11>: 5.431ns
+The critical path consists of the following:
+	'fcmp' operation 1 bit ('tmp_9', src/conv2_pool2.cpp:76) [101]  (5.431 ns)
+
+ <State 12>: 7.107ns
+The critical path consists of the following:
+	'fcmp' operation 1 bit ('tmp_9', src/conv2_pool2.cpp:76) [101]  (5.431 ns)
+	'and' operation 1 bit ('and_ln76_1', src/conv2_pool2.cpp:76) [102]  (0.978 ns)
+	'select' operation 32 bit ('maxv', src/conv2_pool2.cpp:76) [103]  (0.698 ns)
+
+ <State 13>: 2.286ns
+The critical path consists of the following:
+	'select' operation 32 bit ('select_ln66', src/conv2_pool2.cpp:66) [112]  (0.698 ns)
+	'store' operation 0 bit ('store_ln66', src/conv2_pool2.cpp:66) of variable 'select_ln66', src/conv2_pool2.cpp:66 on local variable 'phi_ln77' [116]  (1.588 ns)
+
+ <State 14>: 7.300ns
+The critical path consists of the following:
+	'getelementptr' operation 64 bit ('AXI_OUT_addr', src/conv2_pool2.cpp:42) [27]  (0.000 ns)
+	bus write operation ('write_ln77', src/conv2_pool2.cpp:77) on port 'AXI_OUT' (src/conv2_pool2.cpp:77) [108]  (7.300 ns)
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+ - Input state : 
+  - Chain level:
+	State 1
+	State 2
+	State 3
+	State 4
+	State 5
+	State 6
+	State 7
+	State 8
+	State 9
+	State 10
+	State 11
+	State 12
+	State 13
+	State 14
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A

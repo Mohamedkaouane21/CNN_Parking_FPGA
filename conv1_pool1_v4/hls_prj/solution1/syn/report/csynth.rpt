@@ -1,0 +1,453 @@
+
+
+================================================================
+== Synthesis Summary Report of 'conv1_pool1'
+================================================================
++ General Information: 
+    * Date:           Thu Feb 26 11:15:10 2026
+    * Version:        2024.2 (Build 5238294 on Nov  8 2024)
+    * Project:        hls_prj
+    * Solution:       solution1 (Vitis Kernel Flow Target)
+    * Product family: zynq
+    * Target device:  xc7z020-clg400-1
+    
+
++ Performance & Resource Estimates: 
+    
+    PS: '+' for module; 'o' for loop; '*' for dataflow
+    +-------------------------------------------------+--------+-------+---------+-----------+----------+---------+-------+----------+-----------+----------+-------------+-------------+-----+
+    |                     Modules                     |  Issue |       | Latency |  Latency  | Iteration|         |  Trip |          |           |          |             |             |     |
+    |                     & Loops                     |  Type  | Slack | (cycles)|    (ns)   |  Latency | Interval| Count | Pipelined|   BRAM    |    DSP   |      FF     |     LUT     | URAM|
+    +-------------------------------------------------+--------+-------+---------+-----------+----------+---------+-------+----------+-----------+----------+-------------+-------------+-----+
+    |+ conv1_pool1                                    |  Timing|  -0.10|    44859|  4.486e+05|         -|    44860|      -|        no|  183 (65%)|  48 (21%)|  11085 (10%)|  17128 (32%)|    -|
+    | + conv1_pool1_Pipeline_LOAD                     |       -|   0.00|     2315|  2.315e+04|         -|     2315|      -|        no|          -|         -|    1416 (1%)|    428 (~0%)|    -|
+    |  o LOAD                                         |       -|   7.30|     2313|  2.313e+04|        11|        1|   2304|       yes|          -|         -|            -|            -|    -|
+    | + conv1_pool1_Pipeline_CONV_OC_CONV_OY_CONV_OX  |  Timing|  -0.10|    33922|  3.392e+05|         -|    33922|      -|        no|          -|  46 (20%)|    6314 (5%)|   9785 (18%)|    -|
+    |  o CONV_OC_CONV_OY_CONV_OX                      |       -|   7.30|    33920|  3.392e+05|        66|        1|  33856|       yes|          -|         -|            -|            -|    -|
+    | + conv1_pool1_Pipeline_POOL_OC_POOL_PY_POOL_PX  |  Timing|  -0.04|     8477|  8.477e+04|         -|     8477|      -|        no|          -|   2 (~0%)|    667 (~0%)|     956 (1%)|    -|
+    |  o POOL_OC_POOL_PY_POOL_PX                      |       -|   7.30|     8475|  8.475e+04|        13|        1|   8464|       yes|          -|         -|            -|            -|    -|
+    +-------------------------------------------------+--------+-------+---------+-----------+----------+---------+-------+----------+-----------+----------+-------------+-------------+-----+
+
+
+================================================================
+== HW Interfaces
+================================================================
+* M_AXI
++---------------+------------+------------+---------------+---------+--------+----------+-----------+--------------+--------------+-------------+-------------+-------------------+
+| Interface     | Read/Write | Data Width | Address Width | Latency | Offset | Register | Max Widen | Max Read     | Max Write    | Num Read    | Num Write   | Resource Estimate |
+|               |            | (SW->HW)   |               |         |        |          | Bitwidth  | Burst Length | Burst Length | Outstanding | Outstanding |                   |
++---------------+------------+------------+---------------+---------+--------+----------+-----------+--------------+--------------+-------------+-------------+-------------------+
+| m_axi_AXI_IN  | READ_ONLY  | 32 -> 512  | 64            | 64      | slave  | 0        | 512       | 16           | 16           | 16          | 16          | BRAM=29           |
+| m_axi_AXI_OUT | WRITE_ONLY | 32 -> 32   | 64            | 64      | slave  | 0        | 512       | 16           | 16           | 16          | 16          | BRAM=2            |
++---------------+------------+------------+---------------+---------+--------+----------+-----------+--------------+--------------+-------------+-------------+-------------------+
+
+* S_AXILITE Interfaces
++---------------+------------+---------------+--------+----------+
+| Interface     | Data Width | Address Width | Offset | Register |
++---------------+------------+---------------+--------+----------+
+| s_axi_control | 32         | 6             | 16     | 0        |
++---------------+------------+---------------+--------+----------+
+
+* S_AXILITE Registers
++---------------+----------+--------+-------+--------+----------------------------------+------------------------------------------------------------------------------------+
+| Interface     | Register | Offset | Width | Access | Description                      | Bit Fields                                                                         |
++---------------+----------+--------+-------+--------+----------------------------------+------------------------------------------------------------------------------------+
+| s_axi_control | CTRL     | 0x00   | 32    | RW     | Control signals                  | 0=AP_START 1=AP_DONE 2=AP_IDLE 3=AP_READY 4=AP_CONTINUE 7=AUTO_RESTART 9=INTERRUPT |
+| s_axi_control | GIER     | 0x04   | 32    | RW     | Global Interrupt Enable Register | 0=Enable                                                                           |
+| s_axi_control | IP_IER   | 0x08   | 32    | RW     | IP Interrupt Enable Register     | 0=CHAN0_INT_EN 1=CHAN1_INT_EN                                                      |
+| s_axi_control | IP_ISR   | 0x0c   | 32    | RW     | IP Interrupt Status Register     | 0=CHAN0_INT_ST 1=CHAN1_INT_ST                                                      |
+| s_axi_control | in_r_1   | 0x10   | 32    | W      | Data signal of in_r              |                                                                                    |
+| s_axi_control | in_r_2   | 0x14   | 32    | W      | Data signal of in_r              |                                                                                    |
+| s_axi_control | out_r_1  | 0x1c   | 32    | W      | Data signal of out_r             |                                                                                    |
+| s_axi_control | out_r_2  | 0x20   | 32    | W      | Data signal of out_r             |                                                                                    |
++---------------+----------+--------+-------+--------+----------------------------------+------------------------------------------------------------------------------------+
+
+* TOP LEVEL CONTROL
++-----------+---------------+-----------+
+| Interface | Type          | Ports     |
++-----------+---------------+-----------+
+| ap_clk    | clock         | ap_clk    |
+| ap_rst_n  | reset         | ap_rst_n  |
+| interrupt | interrupt     | interrupt |
+| ap_ctrl   | ap_ctrl_chain |           |
++-----------+---------------+-----------+
+
+
+================================================================
+== SW I/O Information
+================================================================
+* Top Function Arguments
++----------+-----------+---------------+
+| Argument | Direction | Datatype      |
++----------+-----------+---------------+
+| in       | in        | float const * |
+| out      | out       | float*        |
++----------+-----------+---------------+
+
+* SW-to-HW Mapping
++----------+---------------+-----------+----------+-----------------------------------+
+| Argument | HW Interface  | HW Type   | HW Usage | HW Info                           |
++----------+---------------+-----------+----------+-----------------------------------+
+| in       | m_axi_AXI_IN  | interface |          | channel=0                         |
+| in       | s_axi_control | register  | offset   | name=in_r_1 offset=0x10 range=32  |
+| in       | s_axi_control | register  | offset   | name=in_r_2 offset=0x14 range=32  |
+| out      | m_axi_AXI_OUT | interface |          | channel=0                         |
+| out      | s_axi_control | register  | offset   | name=out_r_1 offset=0x1c range=32 |
+| out      | s_axi_control | register  | offset   | name=out_r_2 offset=0x20 range=32 |
++----------+---------------+-----------+----------+-----------------------------------+
+
+
+================================================================
+== M_AXI Burst Information
+================================================================
+ Note: All burst requests might be further partitioned into multiple requests during RTL generation based on max_read_burst_length or max_write_burst_length settings.
+
+* Inferred Burst Summary
++---------------+-----------+--------+-------+---------+---------------------------+
+| HW Interface  | Direction | Length | Width | Loop    | Loop Location             |
++---------------+-----------+--------+-------+---------+---------------------------+
+| m_axi_AXI_IN  | read      | 144    | 512   |         |                           |
+| m_axi_AXI_OUT | write     | 8464   | 32    | POOL_OC | src/conv1_pool1.cpp:128:5 |
++---------------+-----------+--------+-------+---------+---------------------------+
+
+* All M_AXI Variable Accesses
++---------------+----------+----------------------------+-----------+--------------+--------+---------+----------------------------+------------+----------------------------------------+
+| HW Interface  | Variable | Access Location            | Direction | Burst Status | Length | Loop    | Loop Location              | Resolution | Problem                                |
++---------------+----------+----------------------------+-----------+--------------+--------+---------+----------------------------+------------+----------------------------------------+
+| m_axi_AXI_IN  | in       | src/conv1_pool1.cpp:69:31  | read      | Widened      | 144    | LOAD    | src/conv1_pool1.cpp:67:5   |            |                                        |
+| m_axi_AXI_IN  | in       | src/conv1_pool1.cpp:69:31  | read      | Inferred     | 2304   | LOAD    | src/conv1_pool1.cpp:67:5   |            |                                        |
+| m_axi_AXI_OUT | out      | src/conv1_pool1.cpp:148:59 | write     | Widen Fail   |        | POOL_PX | src/conv1_pool1.cpp:132:13 | 214-235    | Start index of the access is unaligned |
+| m_axi_AXI_OUT | out      | src/conv1_pool1.cpp:148:59 | write     | Inferred     | 8464   | POOL_OC | src/conv1_pool1.cpp:128:5  |            |                                        |
++---------------+----------+----------------------------+-----------+--------------+--------+---------+----------------------------+------------+----------------------------------------+
+
+    * Resolution URL: docs.xilinx.com/access/sources/dita/topic?Doc_Version=2024.2%20English&url=ug1448-hls-guidance&resourceid=XXX-YYY.html (replace XXX-YYY with column value)
+
+================================================================
+== Bind Op Report
+================================================================
++-------------------------------------------------+-----+--------+------------------------+-----------+--------------------------+---------+
+| Name                                            | DSP | Pragma | Variable               | Op        | Impl                     | Latency |
++-------------------------------------------------+-----+--------+------------------------+-----------+--------------------------+---------+
+| + conv1_pool1                                   | 48  |        |                        |           |                          |         |
+|  + conv1_pool1_Pipeline_LOAD                    | 0   |        |                        |           |                          |         |
+|    icmp_ln67_fu_544_p2                          |     |        | icmp_ln67              | seteq     | auto                     | 0       |
+|    add_ln67_fu_550_p2                           |     |        | add_ln67               | add       | fabric                   | 0       |
+|    icmp_ln69_fu_560_p2                          |     |        | icmp_ln69              | seteq     | auto                     | 0       |
+|    add_ln69_1_fu_573_p2                         |     |        | add_ln69_1             | add       | fabric                   | 0       |
+|    add_ln69_2_fu_671_p2                         |     |        | add_ln69_2             | add       | fabric                   | 0       |
+|    urem_6ns_3ns_2_10_1_U1                       |     |        | urem_ln69              | urem      | auto                     | 9       |
+|    add_ln67_1_fu_764_p2                         |     |        | add_ln67_1             | add       | fabric                   | 0       |
+|    icmp_ln67_1_fu_770_p2                        |     |        | icmp_ln67_1            | seteq     | auto                     | 0       |
+|    select_ln67_fu_776_p3                        |     |        | select_ln67            | select    | auto_sel                 | 0       |
+|  + conv1_pool1_Pipeline_CONV_OC_CONV_OY_CONV_OX | 46  |        |                        |           |                          |         |
+|    icmp_ln90_fu_3254_p2                         |     |        | icmp_ln90              | seteq     | auto                     | 0       |
+|    add_ln90_1_fu_3260_p2                        |     |        | add_ln90_1             | add       | fabric                   | 0       |
+|    add_ln90_fu_3607_p2                          |     |        | add_ln90               | add       | fabric                   | 0       |
+|    icmp_ln92_fu_3266_p2                         |     |        | icmp_ln92              | seteq     | auto                     | 0       |
+|    select_ln90_fu_3302_p3                       |     |        | select_ln90            | select    | auto_sel                 | 0       |
+|    indvars_iv_next5957_fu_3309_p2               |     |        | indvars_iv_next5957    | add       | fabric                   | 0       |
+|    select_ln90_1_fu_3315_p3                     |     |        | select_ln90_1          | select    | auto_sel                 | 0       |
+|    xor_ln90_fu_3322_p2                          |     |        | xor_ln90               | xor       | auto                     | 0       |
+|    icmp_ln94_fu_3327_p2                         |     |        | icmp_ln94              | seteq     | auto                     | 0       |
+|    and_ln90_fu_3333_p2                          |     |        | and_ln90               | and       | auto                     | 0       |
+|    select_ln90_2_fu_3613_p3                     |     |        | select_ln90_2          | select    | auto_sel                 | 0       |
+|    indvars_iv_next59_dup_fu_3339_p2             |     |        | indvars_iv_next59_dup  | add       | fabric                   | 0       |
+|    empty_fu_3345_p2                             |     |        | empty                  | or        | auto                     | 0       |
+|    ox_mid2_fu_3350_p3                           |     |        | ox_mid2                | select    | auto_sel                 | 0       |
+|    indvars_iv_next59_mid1_fu_3358_p2            |     |        | indvars_iv_next59_mid1 | add       | fabric                   | 0       |
+|    indvars_iv_next59_mid2_fu_3364_p3            |     |        | indvars_iv_next59_mid2 | select    | auto_sel                 | 0       |
+|    select_ln92_fu_3372_p3                       |     |        | select_ln92            | select    | auto_sel                 | 0       |
+|    mac_muladd_6ns_5ns_5ns_11_4_1_U85            | 1   |        | mul_ln112              | mul       | dsp_slice                | 3       |
+|    mul_6ns_8ns_13_1_1_U73                       |     |        | mul_ln92               | mul       | auto                     | 0       |
+|    sub_ln92_fu_3504_p2                          |     |        | sub_ln92               | sub       | fabric                   | 0       |
+|    urem_6ns_3ns_2_10_1_U72                      |     |        | urem_ln92              | urem      | auto                     | 9       |
+|    mul_6ns_8ns_13_1_1_U74                       |     |        | mul44                  | mul       | auto                     | 0       |
+|    sub_ln106_fu_3563_p2                         |     |        | sub_ln106              | sub       | fabric                   | 0       |
+|    empty_33_fu_3569_p2                          |     |        | empty_33               | add       | fabric                   | 0       |
+|    mul_6ns_8ns_13_1_1_U75                       |     |        | mul_ln94               | mul       | auto                     | 0       |
+|    sub_ln94_fu_3656_p2                          |     |        | sub_ln94               | sub       | fabric                   | 0       |
+|    mac_muladd_6ns_5ns_5ns_11_4_1_U85            | 1   |        | add_ln112              | add       | dsp_slice                | 3       |
+|    add_ln106_2_fu_3665_p2                       |     |        | add_ln106_2            | add       | fabric                   | 0       |
+|    add_ln106_3_fu_3698_p2                       |     |        | add_ln106_3            | add       | fabric                   | 0       |
+|    add_ln106_4_fu_3731_p2                       |     |        | add_ln106_4            | add       | fabric                   | 0       |
+|    sparsemux_7_2_32_1_1_U48                     |     |        | tmp                    | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U49                     |     |        | tmp_1                  | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U50                     |     |        | tmp_2                  | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U51                     |     |        | tmp_3                  | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U52                     |     |        | tmp_4                  | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U53                     |     |        | tmp_5                  | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U54                     |     |        | tmp_6                  | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U55                     |     |        | tmp_7                  | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_17_3_32_1_1_U76                    |     |        | tmp_8                  | sparsemux | compactencoding_dontcare | 0       |
+|    fmul_32ns_32ns_32_4_max_dsp_1_U38            | 3   |        | mul                    | fmul      | maxdsp                   | 3       |
+|    fadd_32ns_32ns_32_5_full_dsp_1_U29           | 2   |        | acc_1                  | fadd      | fulldsp                  | 4       |
+|    add_ln106_fu_3408_p2                         |     |        | add_ln106              | add       | fabric                   | 0       |
+|    add_ln106_5_fu_3768_p2                       |     |        | add_ln106_5            | add       | fabric                   | 0       |
+|    add_ln106_6_fu_3801_p2                       |     |        | add_ln106_6            | add       | fabric                   | 0       |
+|    add_ln106_7_fu_3834_p2                       |     |        | add_ln106_7            | add       | fabric                   | 0       |
+|    sparsemux_7_2_32_1_1_U48                     |     |        | tmp_9                  | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U49                     |     |        | tmp_s                  | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U50                     |     |        | tmp_10                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U51                     |     |        | tmp_11                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U52                     |     |        | tmp_12                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U53                     |     |        | tmp_13                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U54                     |     |        | tmp_14                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U55                     |     |        | tmp_15                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_17_3_32_1_1_U77                    |     |        | tmp_16                 | sparsemux | compactencoding_dontcare | 0       |
+|    fmul_32ns_32ns_32_4_max_dsp_1_U39            | 3   |        | mul_s                  | fmul      | maxdsp                   | 3       |
+|    fadd_32ns_32ns_32_5_full_dsp_1_U30           | 2   |        | acc_2                  | fadd      | fulldsp                  | 4       |
+|    add_ln106_1_fu_3424_p2                       |     |        | add_ln106_1            | add       | fabric                   | 0       |
+|    add_ln106_8_fu_3871_p2                       |     |        | add_ln106_8            | add       | fabric                   | 0       |
+|    add_ln106_9_fu_3904_p2                       |     |        | add_ln106_9            | add       | fabric                   | 0       |
+|    add_ln106_10_fu_3937_p2                      |     |        | add_ln106_10           | add       | fabric                   | 0       |
+|    sparsemux_7_2_32_1_1_U48                     |     |        | tmp_17                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U49                     |     |        | tmp_18                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U50                     |     |        | tmp_19                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U51                     |     |        | tmp_20                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U52                     |     |        | tmp_21                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U53                     |     |        | tmp_22                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U54                     |     |        | tmp_23                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U55                     |     |        | tmp_24                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_17_3_32_1_1_U78                    |     |        | tmp_25                 | sparsemux | compactencoding_dontcare | 0       |
+|    fmul_32ns_32ns_32_4_max_dsp_1_U40            | 3   |        | mul_3                  | fmul      | maxdsp                   | 3       |
+|    fadd_32ns_32ns_32_5_full_dsp_1_U31           | 2   |        | acc_3                  | fadd      | fulldsp                  | 4       |
+|    sparsemux_7_2_32_1_1_U56                     |     |        | tmp_26                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U57                     |     |        | tmp_27                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U58                     |     |        | tmp_28                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U59                     |     |        | tmp_29                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U60                     |     |        | tmp_30                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U61                     |     |        | tmp_31                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U62                     |     |        | tmp_32                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U63                     |     |        | tmp_33                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_17_3_32_1_1_U79                    |     |        | tmp_34                 | sparsemux | compactencoding_dontcare | 0       |
+|    fmul_32ns_32ns_32_4_max_dsp_1_U41            | 3   |        | mul_1                  | fmul      | maxdsp                   | 3       |
+|    fadd_32ns_32ns_32_5_full_dsp_1_U32           | 2   |        | acc_4                  | fadd      | fulldsp                  | 4       |
+|    sparsemux_7_2_32_1_1_U56                     |     |        | tmp_35                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U57                     |     |        | tmp_36                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U58                     |     |        | tmp_37                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U59                     |     |        | tmp_38                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U60                     |     |        | tmp_39                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U61                     |     |        | tmp_40                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U62                     |     |        | tmp_41                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U63                     |     |        | tmp_42                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_17_3_32_1_1_U80                    |     |        | tmp_43                 | sparsemux | compactencoding_dontcare | 0       |
+|    fmul_32ns_32ns_32_4_max_dsp_1_U42            | 3   |        | mul_1_1                | fmul      | maxdsp                   | 3       |
+|    fadd_32ns_32ns_32_5_full_dsp_1_U33           | 2   |        | acc_5                  | fadd      | fulldsp                  | 4       |
+|    sparsemux_7_2_32_1_1_U56                     |     |        | tmp_44                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U57                     |     |        | tmp_45                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U58                     |     |        | tmp_46                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U59                     |     |        | tmp_47                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U60                     |     |        | tmp_48                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U61                     |     |        | tmp_49                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U62                     |     |        | tmp_50                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U63                     |     |        | tmp_51                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_17_3_32_1_1_U81                    |     |        | tmp_52                 | sparsemux | compactencoding_dontcare | 0       |
+|    fmul_32ns_32ns_32_4_max_dsp_1_U43            | 3   |        | mul_1_2                | fmul      | maxdsp                   | 3       |
+|    fadd_32ns_32ns_32_5_full_dsp_1_U34           | 2   |        | acc_6                  | fadd      | fulldsp                  | 4       |
+|    sparsemux_7_2_32_1_1_U64                     |     |        | tmp_53                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U65                     |     |        | tmp_54                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U66                     |     |        | tmp_55                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U67                     |     |        | tmp_56                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U68                     |     |        | tmp_57                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U69                     |     |        | tmp_58                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U70                     |     |        | tmp_59                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U71                     |     |        | tmp_60                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_17_3_32_1_1_U82                    |     |        | tmp_61                 | sparsemux | compactencoding_dontcare | 0       |
+|    fmul_32ns_32ns_32_4_max_dsp_1_U44            | 3   |        | mul_2                  | fmul      | maxdsp                   | 3       |
+|    fadd_32ns_32ns_32_5_full_dsp_1_U35           | 2   |        | acc_7                  | fadd      | fulldsp                  | 4       |
+|    sparsemux_7_2_32_1_1_U64                     |     |        | tmp_62                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U65                     |     |        | tmp_63                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U66                     |     |        | tmp_64                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U67                     |     |        | tmp_65                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U68                     |     |        | tmp_66                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U69                     |     |        | tmp_67                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U70                     |     |        | tmp_68                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U71                     |     |        | tmp_69                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_17_3_32_1_1_U83                    |     |        | tmp_70                 | sparsemux | compactencoding_dontcare | 0       |
+|    fmul_32ns_32ns_32_4_max_dsp_1_U45            | 3   |        | mul_2_1                | fmul      | maxdsp                   | 3       |
+|    fadd_32ns_32ns_32_5_full_dsp_1_U36           | 2   |        | acc_8                  | fadd      | fulldsp                  | 4       |
+|    sparsemux_7_2_32_1_1_U64                     |     |        | tmp_71                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U65                     |     |        | tmp_72                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U66                     |     |        | tmp_73                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U67                     |     |        | tmp_74                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U68                     |     |        | tmp_75                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U69                     |     |        | tmp_76                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U70                     |     |        | tmp_77                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_7_2_32_1_1_U71                     |     |        | tmp_78                 | sparsemux | onehotencoding_realdef   | 0       |
+|    sparsemux_17_3_32_1_1_U84                    |     |        | tmp_79                 | sparsemux | compactencoding_dontcare | 0       |
+|    fmul_32ns_32ns_32_4_max_dsp_1_U46            | 3   |        | mul_2_2                | fmul      | maxdsp                   | 3       |
+|    fadd_32ns_32ns_32_5_full_dsp_1_U37           | 2   |        | acc_9                  | fadd      | fulldsp                  | 4       |
+|    icmp_ln112_fu_4350_p2                        |     |        | icmp_ln112             | setne     | auto                     | 0       |
+|    icmp_ln112_1_fu_4356_p2                      |     |        | icmp_ln112_1           | seteq     | auto                     | 0       |
+|    or_ln112_fu_4362_p2                          |     |        | or_ln112               | or        | auto                     | 0       |
+|    and_ln112_fu_4368_p2                         |     |        | and_ln112              | and       | auto                     | 0       |
+|    select_ln112_fu_4374_p3                      |     |        | select_ln112           | select    | auto_sel                 | 0       |
+|    add_ln92_fu_3272_p2                          |     |        | add_ln92               | add       | fabric                   | 0       |
+|    select_ln92_1_fu_3278_p3                     |     |        | select_ln92_1          | select    | auto_sel                 | 0       |
+|  + conv1_pool1_Pipeline_POOL_OC_POOL_PY_POOL_PX | 2   |        |                        |           |                          |         |
+|    icmp_ln128_fu_1058_p2                        |     |        | icmp_ln128             | seteq     | auto                     | 0       |
+|    add_ln128_1_fu_1064_p2                       |     |        | add_ln128_1            | add       | fabric                   | 0       |
+|    add_ln128_fu_1241_p2                         |     |        | add_ln128              | add       | fabric                   | 0       |
+|    icmp_ln130_fu_1073_p2                        |     |        | icmp_ln130             | seteq     | auto                     | 0       |
+|    select_ln128_fu_1109_p3                      |     |        | select_ln128           | select    | auto_sel                 | 0       |
+|    xor_ln128_fu_1116_p2                         |     |        | xor_ln128              | xor       | auto                     | 0       |
+|    icmp_ln132_fu_1121_p2                        |     |        | icmp_ln132             | seteq     | auto                     | 0       |
+|    and_ln128_fu_1127_p2                         |     |        | and_ln128              | and       | auto                     | 0       |
+|    select_ln128_1_fu_1247_p3                    |     |        | select_ln128_1         | select    | auto_sel                 | 0       |
+|    add_ln130_fu_1133_p2                         |     |        | add_ln130              | add       | fabric                   | 0       |
+|    empty_fu_1139_p2                             |     |        | empty                  | or        | auto                     | 0       |
+|    px_mid2_fu_1144_p3                           |     |        | px_mid2                | select    | auto_sel                 | 0       |
+|    select_ln130_fu_1152_p3                      |     |        | select_ln130           | select    | auto_sel                 | 0       |
+|    mac_muladd_6ns_5ns_5ns_11_4_1_U169           | 1   |        | mul_ln138              | mul       | dsp_slice                | 3       |
+|    mac_muladd_6ns_5ns_5ns_11_4_1_U170           | 1   |        | mul_ln140              | mul       | dsp_slice                | 3       |
+|    mac_muladd_6ns_5ns_5ns_11_4_1_U169           | 1   |        | add_ln138              | add       | dsp_slice                | 3       |
+|    mac_muladd_6ns_5ns_5ns_11_4_1_U170           | 1   |        | add_ln140              | add       | dsp_slice                | 3       |
+|    sparsemux_33_4_32_1_1_U165                   |     |        | v00                    | sparsemux | compactencoding_dontcare | 0       |
+|    sparsemux_33_4_32_1_1_U166                   |     |        | v01                    | sparsemux | compactencoding_dontcare | 0       |
+|    sparsemux_33_4_32_1_1_U167                   |     |        | v10                    | sparsemux | compactencoding_dontcare | 0       |
+|    sparsemux_33_4_32_1_1_U168                   |     |        | v11                    | sparsemux | compactencoding_dontcare | 0       |
+|    icmp_ln144_fu_1531_p2                        |     |        | icmp_ln144             | setne     | auto                     | 0       |
+|    icmp_ln144_1_fu_1537_p2                      |     |        | icmp_ln144_1           | seteq     | auto                     | 0       |
+|    or_ln144_fu_1543_p2                          |     |        | or_ln144               | or        | auto                     | 0       |
+|    icmp_ln144_2_fu_1549_p2                      |     |        | icmp_ln144_2           | setne     | auto                     | 0       |
+|    icmp_ln144_3_fu_1555_p2                      |     |        | icmp_ln144_3           | seteq     | auto                     | 0       |
+|    or_ln144_1_fu_1561_p2                        |     |        | or_ln144_1             | or        | auto                     | 0       |
+|    and_ln144_fu_1567_p2                         |     |        | and_ln144              | and       | auto                     | 0       |
+|    and_ln144_1_fu_1573_p2                       |     |        | and_ln144_1            | and       | auto                     | 0       |
+|    maxv_2_fu_1579_p3                            |     |        | maxv_2                 | select    | auto_sel                 | 0       |
+|    icmp_ln145_fu_1690_p2                        |     |        | icmp_ln145             | setne     | auto                     | 0       |
+|    icmp_ln145_1_fu_1696_p2                      |     |        | icmp_ln145_1           | seteq     | auto                     | 0       |
+|    or_ln145_fu_1702_p2                          |     |        | or_ln145               | or        | auto                     | 0       |
+|    icmp_ln145_2_fu_1708_p2                      |     |        | icmp_ln145_2           | setne     | auto                     | 0       |
+|    icmp_ln145_3_fu_1714_p2                      |     |        | icmp_ln145_3           | seteq     | auto                     | 0       |
+|    or_ln145_1_fu_1720_p2                        |     |        | or_ln145_1             | or        | auto                     | 0       |
+|    and_ln145_fu_1726_p2                         |     |        | and_ln145              | and       | auto                     | 0       |
+|    fcmp_32ns_32ns_1_2_no_dsp_1_U163             |     |        | tmp_7                  | fcmp      | auto                     | 1       |
+|    and_ln145_1_fu_1732_p2                       |     |        | and_ln145_1            | and       | auto                     | 0       |
+|    maxv_4_fu_1738_p3                            |     |        | maxv_4                 | select    | auto_sel                 | 0       |
+|    icmp_ln146_fu_1778_p2                        |     |        | icmp_ln146             | setne     | auto                     | 0       |
+|    icmp_ln146_1_fu_1784_p2                      |     |        | icmp_ln146_1           | seteq     | auto                     | 0       |
+|    or_ln146_fu_1790_p2                          |     |        | or_ln146               | or        | auto                     | 0       |
+|    icmp_ln146_2_fu_1796_p2                      |     |        | icmp_ln146_2           | setne     | auto                     | 0       |
+|    icmp_ln146_3_fu_1802_p2                      |     |        | icmp_ln146_3           | seteq     | auto                     | 0       |
+|    or_ln146_1_fu_1808_p2                        |     |        | or_ln146_1             | or        | auto                     | 0       |
+|    and_ln146_fu_1814_p2                         |     |        | and_ln146              | and       | auto                     | 0       |
+|    fcmp_32ns_32ns_1_2_no_dsp_1_U164             |     |        | tmp_10                 | fcmp      | auto                     | 1       |
+|    and_ln146_1_fu_1820_p2                       |     |        | and_ln146_1            | and       | auto                     | 0       |
+|    maxv_6_fu_1826_p3                            |     |        | maxv_6                 | select    | auto_sel                 | 0       |
+|    add_ln132_fu_1184_p2                         |     |        | add_ln132              | add       | fabric                   | 0       |
+|    add_ln130_1_fu_1079_p2                       |     |        | add_ln130_1            | add       | fabric                   | 0       |
+|    select_ln130_1_fu_1085_p3                    |     |        | select_ln130_1         | select    | auto_sel                 | 0       |
++-------------------------------------------------+-----+--------+------------------------+-----------+--------------------------+---------+
+
+
+================================================================
+== Storage Report
+================================================================
++-------------------------------------------------+--------------+-----------+------+------+--------+------------------+------+---------+------------------+
+| Name                                            | Usage        | Type      | BRAM | URAM | Pragma | Variable         | Impl | Latency | Bitwidth, Depth, |
+|                                                 |              |           |      |      |        |                  |      |         | Banks            |
++-------------------------------------------------+--------------+-----------+------+------+--------+------------------+------+---------+------------------+
+| + conv1_pool1                                   |              |           | 183  | 0    |        |                  |      |         |                  |
+|   control_s_axi_U                               | interface    | s_axilite |      |      |        |                  |      |         |                  |
+|   AXI_IN_m_axi_U                                | interface    | m_axi     | 29   |      |        |                  |      |         |                  |
+|   AXI_OUT_m_axi_U                               | interface    | m_axi     | 2    |      |        |                  |      |         |                  |
+|   in_buf_U                                      | ram_1p array |           | 2    |      |        | in_buf           | auto | 1       | 32, 96, 1        |
+|   in_buf_1_U                                    | ram_1p array |           | 2    |      |        | in_buf_1         | auto | 1       | 32, 96, 1        |
+|   in_buf_2_U                                    | ram_1p array |           | 2    |      |        | in_buf_2         | auto | 1       | 32, 96, 1        |
+|   in_buf_3_U                                    | ram_1p array |           | 2    |      |        | in_buf_3         | auto | 1       | 32, 96, 1        |
+|   in_buf_4_U                                    | ram_1p array |           | 2    |      |        | in_buf_4         | auto | 1       | 32, 96, 1        |
+|   in_buf_5_U                                    | ram_1p array |           | 2    |      |        | in_buf_5         | auto | 1       | 32, 96, 1        |
+|   in_buf_6_U                                    | ram_1p array |           | 2    |      |        | in_buf_6         | auto | 1       | 32, 96, 1        |
+|   in_buf_7_U                                    | ram_1p array |           | 2    |      |        | in_buf_7         | auto | 1       | 32, 96, 1        |
+|   in_buf_8_U                                    | ram_1p array |           | 2    |      |        | in_buf_8         | auto | 1       | 32, 96, 1        |
+|   in_buf_9_U                                    | ram_1p array |           | 2    |      |        | in_buf_9         | auto | 1       | 32, 96, 1        |
+|   in_buf_10_U                                   | ram_1p array |           | 2    |      |        | in_buf_10        | auto | 1       | 32, 96, 1        |
+|   in_buf_11_U                                   | ram_1p array |           | 2    |      |        | in_buf_11        | auto | 1       | 32, 96, 1        |
+|   in_buf_12_U                                   | ram_1p array |           | 2    |      |        | in_buf_12        | auto | 1       | 32, 96, 1        |
+|   in_buf_13_U                                   | ram_1p array |           | 2    |      |        | in_buf_13        | auto | 1       | 32, 96, 1        |
+|   in_buf_14_U                                   | ram_1p array |           | 2    |      |        | in_buf_14        | auto | 1       | 32, 96, 1        |
+|   in_buf_15_U                                   | ram_1p array |           | 2    |      |        | in_buf_15        | auto | 1       | 32, 96, 1        |
+|   in_buf_16_U                                   | ram_1p array |           | 2    |      |        | in_buf_16        | auto | 1       | 32, 96, 1        |
+|   in_buf_17_U                                   | ram_1p array |           | 2    |      |        | in_buf_17        | auto | 1       | 32, 96, 1        |
+|   in_buf_18_U                                   | ram_1p array |           | 2    |      |        | in_buf_18        | auto | 1       | 32, 96, 1        |
+|   in_buf_19_U                                   | ram_1p array |           | 2    |      |        | in_buf_19        | auto | 1       | 32, 96, 1        |
+|   in_buf_20_U                                   | ram_1p array |           | 2    |      |        | in_buf_20        | auto | 1       | 32, 96, 1        |
+|   in_buf_21_U                                   | ram_1p array |           | 2    |      |        | in_buf_21        | auto | 1       | 32, 96, 1        |
+|   in_buf_22_U                                   | ram_1p array |           | 2    |      |        | in_buf_22        | auto | 1       | 32, 96, 1        |
+|   in_buf_23_U                                   | ram_1p array |           | 2    |      |        | in_buf_23        | auto | 1       | 32, 96, 1        |
+|   conv_buf_U                                    | ram_2p array |           | 4    |      |        | conv_buf         | auto | 1       | 32, 1058, 1      |
+|   conv_buf_1_U                                  | ram_2p array |           | 4    |      |        | conv_buf_1       | auto | 1       | 32, 1058, 1      |
+|   conv_buf_2_U                                  | ram_2p array |           | 4    |      |        | conv_buf_2       | auto | 1       | 32, 1058, 1      |
+|   conv_buf_3_U                                  | ram_2p array |           | 4    |      |        | conv_buf_3       | auto | 1       | 32, 1058, 1      |
+|   conv_buf_4_U                                  | ram_2p array |           | 4    |      |        | conv_buf_4       | auto | 1       | 32, 1058, 1      |
+|   conv_buf_5_U                                  | ram_2p array |           | 4    |      |        | conv_buf_5       | auto | 1       | 32, 1058, 1      |
+|   conv_buf_6_U                                  | ram_2p array |           | 4    |      |        | conv_buf_6       | auto | 1       | 32, 1058, 1      |
+|   conv_buf_7_U                                  | ram_2p array |           | 4    |      |        | conv_buf_7       | auto | 1       | 32, 1058, 1      |
+|   conv_buf_8_U                                  | ram_2p array |           | 4    |      |        | conv_buf_8       | auto | 1       | 32, 1058, 1      |
+|   conv_buf_9_U                                  | ram_2p array |           | 4    |      |        | conv_buf_9       | auto | 1       | 32, 1058, 1      |
+|   conv_buf_10_U                                 | ram_2p array |           | 4    |      |        | conv_buf_10      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_11_U                                 | ram_2p array |           | 4    |      |        | conv_buf_11      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_12_U                                 | ram_2p array |           | 4    |      |        | conv_buf_12      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_13_U                                 | ram_2p array |           | 4    |      |        | conv_buf_13      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_14_U                                 | ram_2p array |           | 4    |      |        | conv_buf_14      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_15_U                                 | ram_2p array |           | 4    |      |        | conv_buf_15      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_16_U                                 | ram_2p array |           | 4    |      |        | conv_buf_16      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_17_U                                 | ram_2p array |           | 4    |      |        | conv_buf_17      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_18_U                                 | ram_2p array |           | 4    |      |        | conv_buf_18      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_19_U                                 | ram_2p array |           | 4    |      |        | conv_buf_19      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_20_U                                 | ram_2p array |           | 4    |      |        | conv_buf_20      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_21_U                                 | ram_2p array |           | 4    |      |        | conv_buf_21      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_22_U                                 | ram_2p array |           | 4    |      |        | conv_buf_22      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_23_U                                 | ram_2p array |           | 4    |      |        | conv_buf_23      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_24_U                                 | ram_2p array |           | 4    |      |        | conv_buf_24      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_25_U                                 | ram_2p array |           | 4    |      |        | conv_buf_25      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_26_U                                 | ram_2p array |           | 4    |      |        | conv_buf_26      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_27_U                                 | ram_2p array |           | 4    |      |        | conv_buf_27      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_28_U                                 | ram_2p array |           | 4    |      |        | conv_buf_28      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_29_U                                 | ram_2p array |           | 4    |      |        | conv_buf_29      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_30_U                                 | ram_2p array |           | 4    |      |        | conv_buf_30      | auto | 1       | 32, 1058, 1      |
+|   conv_buf_31_U                                 | ram_2p array |           | 4    |      |        | conv_buf_31      | auto | 1       | 32, 1058, 1      |
+|  + conv1_pool1_Pipeline_CONV_OC_CONV_OY_CONV_OX |              |           | 0    | 0    |        |                  |      |         |                  |
+|    BIASES_U                                     | rom_1p       |           |      |      |        | BIASES           | auto | 1       | 32, 16, 1        |
+|    p_ZL7WEIGHTS_0_0_U                           | rom_1p       |           |      |      |        | p_ZL7WEIGHTS_0_0 | auto | 1       | 32, 16, 1        |
+|    p_ZL7WEIGHTS_0_1_U                           | rom_1p       |           |      |      |        | p_ZL7WEIGHTS_0_1 | auto | 1       | 32, 16, 1        |
+|    p_ZL7WEIGHTS_0_2_U                           | rom_1p       |           |      |      |        | p_ZL7WEIGHTS_0_2 | auto | 1       | 32, 16, 1        |
+|    p_ZL7WEIGHTS_1_0_U                           | rom_1p       |           |      |      |        | p_ZL7WEIGHTS_1_0 | auto | 1       | 32, 16, 1        |
+|    p_ZL7WEIGHTS_1_1_U                           | rom_1p       |           |      |      |        | p_ZL7WEIGHTS_1_1 | auto | 1       | 32, 16, 1        |
+|    p_ZL7WEIGHTS_1_2_U                           | rom_1p       |           |      |      |        | p_ZL7WEIGHTS_1_2 | auto | 1       | 32, 16, 1        |
+|    p_ZL7WEIGHTS_2_0_U                           | rom_1p       |           |      |      |        | p_ZL7WEIGHTS_2_0 | auto | 1       | 32, 16, 1        |
+|    p_ZL7WEIGHTS_2_1_U                           | rom_1p       |           |      |      |        | p_ZL7WEIGHTS_2_1 | auto | 1       | 32, 16, 1        |
+|    p_ZL7WEIGHTS_2_2_U                           | rom_1p       |           |      |      |        | p_ZL7WEIGHTS_2_2 | auto | 1       | 32, 16, 1        |
++-------------------------------------------------+--------------+-----------+------+------+--------+------------------+------+---------+------------------+
+
+
+================================================================
+== Pragma Report
+================================================================
+* Valid Pragma Syntax
++-----------------+-------------------------------------------------------+-------------------------------------------------+
+| Type            | Options                                               | Location                                        |
++-----------------+-------------------------------------------------------+-------------------------------------------------+
+| interface       | m_axi port=in bundle=AXI_IN depth=2304 offset=slave   | src/conv1_pool1.cpp:40 in conv1_pool1, in       |
+| interface       | m_axi port=out bundle=AXI_OUT depth=8464 offset=slave | src/conv1_pool1.cpp:41 in conv1_pool1, out      |
+| interface       | s_axilite port=return                                 | src/conv1_pool1.cpp:42 in conv1_pool1, return   |
+| array_partition | variable=in_buf dim=2 cyclic factor=8                 | src/conv1_pool1.cpp:54 in conv1_pool1, in_buf   |
+| array_partition | variable=conv_buf dim=1 complete                      | src/conv1_pool1.cpp:61 in conv1_pool1, conv_buf |
+| pipeline        | II=1                                                  | src/conv1_pool1.cpp:68 in conv1_pool1           |
+| pipeline        | II=1                                                  | src/conv1_pool1.cpp:95 in conv1_pool1           |
+| unroll          |                                                       | src/conv1_pool1.cpp:101 in conv1_pool1          |
+| unroll          |                                                       | src/conv1_pool1.cpp:104 in conv1_pool1          |
+| pipeline        | II=1                                                  | src/conv1_pool1.cpp:133 in conv1_pool1          |
++-----------------+-------------------------------------------------------+-------------------------------------------------+
+
+* Inferred Pragmas
++-----------------------------------+-----------------+------------------------------------------------+-----------------------------------------------------------+
+| Source                            | Inferred Pragma | Options                                        | Location                                                  |
++-----------------------------------+-----------------+------------------------------------------------+-----------------------------------------------------------+
+| pipeline  src/conv1_pool1.cpp:95  | array_partition | dim=1 type=complete  variable=_ZL7WEIGHTS      | variable WEIGHTS in conv1_pool1 src/weights.h:13          |
+| pipeline  src/conv1_pool1.cpp:95  | array_partition | dim=1 type=cyclic factor=3 variable=in_buf_0   | variable in_buf_0 in conv1_pool1 src/conv1_pool1.cpp:53   |
+| pipeline  src/conv1_pool1.cpp:133 | array_partition | dim=2 type=cyclic factor=2 variable=conv_buf_0 | variable conv_buf_0 in conv1_pool1 src/conv1_pool1.cpp:60 |
++-----------------------------------+-----------------+------------------------------------------------+-----------------------------------------------------------+
+
+

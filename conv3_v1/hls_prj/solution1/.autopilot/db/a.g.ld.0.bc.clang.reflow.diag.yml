@@ -1,0 +1,358 @@
+--- !Passed
+Pass:            reflow-infer-unroll
+Name:            ImplicitUnroll
+DebugLoc:        { File: src/conv3.cpp, Line: 33, Column: 13 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Loop '''
+  - LoopName:        LOAD_IX
+  - String:          ''' is marked as complete unroll implied by the pipeline pragma'
+...
+--- !Passed
+Pass:            reflow-pragma-loop-unroll
+Name:            PragmaFullyUnroll
+DebugLoc:        { File: src/conv3.cpp, Line: 16, Column: 0 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Unrolling loop '''
+  - LoopName:        LOAD_IX
+  - String:          ''' ('
+  - LoopLoc:         'src/conv3.cpp:33:13'
+  - String:          ') '
+  - String:          'in function '''
+  - String:          conv3
+  - String:          ''' completely with a factor of '
+  - Factor:          '10'
+...
+--- !Missed
+Pass:            inline
+Name:            NeverInline
+Function:        apatb_conv3_ir
+Args:            
+  - Callee:          'conv3(float const*, float*)'
+    DebugLoc:        { File: src/conv3.cpp, Line: 16, Column: 0 }
+  - String:          ' not inlined into '
+  - Caller:          apatb_conv3_ir
+  - String:          ' because it should never be inlined (cost=never)'
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv3.cpp, Line: 21, Column: 8 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          in_buf
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '3'
+  - String:          ' on dimension '
+  - Dim:             '3'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-burst-inference
+Name:            BurstInferred
+DebugLoc:        { File: src/conv3.cpp, Line: 28, Column: 5 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Sequential '
+  - Direction:       read
+  - String:          ' of length '
+  - Length:          '3200'
+  - String:          ' has been inferred'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        in12seq
+  - ArrayName:       in
+  - String:          ' '
+  - BundleName:      AXI_IN
+  - String:          ' '
+  - LoopName:        LOAD_IC
+  - String:          ' '
+  - LoopLoc:         'src/conv3.cpp:28:5'
+  - String:          ' '
+  - Function:        'conv3(float const*, float*)'
+    DebugLoc:        { File: src/conv3.cpp, Line: 16, Column: 0 }
+  - String:          ' '
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv3.cpp, Line: 34, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.29
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv3.cpp, Line: 34, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.33
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv3.cpp, Line: 34, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.37
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv3.cpp, Line: 34, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.41
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv3.cpp, Line: 34, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.45
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv3.cpp, Line: 34, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.49
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv3.cpp, Line: 34, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.53
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv3.cpp, Line: 34, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.57
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv3.cpp, Line: 34, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.61
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv3.cpp, Line: 34, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.65
+...
+--- !Passed
+Pass:            reflow-burst-inference
+Name:            BurstInferred
+DebugLoc:        { File: src/conv3.cpp, Line: 43, Column: 5 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Sequential '
+  - Direction:       write
+  - String:          ' of length '
+  - Length:          '4096'
+  - String:          ' has been inferred'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        out13seq
+  - ArrayName:       out
+  - String:          ' '
+  - BundleName:      AXI_OUT
+  - String:          ' '
+  - LoopName:        CONV_OC
+  - String:          ' '
+  - LoopLoc:         'src/conv3.cpp:43:5'
+  - String:          ' '
+  - Function:        'conv3(float const*, float*)'
+    DebugLoc:        { File: src/conv3.cpp, Line: 16, Column: 0 }
+  - String:          ' '
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      store
+    DebugLoc:        { File: src/conv3.cpp, Line: 62, Column: 47 }
+  - OrigDirection:   write
+  - OrigID:          for.end77.store.7
+...
+--- !Passed
+Pass:            reflow-burst-widen
+Name:            BurstWidened
+DebugLoc:        { File: src/conv3.cpp, Line: 43, Column: 5 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Sequential '
+  - Direction:       write
+  - String:          ' of '
+  - OrigLength:      '4096'
+  - String:          ' x '
+  - OrigWords:       '32'
+  - String:          'bit words has been widened by '
+  - Factor:          '8'
+  - String:          ': '
+  - Length:          '512'
+  - String:          ' x '
+  - Words:           '256'
+  - String:          bit words
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      call
+    DebugLoc:        { File: src/conv3.cpp, Line: 43, Column: 5 }
+  - OrigDirection:   write
+  - OrigID:          out13seq
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        wseq
+  - ArrayName:       out
+  - String:          ' '
+  - BundleName:      AXI_OUT
+  - String:          ' '
+  - LoopName:        CONV_OX
+  - String:          ' '
+  - LoopLoc:         'src/conv3.cpp:47:13'
+  - String:          ' '
+  - Function:        'conv3(float const*, float*)'
+    DebugLoc:        { File: src/conv3.cpp, Line: 16, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-burst-widen
+Name:            BurstWidened
+DebugLoc:        { File: src/conv3.cpp, Line: 28, Column: 5 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Sequential '
+  - Direction:       read
+  - String:          ' of '
+  - OrigLength:      '3200'
+  - String:          ' x '
+  - OrigWords:       '32'
+  - String:          'bit words has been widened by '
+  - Factor:          '2'
+  - String:          ': '
+  - Length:          '1600'
+  - String:          ' x '
+  - Words:           '64'
+  - String:          bit words
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      call
+    DebugLoc:        { File: src/conv3.cpp, Line: 28, Column: 5 }
+  - OrigDirection:   read
+  - OrigID:          in12seq
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        wseq14
+  - ArrayName:       in
+  - String:          ' '
+  - BundleName:      AXI_IN
+  - String:          ' '
+  - LoopName:        LOAD_IY
+  - String:          ' '
+  - LoopLoc:         'src/conv3.cpp:30:9'
+  - String:          ' '
+  - Function:        'conv3(float const*, float*)'
+    DebugLoc:        { File: src/conv3.cpp, Line: 16, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-burst-widen
+Name:            BurstWidened
+DebugLoc:        { File: src/conv3.cpp, Line: 43, Column: 5 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Sequential '
+  - Direction:       write
+  - String:          ' of '
+  - OrigLength:      '512'
+  - String:          ' x '
+  - OrigWords:       '256'
+  - String:          'bit words has been widened by '
+  - Factor:          '2'
+  - String:          ': '
+  - Length:          '256'
+  - String:          ' x '
+  - Words:           '512'
+  - String:          bit words
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      call
+    DebugLoc:        { File: src/conv3.cpp, Line: 43, Column: 5 }
+  - OrigDirection:   write
+  - OrigID:          wseq
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        wseq15
+  - ArrayName:       out
+  - String:          ' '
+  - BundleName:      AXI_OUT
+  - String:          ' '
+  - LoopName:        CONV_OY
+  - String:          ' '
+  - LoopLoc:         'src/conv3.cpp:45:9'
+  - String:          ' '
+  - Function:        'conv3(float const*, float*)'
+    DebugLoc:        { File: src/conv3.cpp, Line: 16, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredVerboseSummary
+DebugLoc:        { File: src/conv3.cpp, Line: 28, Column: 5 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       reads
+  - String:          ' of length '
+  - Length:          '1600'
+  - String:          ' and bit width '
+  - Width:           '64'
+  - String:          ' has been inferred.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        seq
+  - ArrayName:       ''
+  - String:          ' '
+  - BundleName:      AXI_IN
+  - String:          ' '
+  - LoopName:        LOAD_IC
+  - String:          ' '
+  - LoopLoc:         'src/conv3.cpp:28:5'
+  - String:          ' '
+  - Function:        'conv3(float const*, float*)'
+    DebugLoc:        { File: src/conv3.cpp, Line: 16, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredSummary
+DebugLoc:        { File: src/conv3.cpp, Line: 28, Column: 5 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       reads
+  - String:          ' of length '
+  - Length:          '1600'
+  - String:          ' and bit width '
+  - Width:           '64'
+  - String:          ' in loop '''
+  - LoopName:        LOAD_IC
+  - String:          '''('
+  - LoopLoc:         'src/conv3.cpp:28:5'
+  - String:          ')'
+  - String:          ' has been inferred on bundle '''
+  - BundleName:      AXI_IN
+  - String:          '''.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredVerboseSummary
+DebugLoc:        { File: src/conv3.cpp, Line: 43, Column: 5 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       writes
+  - String:          ' of length '
+  - Length:          '256'
+  - String:          ' and bit width '
+  - Width:           '512'
+  - String:          ' has been inferred.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        seq1
+  - ArrayName:       ''
+  - String:          ' '
+  - BundleName:      AXI_OUT
+  - String:          ' '
+  - Function:        'conv3(float const*, float*)'
+    DebugLoc:        { File: src/conv3.cpp, Line: 16, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredSummary
+DebugLoc:        { File: src/conv3.cpp, Line: 43, Column: 5 }
+Function:        _Z5conv3PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       writes
+  - String:          ' of length '
+  - Length:          '256'
+  - String:          ' and bit width '
+  - Width:           '512'
+  - String:          ' has been inferred on bundle '''
+  - BundleName:      AXI_OUT
+  - String:          '''.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+...

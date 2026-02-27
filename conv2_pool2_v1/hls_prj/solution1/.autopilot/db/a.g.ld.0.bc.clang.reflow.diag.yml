@@ -1,0 +1,444 @@
+--- !Passed
+Pass:            reflow-infer-unroll
+Name:            ImplicitUnroll
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 35, Column: 13 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Loop '''
+  - LoopName:        LOAD_IX
+  - String:          ''' is marked as complete unroll implied by the pipeline pragma'
+...
+--- !Passed
+Pass:            reflow-pragma-loop-unroll
+Name:            PragmaFullyUnroll
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 19, Column: 0 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Unrolling loop '''
+  - LoopName:        LOAD_IX
+  - String:          ''' ('
+  - LoopLoc:         'src/conv2_pool2.cpp:35:13'
+  - String:          ') '
+  - String:          'in function '''
+  - String:          conv2_pool2
+  - String:          ''' completely with a factor of '
+  - Factor:          '23'
+...
+--- !Missed
+Pass:            inline
+Name:            NeverInline
+Function:        apatb_conv2_pool2_ir
+Args:            
+  - Callee:          'conv2_pool2(float const*, float*)'
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 19, Column: 0 }
+  - String:          ' not inlined into '
+  - Caller:          apatb_conv2_pool2_ir
+  - String:          ' because it should never be inlined (cost=never)'
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 24, Column: 8 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          in_buf
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '3'
+  - String:          ' on dimension '
+  - Dim:             '3'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-burst-inference
+Name:            BurstInferred
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 30, Column: 5 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Sequential '
+  - Direction:       read
+  - String:          ' of length '
+  - Length:          '8464'
+  - String:          ' has been inferred'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        in33seq
+  - ArrayName:       in
+  - String:          ' '
+  - BundleName:      AXI_IN
+  - String:          ' '
+  - LoopName:        LOAD_IC
+  - String:          ' '
+  - LoopLoc:         'src/conv2_pool2.cpp:30:5'
+  - String:          ' '
+  - Function:        'conv2_pool2(float const*, float*)'
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 19, Column: 0 }
+  - String:          ' '
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.55
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.59
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.63
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.67
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.71
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.75
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.79
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.83
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.87
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.91
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.95
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.99
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.103
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.107
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.111
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.115
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.119
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.123
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.127
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.131
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.135
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.139
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 36, Column: 38 }
+  - OrigDirection:   read
+  - OrigID:          LOAD_IX.load.143
+...
+--- !Passed
+Pass:            reflow-burst-inference
+Name:            BurstInferred
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 42, Column: 5 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Sequential '
+  - Direction:       write
+  - String:          ' of length '
+  - Length:          '3200'
+  - String:          ' has been inferred'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        out34seq
+  - ArrayName:       out
+  - String:          ' '
+  - BundleName:      AXI_OUT
+  - String:          ' '
+  - LoopName:        CONV_OC
+  - String:          ' '
+  - LoopLoc:         'src/conv2_pool2.cpp:42:5'
+  - String:          ' '
+  - Function:        'conv2_pool2(float const*, float*)'
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 19, Column: 0 }
+  - String:          ' '
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      store
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 77, Column: 50 }
+  - OrigDirection:   write
+  - OrigID:          for.body96.store.33
+...
+--- !Passed
+Pass:            reflow-burst-widen
+Name:            BurstWidened
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 42, Column: 5 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Sequential '
+  - Direction:       write
+  - String:          ' of '
+  - OrigLength:      '3200'
+  - String:          ' x '
+  - OrigWords:       '32'
+  - String:          'bit words has been widened by '
+  - Factor:          '2'
+  - String:          ': '
+  - Length:          '1600'
+  - String:          ' x '
+  - Words:           '64'
+  - String:          bit words
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      call
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 42, Column: 5 }
+  - OrigDirection:   write
+  - OrigID:          out34seq
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        wseq
+  - ArrayName:       out
+  - String:          ' '
+  - BundleName:      AXI_OUT
+  - String:          ' '
+  - LoopName:        POOL_PX
+  - String:          ' '
+  - LoopLoc:         'src/conv2_pool2.cpp:66:13'
+  - String:          ' '
+  - Function:        'conv2_pool2(float const*, float*)'
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 19, Column: 0 }
+  - String:          ' '
+...
+--- !Missed
+Pass:            reflow-burst-widen
+Name:            BadStartIndexAlignment
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 30, Column: 5 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          Start index of the access is unaligned
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      call
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 30, Column: 5 }
+  - OrigDirection:   read
+  - OrigID:          in33seq
+  - ArrayName:       in
+  - String:          ' '
+  - BundleName:      AXI_IN
+  - String:          ' '
+  - LoopName:        LOAD_IY
+  - String:          ' '
+  - LoopLoc:         'src/conv2_pool2.cpp:32:9'
+  - String:          ' '
+  - Function:        'conv2_pool2(float const*, float*)'
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 19, Column: 0 }
+  - String:          ' '
+...
+--- !Missed
+Pass:            reflow-burst-widen
+Name:            BadStartIndexAlignment
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 30, Column: 5 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          Start index of the access is unaligned
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      call
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 30, Column: 5 }
+  - OrigDirection:   read
+  - OrigID:          in33seq
+  - ArrayName:       in
+  - String:          ' '
+  - BundleName:      AXI_IN
+  - String:          ' '
+  - LoopName:        LOAD_IY
+  - String:          ' '
+  - LoopLoc:         'src/conv2_pool2.cpp:32:9'
+  - String:          ' '
+  - Function:        'conv2_pool2(float const*, float*)'
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 19, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 27, Column: 8 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv2_pool2
+  - String:          ' '
+  - varLoc:          'src/conv2_pool2.cpp:27:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv2_pool2.cpp:67:9'
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 67, Column: 9 }
+  - VarName:         conv_buf
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 67, Column: 9 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 27, Column: 8 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredVerboseSummary
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 30, Column: 5 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       reads
+  - String:          ' of length '
+  - Length:          '8464'
+  - String:          ' and bit width '
+  - Width:           '32'
+  - String:          ' has been inferred.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        seq
+  - ArrayName:       ''
+  - String:          ' '
+  - BundleName:      AXI_IN
+  - String:          ' '
+  - LoopName:        LOAD_IC
+  - String:          ' '
+  - LoopLoc:         'src/conv2_pool2.cpp:30:5'
+  - String:          ' '
+  - Function:        'conv2_pool2(float const*, float*)'
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 19, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredSummary
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 30, Column: 5 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       reads
+  - String:          ' of length '
+  - Length:          '8464'
+  - String:          ' and bit width '
+  - Width:           '32'
+  - String:          ' in loop '''
+  - LoopName:        LOAD_IC
+  - String:          '''('
+  - LoopLoc:         'src/conv2_pool2.cpp:30:5'
+  - String:          ')'
+  - String:          ' has been inferred on bundle '''
+  - BundleName:      AXI_IN
+  - String:          '''.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredVerboseSummary
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 42, Column: 5 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       writes
+  - String:          ' of length '
+  - Length:          '1600'
+  - String:          ' and bit width '
+  - Width:           '64'
+  - String:          ' has been inferred.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        seq1
+  - ArrayName:       ''
+  - String:          ' '
+  - BundleName:      AXI_OUT
+  - String:          ' '
+  - Function:        'conv2_pool2(float const*, float*)'
+    DebugLoc:        { File: src/conv2_pool2.cpp, Line: 19, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredSummary
+DebugLoc:        { File: src/conv2_pool2.cpp, Line: 42, Column: 5 }
+Function:        _Z11conv2_pool2PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       writes
+  - String:          ' of length '
+  - Length:          '1600'
+  - String:          ' and bit width '
+  - Width:           '64'
+  - String:          ' has been inferred on bundle '''
+  - BundleName:      AXI_OUT
+  - String:          '''.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+...

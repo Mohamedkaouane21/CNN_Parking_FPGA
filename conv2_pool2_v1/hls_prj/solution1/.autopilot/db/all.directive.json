@@ -1,0 +1,23 @@
+[
+  {
+    "functionLabel": "",
+    "functionName": "conv2_pool2",
+    "id": 0,
+    "ifcond": "",
+    "insert_position": "",
+    "label": "",
+    "pragma": {
+      "name": "TOP",
+      "option": [
+        {
+          "name": "name",
+          "value": "conv2_pool2"
+        }
+      ]
+    },
+    "slx": false,
+    "sourceFile": "/home/badhak/Téléchargements/conv2_pool2_v1/run_all.tcl",
+    "sourceLine": 47,
+    "success": true
+  }
+]

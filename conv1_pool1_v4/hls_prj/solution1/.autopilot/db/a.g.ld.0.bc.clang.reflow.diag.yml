@@ -1,0 +1,2044 @@
+--- !Passed
+Pass:            reflow-infer-unroll
+Name:            ImplicitUnroll
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 100, Column: 17 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Loop '''
+  - LoopName:        CONV_KY
+  - String:          ''' is marked as complete unroll implied by the pipeline pragma'
+...
+--- !Passed
+Pass:            reflow-infer-unroll
+Name:            ImplicitUnroll
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 103, Column: 21 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Loop '''
+  - LoopName:        CONV_KX
+  - String:          ''' is marked as complete unroll implied by the pipeline pragma'
+...
+--- !Passed
+Pass:            reflow-pragma-loop-unroll
+Name:            PragmaFullyUnroll
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Unrolling loop '''
+  - LoopName:        CONV_KY
+  - String:          ''' ('
+  - LoopLoc:         'src/conv1_pool1.cpp:100:17'
+  - String:          ') '
+  - String:          'in function '''
+  - String:          conv1_pool1
+  - String:          ''' completely with a factor of '
+  - Factor:          '3'
+...
+--- !Passed
+Pass:            reflow-pragma-loop-unroll
+Name:            PragmaFullyUnroll
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Unrolling loop '''
+  - LoopName:        CONV_KX
+  - String:          ''' ('
+  - LoopLoc:         'src/conv1_pool1.cpp:103:21'
+  - String:          ') '
+  - String:          'in function '''
+  - String:          conv1_pool1
+  - String:          ''' completely with a factor of '
+  - Factor:          '3'
+...
+--- !Passed
+Pass:            reflow-pragma-loop-unroll
+Name:            PragmaFullyUnroll
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Unrolling loop '''
+  - LoopName:        CONV_KX
+  - String:          ''' ('
+  - LoopLoc:         'src/conv1_pool1.cpp:103:21'
+  - String:          ') '
+  - String:          'in function '''
+  - String:          conv1_pool1
+  - String:          ''' completely with a factor of '
+  - Factor:          '3'
+...
+--- !Passed
+Pass:            reflow-pragma-loop-unroll
+Name:            PragmaFullyUnroll
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Unrolling loop '''
+  - LoopName:        CONV_KX
+  - String:          ''' ('
+  - LoopLoc:         'src/conv1_pool1.cpp:103:21'
+  - String:          ') '
+  - String:          'in function '''
+  - String:          conv1_pool1
+  - String:          ''' completely with a factor of '
+  - Factor:          '3'
+...
+--- !Missed
+Pass:            inline
+Name:            NeverInline
+Function:        apatb_conv1_pool1_ir
+Args:            
+  - Callee:          'conv1_pool1(float const*, float*)'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+  - String:          ' not inlined into '
+  - Caller:          apatb_conv1_pool1_ir
+  - String:          ' because it should never be inlined (cost=never)'
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          in_buf
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '8'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Complete
+  - String:          ' partitioning'
+  - String:          ' on dimension '
+  - Dim:             '1'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-burst-inference
+Name:            BurstInferred
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 67, Column: 5 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Sequential '
+  - Direction:       read
+  - String:          ' of length '
+  - Length:          '2304'
+  - String:          ' has been inferred'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        in124seq
+  - ArrayName:       in
+  - String:          ' '
+  - BundleName:      AXI_IN
+  - String:          ' '
+  - LoopName:        LOAD
+  - String:          ' '
+  - LoopLoc:         'src/conv1_pool1.cpp:67:5'
+  - String:          ' '
+  - Function:        'conv1_pool1(float const*, float*)'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+  - String:          ' '
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      load
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 69, Column: 31 }
+  - OrigDirection:   read
+  - OrigID:          for.inc.load.28
+...
+--- !Passed
+Pass:            reflow-burst-inference
+Name:            BurstInferred
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 128, Column: 5 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Sequential '
+  - Direction:       write
+  - String:          ' of length '
+  - Length:          '8464'
+  - String:          ' has been inferred'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        out125seq
+  - ArrayName:       out
+  - String:          ' '
+  - BundleName:      AXI_OUT
+  - String:          ' '
+  - LoopName:        POOL_OC
+  - String:          ' '
+  - LoopLoc:         'src/conv1_pool1.cpp:128:5'
+  - String:          ' '
+  - Function:        'conv1_pool1(float const*, float*)'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+  - String:          ' '
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      store
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 148, Column: 59 }
+  - OrigDirection:   write
+  - OrigID:          for.body74.store.157
+...
+--- !Missed
+Pass:            reflow-burst-widen
+Name:            BadStartIndexAlignment
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 128, Column: 5 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          Start index of the access is unaligned
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      call
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 128, Column: 5 }
+  - OrigDirection:   write
+  - OrigID:          out125seq
+  - ArrayName:       out
+  - String:          ' '
+  - BundleName:      AXI_OUT
+  - String:          ' '
+  - LoopName:        POOL_PX
+  - String:          ' '
+  - LoopLoc:         'src/conv1_pool1.cpp:132:13'
+  - String:          ' '
+  - Function:        'conv1_pool1(float const*, float*)'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-burst-widen
+Name:            BurstWidened
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 67, Column: 5 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Sequential '
+  - Direction:       read
+  - String:          ' of '
+  - OrigLength:      '2304'
+  - String:          ' x '
+  - OrigWords:       '32'
+  - String:          'bit words has been widened by '
+  - Factor:          '16'
+  - String:          ': '
+  - Length:          '144'
+  - String:          ' x '
+  - Words:           '512'
+  - String:          bit words
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      call
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 67, Column: 5 }
+  - OrigDirection:   read
+  - OrigID:          in124seq
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        wseq
+  - ArrayName:       in
+  - String:          ' '
+  - BundleName:      AXI_IN
+  - String:          ' '
+  - LoopName:        LOAD
+  - String:          ' '
+  - LoopLoc:         'src/conv1_pool1.cpp:67:5'
+  - String:          ' '
+  - Function:        'conv1_pool1(float const*, float*)'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+  - String:          ' '
+...
+--- !Missed
+Pass:            reflow-burst-widen
+Name:            BadStartIndexAlignment
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 128, Column: 5 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          Start index of the access is unaligned
+  - String:          ' _XLX_SEP_ '
+  - OrigAccess:      call
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 128, Column: 5 }
+  - OrigDirection:   write
+  - OrigID:          out125seq
+  - ArrayName:       out
+  - String:          ' '
+  - BundleName:      AXI_OUT
+  - String:          ' '
+  - LoopName:        POOL_PX
+  - String:          ' '
+  - LoopLoc:         'src/conv1_pool1.cpp:132:13'
+  - String:          ' '
+  - Function:        'conv1_pool1(float const*, float*)'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayPromotion
+DebugLoc:        { File: src/weights.h, Line: 13, Column: 0 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Automatically partitioning array '''
+  - Value:           _ZL7WEIGHTS
+  - String:          ''' dimension '
+  - Dim:             '1'
+  - String:          ' completely based on constant index.'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayPromotion
+DebugLoc:        { File: src/weights.h, Line: 13, Column: 0 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Automatically partitioning array '''
+  - Value:           _ZL7WEIGHTS
+  - String:          ''' dimension '
+  - Dim:             '2'
+  - String:          ' completely based on constant index.'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayPromotion
+DebugLoc:        { File: src/weights.h, Line: 13, Column: 0 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Automatically partitioning array '''
+  - Value:           _ZL7WEIGHTS
+  - String:          ''' dimension '
+  - Dim:             '3'
+  - String:          ' completely based on constant index.'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/weights.h, Line: 13, Column: 0 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=1 type=complete  variable=_ZL7WEIGHTS'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/weights.h:13:0'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:95:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+  - VarName:         WEIGHTS
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            complete
+  - String:          ' dim='
+  - Dim:             '1'
+  - String:          ''' for array '''
+  - Name:            WEIGHTS
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/weights.h, Line: 13, Column: 0 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=3 type=complete  variable=_ZL7WEIGHTS'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/weights.h:13:0'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:95:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+  - VarName:         WEIGHTS
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            complete
+  - String:          ' dim='
+  - Dim:             '3'
+  - String:          ''' for array '''
+  - Name:            WEIGHTS
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/weights.h, Line: 13, Column: 0 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=complete  variable=_ZL7WEIGHTS'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/weights.h:13:0'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:95:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+  - VarName:         WEIGHTS
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            complete
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            WEIGHTS
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=1 type=cyclic factor=3 variable=in_buf_0'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:53:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:95:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+  - VarName:         in_buf_0
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '3'
+  - String:          ' dim='
+  - Dim:             '1'
+  - String:          ''' for array '''
+  - Name:            in_buf_0
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=1 type=cyclic factor=3 variable=in_buf_1'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:53:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:95:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+  - VarName:         in_buf_1
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '3'
+  - String:          ' dim='
+  - Dim:             '1'
+  - String:          ''' for array '''
+  - Name:            in_buf_1
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=1 type=cyclic factor=3 variable=in_buf_2'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:53:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:95:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+  - VarName:         in_buf_2
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '3'
+  - String:          ' dim='
+  - Dim:             '1'
+  - String:          ''' for array '''
+  - Name:            in_buf_2
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=1 type=cyclic factor=3 variable=in_buf_3'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:53:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:95:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+  - VarName:         in_buf_3
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '3'
+  - String:          ' dim='
+  - Dim:             '1'
+  - String:          ''' for array '''
+  - Name:            in_buf_3
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=1 type=cyclic factor=3 variable=in_buf_4'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:53:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:95:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+  - VarName:         in_buf_4
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '3'
+  - String:          ' dim='
+  - Dim:             '1'
+  - String:          ''' for array '''
+  - Name:            in_buf_4
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=1 type=cyclic factor=3 variable=in_buf_5'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:53:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:95:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+  - VarName:         in_buf_5
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '3'
+  - String:          ' dim='
+  - Dim:             '1'
+  - String:          ''' for array '''
+  - Name:            in_buf_5
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=1 type=cyclic factor=3 variable=in_buf_6'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:53:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:95:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+  - VarName:         in_buf_6
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '3'
+  - String:          ' dim='
+  - Dim:             '1'
+  - String:          ''' for array '''
+  - Name:            in_buf_6
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=1 type=cyclic factor=3 variable=in_buf_7'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:53:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:95:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+  - VarName:         in_buf_7
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 95, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '3'
+  - String:          ' dim='
+  - Dim:             '1'
+  - String:          ''' for array '''
+  - Name:            in_buf_7
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_0'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_0
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_0
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_1'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_1
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_1
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_10'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_10
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_10
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_11'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_11
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_11
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_12'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_12
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_12
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_13'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_13
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_13
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_14'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_14
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_14
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_15'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_15
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_15
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_2'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_2
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_2
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_3'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_3
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_3
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_4'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_4
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_4
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_5'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_5
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_5
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_6'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_6
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_6
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_7'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_7
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_7
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_8'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_8
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_8
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoParallelPerformanceDrivenVerbosePassed
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - PragmaType:      array_partition
+  - String:          ' '
+  - PragmaOptions:   'dim=2 type=cyclic factor=2 variable=conv_buf_9'
+  - String:          ' '
+  - PragmaIsAuto:    '1'
+  - String:          ' '
+  - PragmaFunction:  conv1_pool1
+  - String:          ' '
+  - varLoc:          'src/conv1_pool1.cpp:60:8'
+  - String:          ' '
+  - PragmaSrcLoc:    'src/conv1_pool1.cpp:133:9'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+  - VarName:         conv_buf_9
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-auto-array-partition
+Name:            AutoArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 133, Column: 9 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Inferring pragma '''
+  - PragmaType:      array_partition
+  - String:          ' type='
+  - Mode:            cyclic
+  - String:          ' factor='
+  - Factor:          '2'
+  - String:          ' dim='
+  - Dim:             '2'
+  - String:          ''' for array '''
+  - Name:            conv_buf_9
+  - String:          ''''
+  - String:          ' due to '
+  - String:          pipeline
+  - String:          ' pragma'
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/weights.h, Line: 13, Column: 0 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          _ZL7WEIGHTS
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Complete
+  - String:          ' partitioning'
+  - String:          ' on dimension '
+  - Dim:             '1'
+  - String:          .
+  - String:          ' '
+  - Mode:            Complete
+  - String:          ' partitioning'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+  - String:          ' '
+  - Mode:            Complete
+  - String:          ' partitioning'
+  - String:          ' on dimension '
+  - Dim:             '3'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          in_buf_0
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '3'
+  - String:          ' on dimension '
+  - Dim:             '1'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          in_buf_1
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '3'
+  - String:          ' on dimension '
+  - Dim:             '1'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          in_buf_2
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '3'
+  - String:          ' on dimension '
+  - Dim:             '1'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          in_buf_3
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '3'
+  - String:          ' on dimension '
+  - Dim:             '1'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          in_buf_4
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '3'
+  - String:          ' on dimension '
+  - Dim:             '1'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          in_buf_5
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '3'
+  - String:          ' on dimension '
+  - Dim:             '1'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          in_buf_6
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '3'
+  - String:          ' on dimension '
+  - Dim:             '1'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 53, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          in_buf_7
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '3'
+  - String:          ' on dimension '
+  - Dim:             '1'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_0
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_1
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_2
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_3
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_4
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_5
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_6
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_7
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_8
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_9
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_10
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_11
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_12
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_13
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_14
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-array-partition
+Name:            ArrayXform
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 60, Column: 8 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Applying '
+  - String:          array_partition
+  - String:          ' to '''
+  - UOName:          conv_buf_15
+  - String:          ''':'
+  - String:          ' '
+  - Mode:            Cyclic
+  - String:          ' partitioning'
+  - String:          ' with factor '
+  - Factor:          '2'
+  - String:          ' on dimension '
+  - Dim:             '2'
+  - String:          .
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredVerboseSummary
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 67, Column: 5 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       reads
+  - String:          ' of length '
+  - Length:          '144'
+  - String:          ' and bit width '
+  - Width:           '512'
+  - String:          ' has been inferred.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        seq
+  - ArrayName:       ''
+  - String:          ' '
+  - BundleName:      AXI_IN
+  - String:          ' '
+  - Function:        'conv1_pool1(float const*, float*)'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredSummary
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 67, Column: 5 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       reads
+  - String:          ' of length '
+  - Length:          '144'
+  - String:          ' and bit width '
+  - Width:           '512'
+  - String:          ' has been inferred on bundle '''
+  - BundleName:      AXI_IN
+  - String:          '''.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredVerboseSummary
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 128, Column: 5 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       writes
+  - String:          ' of length '
+  - Length:          '8464'
+  - String:          ' and bit width '
+  - Width:           '32'
+  - String:          ' has been inferred.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+  - String:          ' _XLX_SEP_ '
+  - AccessID:        seq1
+  - ArrayName:       ''
+  - String:          ' '
+  - BundleName:      AXI_OUT
+  - String:          ' '
+  - LoopName:        POOL_OC
+  - String:          ' '
+  - LoopLoc:         'src/conv1_pool1.cpp:128:5'
+  - String:          ' '
+  - Function:        'conv1_pool1(float const*, float*)'
+    DebugLoc:        { File: src/conv1_pool1.cpp, Line: 39, Column: 0 }
+  - String:          ' '
+...
+--- !Passed
+Pass:            reflow-burst-summary
+Name:            BurstInferredSummary
+DebugLoc:        { File: src/conv1_pool1.cpp, Line: 128, Column: 5 }
+Function:        _Z11conv1_pool1PKfPf
+Args:            
+  - String:          'Multiple burst '
+  - Direction:       writes
+  - String:          ' of length '
+  - Length:          '8464'
+  - String:          ' and bit width '
+  - Width:           '32'
+  - String:          ' in loop '''
+  - LoopName:        POOL_OC
+  - String:          '''('
+  - LoopLoc:         'src/conv1_pool1.cpp:128:5'
+  - String:          ')'
+  - String:          ' has been inferred on bundle '''
+  - BundleName:      AXI_OUT
+  - String:          '''.'
+  - String:          ' These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings.'
+...

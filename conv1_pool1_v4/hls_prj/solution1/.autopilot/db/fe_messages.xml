@@ -1,0 +1,300 @@
+<xilinx:hls_fe_msgs>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="/home/badhak/Téléchargements/conv1_pool1_v4/run_all.tcl:58:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaContext="directive" ARG_PragmaFunction="conv1_pool1" ARG_PragmaIsValid="1" ARG_PragmaOptions="name=conv1_pool1" ARG_PragmaType="top" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv1_pool1.cpp:40:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_pool1" ARG_PragmaIsValid="1" ARG_PragmaOptions="m_axi port=in bundle=AXI_IN depth=2304 offset=slave" ARG_PragmaType="interface" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv1_pool1.cpp:41:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_pool1" ARG_PragmaIsValid="1" ARG_PragmaOptions="m_axi port=out bundle=AXI_OUT depth=8464 offset=slave" ARG_PragmaType="interface" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv1_pool1.cpp:42:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_pool1" ARG_PragmaIsValid="1" ARG_PragmaOptions="s_axilite port=return" ARG_PragmaType="interface" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv1_pool1.cpp:54:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_pool1" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=in_buf dim=2 cyclic factor=8" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv1_pool1.cpp:61:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_pool1" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=conv_buf dim=1 complete" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv1_pool1.cpp:68:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_pool1" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_pool1" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv1_pool1.cpp:101:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_pool1" ARG_PragmaIsValid="1" ARG_PragmaType="unroll" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv1_pool1.cpp:104:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_pool1" ARG_PragmaIsValid="1" ARG_PragmaType="unroll" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_pool1" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:100:17" msg_body="Loop 'CONV_KY' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="CONV_KY"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:103:21" msg_body="Loop 'CONV_KX' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="CONV_KX"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:39:0" msg_body="Unrolling loop 'CONV_KY' (src/conv1_pool1.cpp:100:17) in function 'conv1_pool1' completely with a factor of 3">
+        <args Factor="3" LoopLoc="src/conv1_pool1.cpp:100:17" LoopName="CONV_KY"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:39:0" msg_body="Unrolling loop 'CONV_KX' (src/conv1_pool1.cpp:103:21) in function 'conv1_pool1' completely with a factor of 3">
+        <args Factor="3" LoopLoc="src/conv1_pool1.cpp:103:21" LoopName="CONV_KX"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="Applying array_partition to 'in_buf': Cyclic partitioning with factor 8 on dimension 2.">
+        <args Dim="2" Factor="8" Mode="Cyclic" UOName="in_buf"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf': Complete partitioning on dimension 1.">
+        <args Dim="1" Mode="Complete" UOName="conv_buf"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-449" msg_severity="INFO" msg_loc="src/weights.h:13:0" msg_body="Automatically partitioning array '_ZL7WEIGHTS' dimension 1 completely based on constant index.">
+        <args Dim="1" Value="_ZL7WEIGHTS"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-449" msg_severity="INFO" msg_loc="src/weights.h:13:0" msg_body="Automatically partitioning array '_ZL7WEIGHTS' dimension 2 completely based on constant index.">
+        <args Dim="2" Value="_ZL7WEIGHTS"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-449" msg_severity="INFO" msg_loc="src/weights.h:13:0" msg_body="Automatically partitioning array '_ZL7WEIGHTS' dimension 3 completely based on constant index.">
+        <args Dim="3" Value="_ZL7WEIGHTS"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/weights.h:13:0" msg_body="array_partition dim=1 type=complete  variable=_ZL7WEIGHTS 1 conv1_pool1 src/weights.h:13:0 src/conv1_pool1.cpp:95:9WEIGHTS">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=1 type=complete  variable=_ZL7WEIGHTS" PragmaSrcLoc="src/conv1_pool1.cpp:95:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 95 Column 9" PragmaType="array_partition" VarName="WEIGHTS" varLoc="src/weights.h:13:0"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="Inferring pragma 'array_partition type=complete dim=1' for array 'WEIGHTS' due to pipeline pragma">
+        <args Dim="1" Mode="complete" Name="WEIGHTS" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/weights.h:13:0" msg_body="array_partition dim=3 type=complete  variable=_ZL7WEIGHTS 1 conv1_pool1 src/weights.h:13:0 src/conv1_pool1.cpp:95:9WEIGHTS">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=3 type=complete  variable=_ZL7WEIGHTS" PragmaSrcLoc="src/conv1_pool1.cpp:95:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 95 Column 9" PragmaType="array_partition" VarName="WEIGHTS" varLoc="src/weights.h:13:0"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="Inferring pragma 'array_partition type=complete dim=3' for array 'WEIGHTS' due to pipeline pragma">
+        <args Dim="3" Mode="complete" Name="WEIGHTS" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/weights.h:13:0" msg_body="array_partition dim=2 type=complete  variable=_ZL7WEIGHTS 1 conv1_pool1 src/weights.h:13:0 src/conv1_pool1.cpp:95:9WEIGHTS">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=complete  variable=_ZL7WEIGHTS" PragmaSrcLoc="src/conv1_pool1.cpp:95:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 95 Column 9" PragmaType="array_partition" VarName="WEIGHTS" varLoc="src/weights.h:13:0"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="Inferring pragma 'array_partition type=complete dim=2' for array 'WEIGHTS' due to pipeline pragma">
+        <args Dim="2" Mode="complete" Name="WEIGHTS" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="array_partition dim=1 type=cyclic factor=3 variable=in_buf_0 1 conv1_pool1 src/conv1_pool1.cpp:53:8 src/conv1_pool1.cpp:95:9in_buf_0">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=1 type=cyclic factor=3 variable=in_buf_0" PragmaSrcLoc="src/conv1_pool1.cpp:95:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 95 Column 9" PragmaType="array_partition" VarName="in_buf_0" varLoc="src/conv1_pool1.cpp:53:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=3 dim=1' for array 'in_buf_0' due to pipeline pragma">
+        <args Dim="1" Factor="3" Mode="cyclic" Name="in_buf_0" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="array_partition dim=1 type=cyclic factor=3 variable=in_buf_1 1 conv1_pool1 src/conv1_pool1.cpp:53:8 src/conv1_pool1.cpp:95:9in_buf_1">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=1 type=cyclic factor=3 variable=in_buf_1" PragmaSrcLoc="src/conv1_pool1.cpp:95:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 95 Column 9" PragmaType="array_partition" VarName="in_buf_1" varLoc="src/conv1_pool1.cpp:53:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=3 dim=1' for array 'in_buf_1' due to pipeline pragma">
+        <args Dim="1" Factor="3" Mode="cyclic" Name="in_buf_1" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="array_partition dim=1 type=cyclic factor=3 variable=in_buf_2 1 conv1_pool1 src/conv1_pool1.cpp:53:8 src/conv1_pool1.cpp:95:9in_buf_2">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=1 type=cyclic factor=3 variable=in_buf_2" PragmaSrcLoc="src/conv1_pool1.cpp:95:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 95 Column 9" PragmaType="array_partition" VarName="in_buf_2" varLoc="src/conv1_pool1.cpp:53:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=3 dim=1' for array 'in_buf_2' due to pipeline pragma">
+        <args Dim="1" Factor="3" Mode="cyclic" Name="in_buf_2" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="array_partition dim=1 type=cyclic factor=3 variable=in_buf_3 1 conv1_pool1 src/conv1_pool1.cpp:53:8 src/conv1_pool1.cpp:95:9in_buf_3">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=1 type=cyclic factor=3 variable=in_buf_3" PragmaSrcLoc="src/conv1_pool1.cpp:95:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 95 Column 9" PragmaType="array_partition" VarName="in_buf_3" varLoc="src/conv1_pool1.cpp:53:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=3 dim=1' for array 'in_buf_3' due to pipeline pragma">
+        <args Dim="1" Factor="3" Mode="cyclic" Name="in_buf_3" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="array_partition dim=1 type=cyclic factor=3 variable=in_buf_4 1 conv1_pool1 src/conv1_pool1.cpp:53:8 src/conv1_pool1.cpp:95:9in_buf_4">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=1 type=cyclic factor=3 variable=in_buf_4" PragmaSrcLoc="src/conv1_pool1.cpp:95:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 95 Column 9" PragmaType="array_partition" VarName="in_buf_4" varLoc="src/conv1_pool1.cpp:53:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=3 dim=1' for array 'in_buf_4' due to pipeline pragma">
+        <args Dim="1" Factor="3" Mode="cyclic" Name="in_buf_4" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="array_partition dim=1 type=cyclic factor=3 variable=in_buf_5 1 conv1_pool1 src/conv1_pool1.cpp:53:8 src/conv1_pool1.cpp:95:9in_buf_5">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=1 type=cyclic factor=3 variable=in_buf_5" PragmaSrcLoc="src/conv1_pool1.cpp:95:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 95 Column 9" PragmaType="array_partition" VarName="in_buf_5" varLoc="src/conv1_pool1.cpp:53:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=3 dim=1' for array 'in_buf_5' due to pipeline pragma">
+        <args Dim="1" Factor="3" Mode="cyclic" Name="in_buf_5" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="array_partition dim=1 type=cyclic factor=3 variable=in_buf_6 1 conv1_pool1 src/conv1_pool1.cpp:53:8 src/conv1_pool1.cpp:95:9in_buf_6">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=1 type=cyclic factor=3 variable=in_buf_6" PragmaSrcLoc="src/conv1_pool1.cpp:95:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 95 Column 9" PragmaType="array_partition" VarName="in_buf_6" varLoc="src/conv1_pool1.cpp:53:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=3 dim=1' for array 'in_buf_6' due to pipeline pragma">
+        <args Dim="1" Factor="3" Mode="cyclic" Name="in_buf_6" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="array_partition dim=1 type=cyclic factor=3 variable=in_buf_7 1 conv1_pool1 src/conv1_pool1.cpp:53:8 src/conv1_pool1.cpp:95:9in_buf_7">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=1 type=cyclic factor=3 variable=in_buf_7" PragmaSrcLoc="src/conv1_pool1.cpp:95:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 95 Column 9" PragmaType="array_partition" VarName="in_buf_7" varLoc="src/conv1_pool1.cpp:53:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:95:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=3 dim=1' for array 'in_buf_7' due to pipeline pragma">
+        <args Dim="1" Factor="3" Mode="cyclic" Name="in_buf_7" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_0 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_0">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_0" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_0" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_0' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_0" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_1 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_1">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_1" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_1" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_1' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_1" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_10 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_10">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_10" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_10" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_10' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_10" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_11 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_11">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_11" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_11" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_11' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_11" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_12 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_12">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_12" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_12" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_12' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_12" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_13 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_13">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_13" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_13" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_13' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_13" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_14 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_14">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_14" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_14" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_14' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_14" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_15 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_15">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_15" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_15" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_15' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_15" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_2 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_2">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_2" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_2" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_2' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_2" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_3 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_3">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_3" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_3" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_3' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_3" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_4 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_4">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_4" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_4" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_4' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_4" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_5 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_5">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_5" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_5" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_5' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_5" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_6 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_6">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_6" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_6" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_6' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_6" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_7 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_7">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_7" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_7" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_7' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_7" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_8 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_8">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_8" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_8" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_8' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_8" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf_9 1 conv1_pool1 src/conv1_pool1.cpp:60:8 src/conv1_pool1.cpp:133:9conv_buf_9">
+        <args PragmaFunction="conv1_pool1" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf_9" PragmaSrcLoc="src/conv1_pool1.cpp:133:9" PragmaSrcLoc-DebugLoc="File src/conv1_pool1.cpp Line 133 Column 9" PragmaType="array_partition" VarName="conv_buf_9" varLoc="src/conv1_pool1.cpp:60:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:133:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf_9' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf_9" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/weights.h:13:0" msg_body="Applying array_partition to '_ZL7WEIGHTS': Complete partitioning on dimension 1. Complete partitioning on dimension 2. Complete partitioning on dimension 3.">
+        <args Dim="islist 1 2 3" Mode="islist Complete Complete Complete" UOName="_ZL7WEIGHTS"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="Applying array_partition to 'in_buf_0': Cyclic partitioning with factor 3 on dimension 1.">
+        <args Dim="1" Factor="3" Mode="Cyclic" UOName="in_buf_0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="Applying array_partition to 'in_buf_1': Cyclic partitioning with factor 3 on dimension 1.">
+        <args Dim="1" Factor="3" Mode="Cyclic" UOName="in_buf_1"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="Applying array_partition to 'in_buf_2': Cyclic partitioning with factor 3 on dimension 1.">
+        <args Dim="1" Factor="3" Mode="Cyclic" UOName="in_buf_2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="Applying array_partition to 'in_buf_3': Cyclic partitioning with factor 3 on dimension 1.">
+        <args Dim="1" Factor="3" Mode="Cyclic" UOName="in_buf_3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="Applying array_partition to 'in_buf_4': Cyclic partitioning with factor 3 on dimension 1.">
+        <args Dim="1" Factor="3" Mode="Cyclic" UOName="in_buf_4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="Applying array_partition to 'in_buf_5': Cyclic partitioning with factor 3 on dimension 1.">
+        <args Dim="1" Factor="3" Mode="Cyclic" UOName="in_buf_5"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="Applying array_partition to 'in_buf_6': Cyclic partitioning with factor 3 on dimension 1.">
+        <args Dim="1" Factor="3" Mode="Cyclic" UOName="in_buf_6"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:53:8" msg_body="Applying array_partition to 'in_buf_7': Cyclic partitioning with factor 3 on dimension 1.">
+        <args Dim="1" Factor="3" Mode="Cyclic" UOName="in_buf_7"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_0': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_1': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_1"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_2': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_3': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_4': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_5': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_5"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_6': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_6"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_7': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_7"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_8': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_8"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_9': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_9"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_10': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_10"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_11': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_11"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_12': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_12"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_13': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_13"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_14': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_14"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv1_pool1.cpp:60:8" msg_body="Applying array_partition to 'conv_buf_15': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf_15"/>
+    </msg>
+</xilinx:hls_fe_msgs>
+

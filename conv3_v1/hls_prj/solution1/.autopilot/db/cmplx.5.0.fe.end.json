@@ -1,0 +1,48 @@
+{
+    "1": {
+        "name": "conv3_Pipeline_CONV_OC_CONV_OY_CONV_OX_CONV_IC_CONV_KY_CONV_KX",
+        "file": "src\/conv3.cpp",
+        "fileloc": "43",
+        "instructions": "246",
+        "total_instructions": "246",
+        "calls": "",
+        "basicblocks": "17",
+        "loads": {
+            "G": "2",
+            "L": "21"
+        },
+        "stores": {
+            "L": "32"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "2": {
+        "name": "conv3_Pipeline_LOAD_IC_LOAD_IY",
+        "file": "src\/conv3.cpp",
+        "fileloc": "28",
+        "instructions": "90",
+        "total_instructions": "90",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "L": "3"
+        },
+        "stores": {
+            "L": "16"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "0": {
+        "name": "conv3",
+        "file": "conv3.cpp",
+        "fileloc": "15",
+        "instructions": "28",
+        "total_instructions": "364",
+        "calls": "2 1",
+        "basicblocks": "1"
+    }
+}

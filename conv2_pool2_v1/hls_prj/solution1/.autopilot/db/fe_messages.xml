@@ -1,0 +1,45 @@
+<xilinx:hls_fe_msgs>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="/home/badhak/Téléchargements/conv2_pool2_v1/run_all.tcl:47:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaContext="directive" ARG_PragmaFunction="conv2_pool2" ARG_PragmaIsValid="1" ARG_PragmaOptions="name=conv2_pool2" ARG_PragmaType="top" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv2_pool2.cpp:20:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv2_pool2" ARG_PragmaIsValid="1" ARG_PragmaOptions="m_axi port=in bundle=AXI_IN depth=8464" ARG_PragmaType="interface" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv2_pool2.cpp:21:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv2_pool2" ARG_PragmaIsValid="1" ARG_PragmaOptions="m_axi port=out bundle=AXI_OUT depth=3200" ARG_PragmaType="interface" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv2_pool2.cpp:22:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv2_pool2" ARG_PragmaIsValid="1" ARG_PragmaOptions="s_axilite port=return" ARG_PragmaType="interface" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv2_pool2.cpp:25:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv2_pool2" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=in_buf dim=3 cyclic factor=3" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv2_pool2.cpp:33:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv2_pool2" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv2_pool2.cpp:54:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv2_pool2" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="src/conv2_pool2.cpp:67:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv2_pool2" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="src/conv2_pool2.cpp:35:13" msg_body="Loop 'LOAD_IX' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="LOAD_IX"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="src/conv2_pool2.cpp:19:0" msg_body="Unrolling loop 'LOAD_IX' (src/conv2_pool2.cpp:35:13) in function 'conv2_pool2' completely with a factor of 23">
+        <args Factor="23" LoopLoc="src/conv2_pool2.cpp:35:13" LoopName="LOAD_IX"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv2_pool2.cpp:24:8" msg_body="Applying array_partition to 'in_buf': Cyclic partitioning with factor 3 on dimension 3.">
+        <args Dim="3" Factor="3" Mode="Cyclic" UOName="in_buf"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="src/conv2_pool2.cpp:27:8" msg_body="array_partition dim=2 type=cyclic factor=2 variable=conv_buf 1 conv2_pool2 src/conv2_pool2.cpp:27:8 src/conv2_pool2.cpp:67:9conv_buf">
+        <args PragmaFunction="conv2_pool2" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=2 variable=conv_buf" PragmaSrcLoc="src/conv2_pool2.cpp:67:9" PragmaSrcLoc-DebugLoc="File src/conv2_pool2.cpp Line 67 Column 9" PragmaType="array_partition" VarName="conv_buf" varLoc="src/conv2_pool2.cpp:27:8"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="src/conv2_pool2.cpp:67:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=2 dim=2' for array 'conv_buf' due to pipeline pragma">
+        <args Dim="2" Factor="2" Mode="cyclic" Name="conv_buf" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="src/conv2_pool2.cpp:27:8" msg_body="Applying array_partition to 'conv_buf': Cyclic partitioning with factor 2 on dimension 2.">
+        <args Dim="2" Factor="2" Mode="Cyclic" UOName="conv_buf"/>
+    </msg>
+</xilinx:hls_fe_msgs>
+

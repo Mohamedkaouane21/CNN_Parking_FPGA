@@ -1,0 +1,12 @@
+<pragmas>
+<pragma file="src/conv1_pool1.cpp" line="133" pragmaType="pipeline" parentfunction="conv1_pool1" off="0" ii="1" rewind="0" style=""/>
+<pragma file="src/conv1_pool1.cpp" line="95" pragmaType="pipeline" parentfunction="conv1_pool1" off="0" ii="1" rewind="0" style=""/>
+<pragma file="src/conv1_pool1.cpp" line="101" pragmaType="unroll" parentfunction="conv1_pool1" factor="-1" skip_exit_check="0"/>
+<pragma file="src/conv1_pool1.cpp" line="104" pragmaType="unroll" parentfunction="conv1_pool1" factor="-1" skip_exit_check="0"/>
+<pragma file="src/conv1_pool1.cpp" line="68" pragmaType="pipeline" parentfunction="conv1_pool1" off="0" ii="1" rewind="0" style=""/>
+<pragma file="src/conv1_pool1.cpp" line="40" pragmaType="interface" parentfunction="conv1_pool1" mode="m_axi" port="in" bundle="AXI_IN" offset="slave" name="" depth="2304" num_read_outstanding="-1" num_write_outstanding="-1" max_burst_read_length="-1" max_burst_write_length="-1" latency="-1" max_widen_bitwidth="-1" channel=""/>
+<pragma file="src/conv1_pool1.cpp" line="41" pragmaType="interface" parentfunction="conv1_pool1" mode="m_axi" port="out" bundle="AXI_OUT" offset="slave" name="" depth="8464" num_read_outstanding="-1" num_write_outstanding="-1" max_burst_read_length="-1" max_burst_write_length="-1" latency="-1" max_widen_bitwidth="-1" channel=""/>
+<pragma file="src/conv1_pool1.cpp" line="42" pragmaType="interface" parentfunction="conv1_pool1" mode="s_axilite" port="" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
+<pragma file="src/conv1_pool1.cpp" line="54" pragmaType="array_partition" parentfunction="conv1_pool1" dim="2" factor="8" mode="cyclic" dynamic="0" variable="in_buf"/>
+<pragma file="src/conv1_pool1.cpp" line="61" pragmaType="array_partition" parentfunction="conv1_pool1" dim="1" factor="0" mode="complete" dynamic="0" variable="conv_buf"/>
+</pragmas>

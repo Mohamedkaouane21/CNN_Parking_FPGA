@@ -1,0 +1,24 @@
+<AutoPilot:solution xmlns:AutoPilot="com.autoesl.autopilot.solution">
+    <config>
+        <config_interface m_axi_latency="64" m_axi_alignment_byte_size="64" m_axi_max_widen_bitwidth="512" default_interface="kernel"/>
+        <config_rtl register_reset_num="3"/>
+        <config_export format="ip_catalog" ipname="conv2_pool2" library="hls" output="/home/badhak/Téléchargements/conv2_pool2_v1/ip_repo/conv2_pool2" vendor="user" version="1.0"/>
+    </config>
+    <clockList>
+        <clock name="default" period="10" default="false"/>
+    </clockList>
+    <name>
+        <value string="solution1"/>
+    </name>
+    <project>
+        <value string="hls_prj"/>
+    </project>
+    <targetInfo>
+        <TargetInfo value="xc7z020:-clg400:-1"/>
+    </targetInfo>
+    <libraryList>
+        <library value="xilinx/zynq/zynq" name="DefaultPlatform"/>
+    </libraryList>
+    <flowTarget value="vitis"/>
+</AutoPilot:solution>
+

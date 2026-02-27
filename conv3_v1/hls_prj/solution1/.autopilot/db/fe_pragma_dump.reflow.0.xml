@@ -1,0 +1,8 @@
+<pragmas>
+<pragma file="src/conv3.cpp" line="55" pragmaType="pipeline" parentfunction="conv3" off="0" ii="1" rewind="0" style=""/>
+<pragma file="src/conv3.cpp" line="31" pragmaType="pipeline" parentfunction="conv3" off="0" ii="1" rewind="0" style=""/>
+<pragma file="src/conv3.cpp" line="17" pragmaType="interface" parentfunction="conv3" mode="m_axi" port="in" bundle="AXI_IN" offset="" name="" depth="3200" num_read_outstanding="-1" num_write_outstanding="-1" max_burst_read_length="-1" max_burst_write_length="-1" latency="-1" max_widen_bitwidth="-1" channel=""/>
+<pragma file="src/conv3.cpp" line="18" pragmaType="interface" parentfunction="conv3" mode="m_axi" port="out" bundle="AXI_OUT" offset="" name="" depth="4096" num_read_outstanding="-1" num_write_outstanding="-1" max_burst_read_length="-1" max_burst_write_length="-1" latency="-1" max_widen_bitwidth="-1" channel=""/>
+<pragma file="src/conv3.cpp" line="19" pragmaType="interface" parentfunction="conv3" mode="s_axilite" port="" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
+<pragma file="src/conv3.cpp" line="22" pragmaType="array_partition" parentfunction="conv3" dim="3" factor="3" mode="cyclic" dynamic="0" variable="in_buf"/>
+</pragmas>
