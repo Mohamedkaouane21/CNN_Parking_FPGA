@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.log
+.env
+parking_deploy.tar.gz
+
+captures/
+videos/
+models/
+data/

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Paramétrage du système Vision</title>
+<link rel="stylesheet" href="/static/css/main.css?v=20260309">
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon"></div>
+    <div><div class="logo-text">Paramétrage du système Vision</div><div class="logo-sub">Beta V0.6</div></div>
+  </div>
+  <div class="hstatus">
+    <div class="spill"><div class="sdot"></div><span>RPI Connecté</span></div>
+    <div class="spill" id="fpill" style="display:none"><span id="fstat">—</span></div>
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">Mode clair</button>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" id="tabEditor" onclick="switchTab('editor')">Éditeur de places</div>
+  <div class="tab tab-live" id="tabLive" onclick="switchTab('live')">
+    <span class="live-dot" id="liveDot"></span>Live View
+  </div>
+  <div class="tab tab-demo" id="tabDemo" onclick="switchTab('demo')">
+    <span class="live-dot" id="demoDot"></span>Démo vidéo
+  </div>
+  <div class="tab" id="tabAbout" onclick="switchTab('about')">À propos</div>
+</div>
+
+{% include "editor.html" %}
+{% include "live_demo.html" %}
+
+<!-- ══ ABOUT PANEL ══ -->
+<div class="tab-panel" id="panelAbout">
+<div style="flex:1;overflow-y:auto;padding:16px 20px 40px;max-width:800px;margin:0 auto">
+
+  <div style="font-family:var(--mono);font-size:16px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px">Manuel d'utilisation</div>
+
+  <!-- GUIDE DÉMARRAGE RAPIDE -->
+  <div class="lsec" style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    <div onclick="toggleAboutSection('docQuick')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none">
+      <div class="lsec-title" style="margin:0;font-size:12px">Guide de démarrage rapide</div>
+      <span id="docQuickChev" style="font-size:14px;color:var(--accent);transition:transform .2s">▼</span>
+    </div>
+    <div id="docQuick" style="font-family:var(--sans);font-size:12px;color:var(--text-dim);line-height:1.9;margin-top:10px">
+      Ce système détecte automatiquement les véhicules sur les places de parking grâce à une caméra IP et de l'intelligence artificielle (YOLO). Il fonctionne sur un Raspberry Pi et transmet les données via LoRa (XBee).<br><br>
+
+      <b style="color:var(--accent)">Étape 1 — Ajouter une caméra</b><br>
+      Allez dans l'onglet <b>Live View</b>, cliquez <b>Ajouter</b>. Remplissez le nom, l'adresse IP de la caméra, le port (généralement 554), le chemin RTSP, les identifiants de connexion et la lettre de zone (A, B, C...). Cliquez <b>Tester</b> pour vérifier la connexion avant d'enregistrer.<br><br>
+
+      <b style="color:var(--accent)">Étape 2 — Capturer une image de référence</b><br>
+      Allez dans l'onglet <b>Éditeur de places</b>. Sélectionnez votre caméra puis cliquez <b>Capturer un screenshot</b>. L'image apparaît dans la liste des sources.<br><br>
+
+      <b style="color:var(--accent)">Étape 3 — Tracer les places de parking</b><br>
+      Sélectionnez l'image capturée. Deux modes de tracé sont disponibles :<br>
+      &nbsp;&nbsp;• <b>Manuel</b> : cliquez 4 coins pour chaque place, dans l'ordre (sens horaire ou anti-horaire).<br>
+      &nbsp;&nbsp;• <b>Séparateurs</b> : tracez des lignes entre les places (glisser-déposer). N séparateurs créent N-1 places automatiquement. Cliquez "Générer les places" pour valider.<br>
+      Le mode <b>Éditer</b> permet de sélectionner une place, déplacer ses coins, la supprimer, ou la marquer comme gérée par un capteur externe.<br><br>
+
+      <b style="color:var(--accent)">Étape 4 — Sauvegarder et activer</b><br>
+      Cliquez <b>Sauvegarder sur le RPI</b> pour enregistrer le masque. Puis cliquez <b>★ Actif</b> pour que ce masque soit utilisé lors de la détection en direct.<br><br>
+
+      <b style="color:var(--accent)">Étape 5 — Configurer la caméra par défaut</b><br>
+      Dans l'onglet <b>Live View</b>, sélectionnez votre caméra et cliquez <b>★ Caméra par défaut</b>. Au prochain démarrage du Raspberry Pi, la détection se lance automatiquement sur cette caméra.<br><br>
+
+      <b style="color:var(--accent)">Étape 6 — Voir le flux en direct</b><br>
+      Cliquez <b>Démarrer le flux</b>. Les places libres apparaissent en vert, les occupées en rouge. Le comptage est affiché dans la barre latérale. Quand vous arrêtez le flux, la détection continue en arrière-plan (mode headless) pour économiser les ressources.
+    </div>
+  </div>
+
+  <!-- ÉDITEUR DE PLACES -->
+  <div class="lsec" style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    <div onclick="toggleAboutSection('docEditor')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none">
+      <div class="lsec-title" style="margin:0;font-size:12px">Éditeur de places — Détail</div>
+      <span id="docEditorChev" style="font-size:14px;color:var(--accent);transition:transform .2s;transform:rotate(-90deg)">▼</span>
+    </div>
+    <div id="docEditor" style="display:none;font-family:var(--sans);font-size:12px;color:var(--text-dim);line-height:1.9;margin-top:10px">
+      <b style="color:var(--accent)">Navigation dans l'image</b><br>
+      &nbsp;&nbsp;• <b>Zoom</b> : molette de la souris ou pincement à deux doigts sur écran tactile.<br>
+      &nbsp;&nbsp;• <b>Déplacement</b> : clic molette + glisser (souris) ou glisser avec un doigt (tactile).<br>
+      &nbsp;&nbsp;• <b>Plein écran</b> : bouton en haut à droite de l'image. Sur tablette, le bouton "Quitter plein écran" apparaît en rouge en haut à droite.<br><br>
+
+      <b style="color:var(--accent)">Mode Manuel</b><br>
+      Cliquez (ou tapez) sur 4 points pour former le polygone d'une place. Les points sont numérotés 1 à 4. La place est créée automatiquement après le 4e point. Clic droit (souris) ou longue pression (tactile) pour annuler.<br><br>
+
+      <b style="color:var(--accent)">Mode Séparateurs</b><br>
+      Idéal pour les rangées de places alignées. Tracez des lignes de séparation en glissant du bord gauche au bord droit de la rangée. Chaque paire de lignes consécutives forme une place. Cliquez "Générer les places" quand toutes les lignes sont tracées.<br><br>
+
+      <b style="color:var(--accent)">Mode Éditer</b><br>
+      Cliquez sur une place pour la sélectionner (surlignée en bleu). Glissez un coin pour le repositionner. Raccourcis :<br>
+      &nbsp;&nbsp;• <b>Suppr</b> : supprime la place sélectionnée<br>
+      &nbsp;&nbsp;• <b>Capteur</b> : marque la place comme gérée par un capteur externe (affichée en gris avec un "S"). Ces places ne sont pas comptées par la caméra.<br><br>
+
+      <b style="color:var(--accent)">Masques par image</b><br>
+      Chaque image a son propre fichier de masque. Vous pouvez avoir plusieurs images de la même caméra (différents angles, résolutions) avec des masques différents. Le bouton <b>★ Actif</b> définit quel masque est utilisé pour la détection en direct.<br><br>
+
+      <b style="color:var(--accent)">Gestion avancée (bouton ⚙)</b><br>
+      Renommer ou supprimer des images, importer des images depuis votre ordinateur, dupliquer un masque d'une image à une autre, exporter les coordonnées en CSV.
+    </div>
+  </div>
+
+  <!-- PARAMÈTRES DE DÉTECTION -->
+  <div class="lsec" style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    <div onclick="toggleAboutSection('docDetection')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none">
+      <div class="lsec-title" style="margin:0;font-size:12px">Paramètres de détection</div>
+      <span id="docDetectionChev" style="font-size:14px;color:var(--accent);transition:transform .2s;transform:rotate(-90deg)">▼</span>
+    </div>
+    <div id="docDetection" style="display:none;font-family:var(--sans);font-size:12px;color:var(--text-dim);line-height:1.9;margin-top:10px">
+      <b style="color:var(--accent)">Ancrage vertical</b> (50-100%, défaut 85%)<br>
+      Position du point de détection sur la hauteur du véhicule détecté. 50% = centre du véhicule, 100% = bas (roues). La valeur de 85% cible le bas du véhicule, ce qui est optimal pour les vues plongeantes. Ce point cyan visible sur le flux détermine si le véhicule est "dans" une place.<br><br>
+
+      <b style="color:var(--accent)">Ancrage horizontal</b> (0-100%, défaut 50%)<br>
+      Position horizontale du point de détection. 50% = centre. Ajustez pour les places en biais ou les caméras décalées.<br><br>
+
+      <b style="color:var(--accent)">Fenêtre de lissage</b> (3-30, défaut 15)<br>
+      Nombre de frames sur lesquelles le système vote pour déterminer si une place est occupée. Plus la valeur est haute, plus le résultat est stable (pas de clignotement) mais plus lent à réagir aux changements. Valeur recommandée : 10-20.<br><br>
+
+      <b style="color:var(--accent)">Réglages avancés</b> (accessible via le bouton dans la section Réglages) :<br>
+      &nbsp;&nbsp;• <b>Seuil de confiance</b> (défaut 0.25) : confiance minimum pour qu'un véhicule soit détecté. Augmentez si trop de faux positifs.<br>
+      &nbsp;&nbsp;• <b>Seuil NMS</b> (défaut 0.45) : filtre les détections qui se chevauchent.<br>
+      &nbsp;&nbsp;• <b>FPS du flux</b> (défaut 12) : images par seconde du flux vidéo. Réduire pour économiser la bande passante.<br>
+      &nbsp;&nbsp;• <b>Fréquence YOLO</b> (défaut 6) : exécute la détection toutes les N frames. Plus haut = moins de charge CPU.<br>
+      &nbsp;&nbsp;• <b>Qualité JPEG</b> (défaut 80) : compression du flux vidéo. 30 = léger, 100 = haute qualité.<br>
+      &nbsp;&nbsp;• <b>Seuil d'occupation</b> (défaut 0.6) : pourcentage de votes positifs pour considérer une place occupée.
+    </div>
+  </div>
+
+  <!-- XBEE / LORA -->
+  <div class="lsec" style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    <div onclick="toggleAboutSection('docXbee')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none">
+      <div class="lsec-title" style="margin:0;font-size:12px">Communication XBee / LoRa</div>
+      <span id="docXbeeChev" style="font-size:14px;color:var(--accent);transition:transform .2s;transform:rotate(-90deg)">▼</span>
+    </div>
+    <div id="docXbee" style="display:none;font-family:var(--sans);font-size:12px;color:var(--text-dim);line-height:1.9;margin-top:10px">
+      Le module XBee branché en USB sur le Raspberry Pi transmet périodiquement les données de comptage via LoRa.<br><br>
+
+      <b style="color:var(--accent)">Configuration</b><br>
+      Accessible via Réglages avancés → section XBee/LoRa. Activez le toggle, puis utilisez "Auto-détecter" pour trouver automatiquement le port et le baud rate du module.<br><br>
+
+      <b style="color:var(--accent)">Zone</b><br>
+      Chaque caméra est associée à une lettre de zone (A-Z), configurable dans les propriétés de la caméra. Cette lettre identifie la source dans le JSON transmis.<br><br>
+
+      <b style="color:var(--accent)">Format des données</b><br>
+      Toutes les 30 secondes (configurable) :<br>
+      <span style="color:var(--accent);font-family:var(--mono)">{"zone":"A","nb_places_libres":12,"nb_places_total":20,"device":"camera"}</span><br><br>
+
+      En cas de perte du flux caméra, les valeurs passent à -1 :<br>
+      <span style="color:var(--accent);font-family:var(--mono)">{"zone":"A","nb_places_libres":-1,"nb_places_total":-1,"device":"camera"}</span><br><br>
+
+      Le XBee démarre automatiquement au démarrage du Raspberry Pi si il était activé. Il continue d'envoyer même quand le flux vidéo est arrêté (mode headless).
+    </div>
+  </div>
+
+  <!-- MODE HEADLESS & DÉMO -->
+  <div class="lsec" style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    <div onclick="toggleAboutSection('docModes')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none">
+      <div class="lsec-title" style="margin:0;font-size:12px">Modes de fonctionnement</div>
+      <span id="docModesChev" style="font-size:14px;color:var(--accent);transition:transform .2s;transform:rotate(-90deg)">▼</span>
+    </div>
+    <div id="docModes" style="display:none;font-family:var(--sans);font-size:12px;color:var(--text-dim);line-height:1.9;margin-top:10px">
+      <b style="color:var(--accent)">Mode headless (arrière-plan)</b><br>
+      Au démarrage du Raspberry Pi, la détection se lance automatiquement sur la caméra par défaut sans générer de flux vidéo. Cela économise ~30% de CPU. Les compteurs, le XBee et les alertes fonctionnent normalement. L'overlay affiche les compteurs en temps réel.<br><br>
+
+      <b style="color:var(--accent)">Mode streaming (flux vidéo)</b><br>
+      Quand vous cliquez "Démarrer le flux", le système génère le flux vidéo avec l'overlay (places colorées, HUD, point d'ancrage). Plus gourmand en CPU mais permet de visualiser la détection.<br><br>
+
+      <b style="color:var(--accent)">Mode démo</b><br>
+      Permet de tester la détection sur un fichier vidéo local (onglet Démo vidéo). Le lancement de la démo interrompt temporairement la détection en direct. À la fin de la démo, la détection live reprend automatiquement.<br><br>
+
+      <b style="color:var(--accent)">Alertes caméra</b><br>
+      Le système surveille en continu l'état du flux :<br>
+      &nbsp;&nbsp;• <b style="color:var(--red)">Image noire</b> : la caméra est probablement tombée, débranchée ou le capuchon est resté → alerte sonore + bannière rouge.<br>
+      &nbsp;&nbsp;• <b style="color:var(--yellow)">Image figée</b> : le flux semble bloqué → bannière orange.<br>
+      &nbsp;&nbsp;• <b style="color:var(--yellow)">Flux perdu</b> : reconnexion automatique en cours.<br>
+      Cliquer sur la bannière la ferme. L'alerte disparaît automatiquement quand le problème est résolu.
+    </div>
+  </div>
+
+  <!-- DÉPANNAGE -->
+  <div class="lsec" style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    <div onclick="toggleAboutSection('docTrouble')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none">
+      <div class="lsec-title" style="margin:0;font-size:12px">Dépannage</div>
+      <span id="docTroubleChev" style="font-size:14px;color:var(--accent);transition:transform .2s;transform:rotate(-90deg)">▼</span>
+    </div>
+    <div id="docTrouble" style="display:none;font-family:var(--sans);font-size:12px;color:var(--text-dim);line-height:1.9;margin-top:10px">
+      <b style="color:var(--accent)">L'interface ne s'affiche pas</b><br>
+      Vérifiez que le service tourne : <span style="font-family:var(--mono)">sudo systemctl status SystemVision</span><br><br>
+
+      <b style="color:var(--accent)">YOLO non disponible</b><br>
+      Le modèle <span style="font-family:var(--mono)">yolov8s_visdrone_320.onnx</span> doit être dans le dossier <span style="font-family:var(--mono)">models/</span>.<br><br>
+
+      <b style="color:var(--accent)">Flux noir ou connexion impossible</b><br>
+      Vérifiez l'IP, le port et les identifiants de la caméra. Utilisez le bouton "Tester" dans les propriétés de la caméra. Trois niveaux d'erreur : IP injoignable, authentification échouée, pas d'image.<br><br>
+
+      <b style="color:var(--accent)">XBee ne démarre pas</b><br>
+      Installez pyserial : <span style="font-family:var(--mono)">pip install pyserial --break-system-packages</span>. Vérifiez que le module est détecté : <span style="font-family:var(--mono)">ls /dev/ttyUSB*</span><br><br>
+
+      <b style="color:var(--accent)">Température CPU élevée</b><br>
+      Visible dans la barre de statut. Rouge > 75°C. Réduisez le FPS ou augmentez la fréquence YOLO dans les réglages avancés.<br><br>
+
+      <b style="color:var(--accent)">Masque "aucun" en live</b><br>
+      Vous n'avez pas défini de masque actif. Allez dans l'éditeur, sauvegardez un masque et cliquez ★ Actif.<br><br>
+
+      <b style="color:var(--accent)">Consulter les logs</b><br>
+      <span style="font-family:var(--mono)">journalctl -u SystemVision -f</span><br>
+      Filtrer par composant : <span style="font-family:var(--mono)">| grep YOLO</span>, <span style="font-family:var(--mono)">| grep XBEE</span>, <span style="font-family:var(--mono)">| grep LIVE</span>
+    </div>
+  </div>
+
+  <!-- INFOS SYSTÈME -->
+  <div class="lsec" style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    <div class="lsec-title" style="font-size:12px">Informations système</div>
+    <div id="aboutInfo" style="font-family:var(--mono);font-size:11px;color:var(--text-dim);line-height:1.8;margin-top:8px">Chargement...</div>
+  </div>
+
+  <!-- RÉINITIALISATION -->
+  <div class="lsec" style="margin-bottom:16px">
+    <div class="lsec-title" style="font-size:12px">Réinitialisation</div>
+    <button class="lbtn start" onclick="resetSettings()" style="margin-bottom:8px;border-color:var(--yellow);color:var(--yellow)">Réinitialiser les paramètres</button>
+    <div class="form-hint" style="margin-bottom:12px">Remet tous les réglages aux valeurs par défaut (seuils, FPS, XBee...). Ne supprime pas les captures ni les masques.</div>
+    <button class="lbtn stop" onclick="resetFull()">Réinitialisation complète</button>
+    <div class="form-hint" style="margin-top:6px">Supprime toutes les captures, masques, capteurs et remet les paramètres par défaut. Action irréversible.</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══ MANAGE MODAL ══ -->
+<div class="modal-bg" id="manageModal">
+  <div class="modal" style="max-width:560px;width:95%">
+    <div class="modal-header">
+      <span class="modal-title">⚙ Gestion des images</span>
+      <button class="modal-close" onclick="closeManage()">×</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Tabs internes -->
+      <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:10px">
+        <button class="mtab a-draw" id="mgTab0" onclick="mgSetTab(0)">Images</button>
+        <button class="mtab" id="mgTab1" onclick="mgSetTab(1)">Importer</button>
+        <button class="mtab" id="mgTab2" onclick="mgSetTab(2)">Dupliquer masque</button>
+        <button class="mtab" id="mgTab3" onclick="mgSetTab(3)">Export CSV</button>
+      </div>
+
+      <!-- TAB 0 : liste images -->
+      <div id="mgP0">
+        <div class="form-hint" style="margin-bottom:8px">Cliquer sur une image pour la renommer ou la supprimer.</div>
+        <div id="mgImgList" style="display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto"></div>
+      </div>
+
+      <!-- TAB 1 : upload -->
+      <div id="mgP1" style="display:none">
+        <div class="form-group">
+          <div class="form-label">Fichier image (jpg / png)</div>
+          <input type="file" id="mgUploadFile" accept=".jpg,.jpeg,.png"
+                 style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:3px">
+        </div>
+        <div class="form-hint" id="mgUploadHint">Le fichier sera copié dans le dossier du serveur.</div>
+        <button class="mf-btn apply" onclick="mgUpload()" style="margin-top:10px;width:100%">Envoyer l'image</button>
+      </div>
+
+      <!-- TAB 2 : dupliquer masque -->
+      <div id="mgP2" style="display:none">
+        <div class="form-group">
+          <div class="form-label">Image source (avec masque existant)</div>
+          <select id="mgDupSrc" style="width:100%"><option value="">— Sélectionner —</option></select>
+        </div>
+        <div style="display:flex;gap:8px">
+          <div class="form-group" style="flex:1">
+            <div class="form-label">Largeur cible (px)</div>
+            <input class="form-input" type="number" id="mgDupW" placeholder="ex: 1920">
+          </div>
+          <div class="form-group" style="flex:1">
+            <div class="form-label">Hauteur cible (px)</div>
+            <input class="form-input" type="number" id="mgDupH" placeholder="ex: 1080">
+          </div>
+        </div>
+        <div class="form-hint">Les coordonnées seront remappées proportionnellement.</div>
+        <button class="mf-btn apply" onclick="mgDuplicateMask()" style="margin-top:10px;width:100%">Dupliquer le masque</button>
+      </div>
+
+      <!-- TAB 3 : export CSV -->
+      <div id="mgP3" style="display:none">
+        <div class="form-group">
+          <div class="form-label">Image à exporter</div>
+          <select id="mgExportSrc" style="width:100%"><option value="">— Sélectionner —</option></select>
+        </div>
+        <div class="form-hint">Télécharge un CSV avec les coordonnées de chaque coin de chaque place.</div>
+        <button class="mf-btn apply" onclick="mgExportCSV()" style="margin-top:10px;width:100%">Télécharger le CSV</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ CAMERA EDITOR MODAL ══ -->
+<div class="modal-bg" id="camModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="camModalTitle">Ajouter une caméra</span>
+      <button class="modal-close" onclick="camCloseModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="form-label">Nom de la caméra</div>
+        <input class="form-input" type="text" id="cfgName" placeholder="Caméra parking nord">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Adresse IP caméra</div>
+        <input class="form-input" type="text" id="cfgIp" placeholder="192.168.0.8" oninput="updatePreview()">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Port RTSP</div>
+          <input class="form-input" type="text" id="cfgPort" placeholder="554" oninput="updatePreview()">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Chemin stream</div>
+          <input class="form-input" type="text" id="cfgPath" placeholder="h264Preview_01_sub" oninput="updatePreview()">
+          <div class="form-hint">ex: h264Preview_01_main</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Utilisateur</div>
+          <input class="form-input" type="text" id="cfgUser" placeholder="admin" oninput="updatePreview()">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Mot de passe</div>
+          <input class="form-input" type="password" id="cfgPass" placeholder="••••••" oninput="updatePreview()">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Zone (lettre A-Z)</div>
+          <input class="form-input" type="text" id="cfgZone" placeholder="A" maxlength="1" style="text-transform:uppercase;width:60px">
+          <div class="form-hint">Identifiant de zone pour le XBee</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Aperçu URL générée</div>
+        <div class="url-preview" id="urlPreview">rtsp://—</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="mf-btn cancel" onclick="camCloseModal()">Annuler</button>
+      <button class="mf-btn cancel" onclick="camTestConnection()" id="camTestBtn">Tester</button>
+      <button class="mf-btn apply" onclick="camSaveModal()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADVANCED SETTINGS MODAL ══ -->
+<div class="modal-bg" id="advModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Réglages avancés</span>
+      <button class="modal-close" onclick="closeAdvanced()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="padding-bottom:10px;border-bottom:1px solid var(--border)">
+        <div onclick="toggleAdvSection('advDetection')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:4px 0;user-select:none">
+          <span class="lsec-title" style="margin:0">Détection</span>
+          <span class="adv-chevron" id="advDetectionChev" style="font-size:14px;color:var(--accent);transition:transform .2s">▼</span>
+        </div>
+        <div id="advDetection">
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Seuil de confiance</div>
+          <input class="form-input" type="number" id="advConf" step="0.05" min="0.05" max="0.95">
+          <div class="form-hint">Plus haut = moins de faux positifs</div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Seuil NMS</div>
+          <input class="form-input" type="number" id="advNms" step="0.05" min="0.1" max="0.9">
+          <div class="form-hint">Filtre les détections en double</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">FPS du flux</div>
+          <input class="form-input" type="number" id="advFps" min="1" max="30">
+          <div class="form-hint">Images par seconde envoyées</div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">YOLO toutes les X frames</div>
+          <input class="form-input" type="number" id="advProcess" min="1" max="30">
+          <div class="form-hint">Plus haut = moins de charge CPU</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Qualité JPEG</div>
+          <input class="form-input" type="number" id="advJpeg" min="30" max="100">
+          <div class="form-hint">30 = léger, 100 = net</div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Seuil d'occupation</div>
+          <input class="form-input" type="number" id="advVoteThresh" step="0.05" min="0.3" max="0.9">
+          <div class="form-hint">% de votes pour occuper une place</div>
+        </div>
+      </div>
+      <div class="form-hint" style="margin-top:8px;color:var(--yellow)">Les changements de FPS et fréquence YOLO prennent effet au prochain démarrage du flux.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <div onclick="toggleAdvSection('advXbee')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:4px 0;user-select:none">
+          <span class="lsec-title" style="margin:0">XBee / LoRa</span>
+          <span class="adv-chevron" id="advXbeeChev" style="font-size:14px;color:var(--accent);transition:transform .2s">▼</span>
+        </div>
+        <div id="advXbee">
+        <div class="toggle-row" style="margin:8px 0">
+          <span class="toggle-label">Envoi XBee</span>
+          <label class="toggle">
+            <input type="checkbox" id="advXbeeEnabled" onchange="toggleXbee(this.checked)">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <div class="form-label">Port série</div>
+            <input class="form-input" type="text" id="advXbeePort" placeholder="auto">
+          </div>
+          <div class="form-group">
+            <div class="form-label">Baud rate</div>
+            <input class="form-input" type="number" id="advXbeeBaud" placeholder="115200">
+          </div>
+        </div>
+        <button class="settings-btn" onclick="xbeeAutoDetect()" id="xbeeDetectBtn" style="width:100%;margin:6px 0">Auto-détecter le XBee</button>
+        <div class="form-group">
+          <div class="form-label">Intervalle (secondes)</div>
+          <input class="form-input" type="number" id="advXbeeInterval" min="5" max="300">
+          <div class="form-hint">Fréquence d'envoi du JSON</div>
+        </div>
+        <div class="form-hint" id="xbeeStatus" style="margin-top:4px">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="mf-btn cancel" onclick="closeAdvanced()">Annuler</button>
+      <button class="mf-btn apply" onclick="saveAdvanced()">Appliquer</button>
+    </div>
+  </div>
+</div>
+
+<div id="camAlertBanner" style="display:none;position:fixed;top:0;left:0;right:0;padding:10px 16px;font-family:var(--mono);font-size:12px;z-index:9999;text-align:center;cursor:pointer;animation:alertPulse 1.5s infinite" onclick="dismissCamAlert()">
+  <span id="camAlertText"></span> <span style="opacity:.6;margin-left:8px">✕ cliquer pour fermer</span>
+</div>
+
+<div id="statusBar">
+  <span style="color:var(--text-dim)">YOLO</span> <span id="perfYolo">—</span>
+  <span class="sb-sep">│</span>
+  <span style="color:var(--text-dim)">Frame</span> <span id="perfFrame">—</span>
+  <span class="sb-sep">│</span>
+  <span style="color:var(--text-dim)">CPU</span> <span id="perfTemp">—</span>
+  <span class="sb-sep">│</span>
+  <span style="color:var(--text-dim)">Flux</span> <span id="perfStatus" style="color:var(--green)">—</span>
+  <span class="sb-sep">│</span>
+  <span style="color:var(--text-dim)">XBee</span> <span id="perfXbee" style="color:var(--text-dim)">—</span>
+</div>
+
+<div id="cd">x: — y: —</div>
+<div id="toast"></div>
+<div id="ld"><div class="spin2"></div></div>
+
+
+<script src="/static/js/parking.js?v=20260309"></script>
+<script>
+applyTheme();
+camLoadAll();
+init();
+if(!statsInterval) statsInterval = setInterval(fetchStats, 5000);
+fetchStats();
+// Auto-masquer les sidebars sur petit écran
+if(window.innerWidth <= 768){
+  ['editorSidebar','liveSidebar','demoSidebar'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.classList.add('collapsed'); var btn = el.querySelector('.sidebar-toggle'); if(btn) btn.textContent = '▼ Menu'; }
+  });
+}
+</script>
+</body>
+</html>

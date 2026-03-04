@@ -1,0 +1,239 @@
+<!-- ══ LIVE PANEL ══ -->
+<div class="tab-panel" id="panelLive">
+<div class="live-panel">
+  <div class="live-sidebar" id="liveSidebar">
+    <div class="sidebar-toggle" onclick="toggleSidebar('liveSidebar')">▲ Masquer</div>
+    <div class="lsec">
+      <div class="lsec-title">Caméra</div>
+      <select id="camSel" style="width:100%" onchange="camChanged()">
+        <option value="">— Chargement... —</option>
+      </select>
+      <div style="display:flex;gap:4px;margin-top:6px">
+        <button class="settings-btn" onclick="camAdd()" style="flex:1;font-size:10px;padding:5px">Ajouter</button>
+        <button class="settings-btn" onclick="camEdit()" id="camEditBtn" style="flex:1;font-size:10px;padding:5px" disabled>Éditer</button>
+        <button class="settings-btn" onclick="camDelete()" id="camDelBtn" style="flex:1;font-size:10px;padding:5px;border-color:var(--red);color:var(--red)" disabled>Suppr.</button>
+      </div>
+      <button class="settings-btn" onclick="camScan()" id="camScanBtn" style="margin-top:6px;width:100%;font-size:10px;padding:5px">Rechercher sur le réseau</button>
+      <div id="scanResults" style="display:none;margin-top:6px"></div>
+      <div style="margin-top:6px;display:flex;gap:4px;align-items:center">
+        <button class="settings-btn" onclick="setDefaultCam()" id="defaultCamBtn" style="flex:1;font-size:9px;padding:4px" title="Caméra utilisée au démarrage du RPi">★ Caméra par défaut</button>
+      </div>
+      <div id="defaultCamInfo" style="font-size:9px;color:var(--text-dim);margin-top:4px">—</div>
+    </div>
+
+    <div class="lsec">
+      <div class="lsec-title">Contrôle</div>
+      <button class="lbtn start" id="lStartBtn" onclick="liveStart()">Démarrer le flux</button>
+      <button class="lbtn stop" id="lStopBtn" onclick="liveStop()" disabled>Arrêter</button>
+    </div>
+
+    <div class="lsec">
+      <div class="lsec-title">Comptage temps réel</div>
+      <div class="stat-card">
+        <div class="stat-row">
+          <span class="stat-lbl">Libres</span>
+          <span class="stat-val free" id="lFree">—</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-lbl">Occupées</span>
+          <span class="stat-val occ" id="lOcc">—</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-lbl">Total</span>
+          <span class="stat-val tot" id="lTot">—</span>
+        </div>
+        <div class="pct-bar"><div class="pct-fill" id="lPct" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="lsec">
+      <div onclick="toggleLiveSection('liveDetection')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none">
+        <div class="lsec-title" style="margin:0">Détection</div>
+        <span id="liveDetectionChev" style="font-size:14px;color:var(--accent);transition:transform .2s">▼</span>
+      </div>
+      <div id="liveDetection">
+      <div class="toggle-row" style="margin-top:8px">
+        <span class="toggle-label" id="yoloBadge">Activée</span>
+        <label class="toggle">
+          <input type="checkbox" id="yoloToggle" onchange="toggleYolo(this.checked)" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+      <div class="toggle-row" style="margin-top:8px">
+        <span class="toggle-label">Afficher les places</span>
+        <label class="toggle">
+          <input type="checkbox" id="maskToggle" onchange="toggleMask(this.checked)" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+      </div>
+    </div>
+
+    <div class="lsec">
+      <div onclick="toggleLiveSection('liveSliders')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none">
+        <div class="lsec-title" style="margin:0">Réglages</div>
+        <span id="liveSlidersChev" style="font-size:14px;color:var(--accent);transition:transform .2s;transform:rotate(-90deg)">▼</span>
+      </div>
+      <div id="liveSliders" style="display:none">
+      <div style="margin-top:8px;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span class="toggle-label">Ancrage vertical</span>
+          <span class="toggle-label" id="dpVal" style="color:var(--accent)">85%</span>
+        </div>
+        <input type="range" id="dpSlider" min="50" max="100" value="85" style="width:100%;accent-color:var(--accent)"
+               oninput="dpChanged(this.value)">
+        <div class="form-hint">Centre ← → Roues</div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span class="toggle-label">Ancrage horizontal</span>
+          <span class="toggle-label" id="dhVal" style="color:var(--accent)">50%</span>
+        </div>
+        <input type="range" id="dhSlider" min="0" max="100" value="50" style="width:100%;accent-color:var(--accent)"
+               oninput="dhChanged(this.value)">
+        <div class="form-hint">Gauche ← → Droite</div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span class="toggle-label">Lissage</span>
+          <span class="toggle-label" id="vwVal" style="color:var(--accent)">15</span>
+        </div>
+        <input type="range" id="vwSlider" min="3" max="30" value="15" style="width:100%;accent-color:var(--accent)"
+               oninput="vwChanged(this.value)">
+        <div class="form-hint">Réactif ← → Stable</div>
+      </div>
+      <button class="settings-btn" onclick="openAdvanced()" style="width:100%;margin-top:10px">Réglages avancés</button>
+      </div>
+    </div>
+
+    <div class="lsec">
+      <div class="lsec-title">Source</div>
+      <div class="live-source" id="lSrcDisplay"><span>—</span><br>Sélectionnez une caméra</div>
+      <div style="margin-top:6px;font-size:10px;color:var(--text-dim)">
+        Masque : <span id="lActiveMask" style="color:var(--accent)">—</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="live-main">
+    <div class="vid-bar">
+      <button class="vid-btn" onclick="vidZoom('live',-0.25)">−</button>
+      <span class="vid-zoom-lbl" id="lZoomLbl">100%</span>
+      <button class="vid-btn" onclick="vidZoom('live',+0.25)">+</button>
+      <button class="vid-btn" onclick="vidReset('live')">↺ Reset</button>
+      <div class="vid-sep"></div>
+      <button class="vid-btn fs" onclick="vidFullscreen('liveContainer')">Plein écran</button>
+    </div>
+    <div class="stream-container" id="liveContainer"
+         onwheel="vidWheel(event,'live')"
+         onmousedown="vidDragStart(event,'live')"
+         onmousemove="vidDragMove(event,'live')"
+         onmouseup="vidDragEnd('live')"
+         onmouseleave="vidDragEnd('live')"
+         ontouchstart="vidTouchStart(event,'live')"
+         ontouchmove="vidTouchMove(event,'live')"
+         ontouchend="vidTouchEnd(event,'live')"
+         onauxclick="event.preventDefault()"
+         oncontextmenu="event.preventDefault()">
+      <div class="stream-wrap" id="liveWrap">
+        <img id="liveImg" alt="flux live" style="display:none">
+      </div>
+      <div class="stream-overlay" id="streamOverlay">
+        <div class="so-title">FLUX VIDÉO ARRÊTÉ</div>
+        <div class="so-sub">Détection en cours en arrière-plan<br>Cliquez Démarrer pour voir le flux</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- ══ DEMO PANEL ══ -->
+<div class="tab-panel" id="panelDemo">
+<div class="live-panel">
+  <div class="live-sidebar" id="demoSidebar">
+    <div class="sidebar-toggle" onclick="toggleSidebar('demoSidebar')">▲ Masquer</div>
+    <div class="lsec">
+      <div class="lsec-title">Fichier vidéo</div>
+      <select id="dVideoSel" style="width:100%">
+        <option value="">— Sélectionner —</option>
+      </select>
+      <div class="form-hint" style="margin-top:4px">Fichiers .mp4/.avi dans ~/</div>
+    </div>
+
+    <div class="lsec">
+      <div class="lsec-title">Contrôle</div>
+      <button class="lbtn start" id="dStartBtn" onclick="demoStart()">Lancer la démo</button>
+      <button class="lbtn stop"  id="dStopBtn"  onclick="demoStop()" disabled>Arrêter</button>
+    </div>
+
+    <div class="lsec">
+      <div class="lsec-title">Comptage</div>
+      <div class="stat-card">
+        <div class="stat-row"><span class="stat-lbl">Libres</span><span class="stat-val free" id="dFree">—</span></div>
+        <div class="stat-row"><span class="stat-lbl">Occupées</span><span class="stat-val occ" id="dOcc">—</span></div>
+        <div class="stat-row"><span class="stat-lbl">Total</span><span class="stat-val tot" id="dTot">—</span></div>
+        <div class="pct-bar"><div class="pct-fill" id="dPct" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="lsec">
+      <div class="lsec-title">Detection</div>
+      <div class="toggle-row">
+        <span class="toggle-label" id="dYoloBadge">—</span>
+        <label class="toggle">
+          <input type="checkbox" id="dYoloToggle" onchange="demoToggleYolo(this.checked)" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="lsec">
+      <div class="lsec-title">Lecture</div>
+      <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
+        <button class="lbtn" id="dPauseBtn" onclick="demoPause()" disabled
+                style="flex:1;margin:0;padding:6px 0;font-size:12px">⏸ Pause</button>
+      </div>
+      <!-- Barre de progression cliquable -->
+      <div id="dSeekBar" class="seek-bar" onclick="demoSeek(event)" title="Cliquer pour se déplacer">
+        <div class="seek-fill" id="dSeekFill" style="width:0%"></div>
+        <div class="seek-head" id="dSeekHead" style="left:0%"></div>
+      </div>
+      <div class="form-hint" id="dFrameInfo" style="margin-top:6px">Frame — / —</div>
+    </div>
+
+  </div>
+
+  <div class="live-main">
+    <div class="vid-bar">
+      <button class="vid-btn" onclick="vidZoom('demo',-0.25)">−</button>
+      <span class="vid-zoom-lbl" id="dZoomLbl">100%</span>
+      <button class="vid-btn" onclick="vidZoom('demo',+0.25)">+</button>
+      <button class="vid-btn" onclick="vidReset('demo')">↺ Reset</button>
+      <div class="vid-sep"></div>
+      <button class="vid-btn fs" onclick="vidFullscreen('demoContainer')">Plein écran</button>
+    </div>
+    <div class="stream-container" id="demoContainer"
+         onwheel="vidWheel(event,'demo')"
+         onmousedown="vidDragStart(event,'demo')"
+         onmousemove="vidDragMove(event,'demo')"
+         onmouseup="vidDragEnd('demo')"
+         onmouseleave="vidDragEnd('demo')"
+         ontouchstart="vidTouchStart(event,'demo')"
+         ontouchmove="vidTouchMove(event,'demo')"
+         ontouchend="vidTouchEnd(event,'demo')"
+         onauxclick="event.preventDefault()"
+         oncontextmenu="event.preventDefault()">
+      <div class="stream-wrap" id="demoWrap">
+        <img id="demoImg" alt="démo vidéo" style="display:none">
+      </div>
+      <div class="stream-overlay" id="demoOverlay">
+        <div class="so-title">DÉMO ARRÊTÉE</div>
+        <div class="so-sub">Sélectionnez une vidéo et cliquez Lancer</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

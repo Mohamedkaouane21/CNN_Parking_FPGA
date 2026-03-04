@@ -1,0 +1,88 @@
+<!-- ══ EDITOR PANEL ══ -->
+<div class="tab-panel active" id="panelEditor">
+<div class="workspace">
+  <div class="sidebar" id="editorSidebar">
+    <div class="sidebar-toggle" onclick="toggleSidebar('editorSidebar')">▲ Masquer</div>
+    <div class="ssec" id="srcSection">
+      <div class="slabel" onclick="toggleSrcSection()" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none">
+        <span>Caméra & Source</span>
+        <span id="srcChevron" style="font-size:14px;transition:transform .2s;color:var(--accent)">▼</span>
+      </div>
+      <div id="srcContent">
+        <select id="editorCamSel" onchange="editorCamChanged()" style="margin-top:6px"><option value="">— Chargement... —</option></select>
+        <button class="settings-btn" id="captureBtn" onclick="captureFromCam()" style="margin-top:6px;width:100%">Capturer un screenshot</button>
+        <div class="form-hint" id="captureHint"></div>
+        <div class="slabel" style="margin-top:10px">Image source</div>
+        <select id="imgSel"><option value="">— Sélectionner une image —</option></select>
+      </div>
+    </div>
+    <div class="ssec">
+      <div class="slabel">Mode de tracé</div>
+      <div class="mtabs">
+        <button class="mtab a-draw" id="tDraw" onclick="setMode('draw')">MANUEL</button>
+        <button class="mtab" id="tSep" onclick="setMode('sep')">SÉPAR.</button>
+        <button class="mtab" id="tSel" onclick="setMode('sel')">ÉDITER</button>
+      </div>
+      <div class="subp on" id="pDraw">
+        <div class="pts-row">
+          <div class="pdot" id="p0"></div><div class="pdot" id="p1"></div>
+          <div class="pdot" id="p2"></div><div class="pdot" id="p3"></div>
+          <div class="phint" id="phint">cliquer 4 coins</div>
+        </div>
+      </div>
+      <div class="subp" id="pSep">
+        <div class="sep-info"><span>Drag</span> pour tracer un séparateur.<br><span>Clic droit</span> = annuler le dernier.<br>N séparateurs → N-1 places.</div>
+        <div class="sep-status" id="sepStat">0 séparateur(s) posé(s)</div>
+        <div class="sep-lines-preview" id="sepPrev"></div>
+        <button class="sep-confirm" id="sepConfirm" onclick="confirmSep()" disabled>GÉNÉRER LES PLACES</button>
+      </div>
+      <div class="subp" id="pSel">
+        <div class="edit-info">Cliquer une place pour la <span>sélectionner</span>.<br><span>Glisser un coin</span> pour le déplacer.<br><span>Suppr</span> pour effacer la sélection.</div>
+        <div class="edit-selinfo" id="editSelInfo">Aucune place sélectionnée</div>
+      </div>
+      <div class="arow">
+        <button class="abtn" onclick="undo()">Annuler</button>
+        <button class="abtn" id="sensorSelBtn" onclick="toggleSensorSelected()" disabled style="font-size:10px">Capteur</button>
+        <button class="abtn danger" id="delSelBtn" onclick="delSelected()" disabled>Suppr. place</button>
+      </div>
+    </div>
+    <div class="zlhead"><div class="slabel" style="margin:0">Places <span id="zcnt" style="color:var(--accent)">0</span></div></div>
+    <div class="zlist" id="zlist"><div class="zempty">Aucune place définie.<br>Choisissez un mode et tracez.</div></div>
+    <div class="sbar">
+      <div class="stat"><span class="sval" id="stZ">0</span><span class="slbl">Total</span></div>
+      <div class="stat"><span class="sval" id="stM">0</span><span class="slbl">Manuel</span></div>
+      <div class="stat"><span class="sval" id="stS">0</span><span class="slbl">Sépar.</span></div>
+    </div>
+    <div style="display:flex;gap:3px">
+      <button class="savebtn" id="saveBtn" onclick="doSave()" disabled style="flex:1">Sauvegarder sur le RPI</button>
+      <button class="savebtn" id="activeMaskBtn" onclick="setActiveMask()" disabled title="Utiliser ce masque pour le live"
+              style="flex:0;padding:0 16px;background:var(--bg);border-color:var(--border);color:var(--text-dim);font-size:10px;white-space:nowrap">★ Actif</button>
+    </div>
+    <div style="margin-top:4px;padding:0 16px">
+      <button class="savebtn" onclick="openManage()" style="width:100%;margin:0;background:var(--bg);border-color:var(--border);color:var(--text-dim);font-size:10px;box-sizing:border-box">⚙ Gestion avancée</button>
+    </div>
+  </div>
+
+  <div class="cwrap" id="editorCanvas">
+    <div class="ctbar">
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="tbb" onclick="zoom(-.2)">−</button>
+        <div class="zdsp" id="zdsp">100%</div>
+        <button class="tbb" onclick="zoom(.2)">+</button>
+        <button class="tbb" onclick="resetView()">↺</button>
+      </div>
+      <div class="tsep"></div>
+      <div class="mbadge draw" id="mbadge">MODE: MANUEL</div>
+      <button class="vid-btn fs" onclick="vidFullscreen('editorCanvas')" style="margin-left:auto">Plein écran</button>
+    </div>
+    <div class="cbox" id="cbox">
+      <canvas id="C"></canvas>
+      <div class="estate" id="estate">
+        <div class="eico">P</div>
+        <div class="etit">AUCUNE IMAGE CHARGÉE</div>
+        <div class="esub">Sélectionnez une image dans le panneau gauche</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
