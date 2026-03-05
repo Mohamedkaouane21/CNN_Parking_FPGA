@@ -259,6 +259,7 @@
   #toast.ok{border-left-color:var(--green);}
   #statusBar{position:fixed;bottom:0;left:0;right:0;height:24px;background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 12px;font-family:var(--mono);font-size:10px;gap:6px;z-index:100;color:var(--accent);}
   #statusBar .sb-sep{color:var(--border);margin:0 2px;}
+  @keyframes alertPulse{0%,100%{opacity:1}50%{opacity:.7}}
   #cd{position:fixed;bottom:28px;left:280px;font-family:var(--mono);font-size:11px;color:var(--text-dim);background:rgba(10,12,15,.8);padding:4px 10px;border-radius:2px;pointer-events:none;z-index:101;}
   #ld{position:fixed;inset:0;background:rgba(10,12,15,.85);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
   #ld.on{opacity:1;pointer-events:all;}
@@ -395,6 +396,10 @@
       </div>
       <button class="settings-btn" onclick="camScan()" id="camScanBtn" style="margin-top:6px;width:100%;font-size:10px;padding:5px">Rechercher sur le réseau</button>
       <div id="scanResults" style="display:none;margin-top:6px"></div>
+      <div style="margin-top:6px;display:flex;gap:4px;align-items:center">
+        <button class="settings-btn" onclick="setDefaultCam()" id="defaultCamBtn" style="flex:1;font-size:9px;padding:4px" title="Caméra utilisée au démarrage du RPi">★ Caméra par défaut</button>
+      </div>
+      <div id="defaultCamInfo" style="font-size:9px;color:var(--text-dim);margin-top:4px">—</div>
     </div>
 
     <div class="lsec">
@@ -423,8 +428,12 @@
     </div>
 
     <div class="lsec">
-      <div class="lsec-title">Détection</div>
-      <div class="toggle-row">
+      <div onclick="toggleLiveSection('liveDetection')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none">
+        <div class="lsec-title" style="margin:0">Détection</div>
+        <span id="liveDetectionChev" style="font-size:14px;color:var(--accent);transition:transform .2s">▼</span>
+      </div>
+      <div id="liveDetection">
+      <div class="toggle-row" style="margin-top:8px">
         <span class="toggle-label" id="yoloBadge">Activée</span>
         <label class="toggle">
           <input type="checkbox" id="yoloToggle" onchange="toggleYolo(this.checked)" checked>
@@ -440,11 +449,16 @@
           <div class="toggle-thumb"></div>
         </label>
       </div>
+      </div>
     </div>
 
     <div class="lsec">
-      <div class="lsec-title">Réglages</div>
-      <div style="margin-bottom:10px">
+      <div onclick="toggleLiveSection('liveSliders')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none">
+        <div class="lsec-title" style="margin:0">Réglages</div>
+        <span id="liveSlidersChev" style="font-size:14px;color:var(--accent);transition:transform .2s;transform:rotate(-90deg)">▼</span>
+      </div>
+      <div id="liveSliders" style="display:none">
+      <div style="margin-top:8px;margin-bottom:10px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
           <span class="toggle-label">Ancrage vertical</span>
           <span class="toggle-label" id="dpVal" style="color:var(--accent)">85%</span>
@@ -471,10 +485,8 @@
                oninput="vwChanged(this.value)">
         <div class="form-hint">Réactif ← → Stable</div>
       </div>
-    </div>
-
-    <div class="lsec">
-      <button class="settings-btn" onclick="openAdvanced()" style="width:100%">Réglages avancés</button>
+      <button class="settings-btn" onclick="openAdvanced()" style="width:100%;margin-top:10px">Réglages avancés</button>
+      </div>
     </div>
 
     <div class="lsec">
@@ -508,8 +520,8 @@
         <img id="liveImg" alt="flux live" style="display:none">
       </div>
       <div class="stream-overlay" id="streamOverlay">
-        <div class="so-title">FLUX ARRÊTÉ</div>
-        <div class="so-sub">Cliquez sur Démarrer le flux</div>
+        <div class="so-title">FLUX VIDÉO ARRÊTÉ</div>
+        <div class="so-sub">Détection en cours en arrière-plan<br>Cliquez Démarrer pour voir le flux</div>
       </div>
     </div>
   </div>
@@ -728,6 +740,12 @@
       <button class="modal-close" onclick="closeAdvanced()">×</button>
     </div>
     <div class="modal-body">
+      <div style="padding-bottom:10px;border-bottom:1px solid var(--border)">
+        <div onclick="toggleAdvSection('advDetection')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:4px 0;user-select:none">
+          <span class="lsec-title" style="margin:0">Détection</span>
+          <span class="adv-chevron" id="advDetectionChev" style="font-size:14px;color:var(--accent);transition:transform .2s">▼</span>
+        </div>
+        <div id="advDetection">
       <div class="form-row">
         <div class="form-group">
           <div class="form-label">Seuil de confiance</div>
@@ -765,10 +783,16 @@
         </div>
       </div>
       <div class="form-hint" style="margin-top:8px;color:var(--yellow)">Les changements de FPS et fréquence YOLO prennent effet au prochain démarrage du flux.</div>
+        </div>
+      </div>
 
-      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-        <div class="lsec-title" style="margin-bottom:8px">XBee / LoRa</div>
-        <div class="toggle-row" style="margin-bottom:8px">
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <div onclick="toggleAdvSection('advXbee')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:4px 0;user-select:none">
+          <span class="lsec-title" style="margin:0">XBee / LoRa</span>
+          <span class="adv-chevron" id="advXbeeChev" style="font-size:14px;color:var(--accent);transition:transform .2s">▼</span>
+        </div>
+        <div id="advXbee">
+        <div class="toggle-row" style="margin:8px 0">
           <span class="toggle-label">Envoi XBee</span>
           <label class="toggle">
             <input type="checkbox" id="advXbeeEnabled" onchange="toggleXbee(this.checked)">
@@ -783,19 +807,21 @@
         <div class="form-row">
           <div class="form-group">
             <div class="form-label">Port série</div>
-            <input class="form-input" type="text" id="advXbeePort" placeholder="/dev/ttyUSB0">
+            <input class="form-input" type="text" id="advXbeePort" placeholder="auto">
           </div>
           <div class="form-group">
             <div class="form-label">Baud rate</div>
-            <input class="form-input" type="number" id="advXbeeBaud" placeholder="9600">
+            <input class="form-input" type="number" id="advXbeeBaud" placeholder="115200">
           </div>
         </div>
+        <button class="settings-btn" onclick="xbeeAutoDetect()" id="xbeeDetectBtn" style="width:100%;margin:6px 0">Auto-détecter le XBee</button>
         <div class="form-group">
           <div class="form-label">Intervalle (secondes)</div>
           <input class="form-input" type="number" id="advXbeeInterval" min="5" max="300">
           <div class="form-hint">Fréquence d'envoi du JSON</div>
         </div>
         <div class="form-hint" id="xbeeStatus" style="margin-top:4px">—</div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -803,6 +829,10 @@
       <button class="mf-btn apply" onclick="saveAdvanced()">Appliquer</button>
     </div>
   </div>
+</div>
+
+<div id="camAlertBanner" style="display:none;position:fixed;top:0;left:0;right:0;padding:10px 16px;font-family:var(--mono);font-size:12px;z-index:9999;text-align:center;cursor:pointer;animation:alertPulse 1.5s infinite" onclick="dismissCamAlert()">
+  <span id="camAlertText"></span> <span style="opacity:.6;margin-left:8px">✕ cliquer pour fermer</span>
 </div>
 
 <div id="statusBar">
@@ -822,6 +852,78 @@
 <div id="ld"><div class="spin2"></div></div>
 
 <script>
+// ══════════════════════════════════════════
+// CAMERA HEALTH ALERTS
+// ══════════════════════════════════════════
+let _lastCamAlert = null;
+let _alertDismissed = false;
+let _alertBeepInterval = null;
+
+function _beep(freq, duration){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = freq;
+    gain.gain.value = 0.15;
+    osc.start(); osc.stop(ctx.currentTime + duration/1000);
+  }catch(e){}
+}
+
+function handleCamAlert(alertType){
+  const banner = document.getElementById('camAlertBanner');
+  const text = document.getElementById('camAlertText');
+  if(!alertType){
+    // Tout va bien
+    if(_lastCamAlert){
+      banner.style.display = 'none';
+      _alertDismissed = false;
+      if(_alertBeepInterval){ clearInterval(_alertBeepInterval); _alertBeepInterval = null; }
+    }
+    _lastCamAlert = null;
+    return;
+  }
+  // Nouvelle alerte ou changement de type
+  if(alertType !== _lastCamAlert){
+    _alertDismissed = false;
+    if(_alertBeepInterval){ clearInterval(_alertBeepInterval); _alertBeepInterval = null; }
+    // Beep d'alerte
+    if(alertType === 'noir'){
+      _beep(800, 200); setTimeout(()=>_beep(600, 300), 250);
+      _alertBeepInterval = setInterval(()=>{ _beep(800, 200); setTimeout(()=>_beep(600, 300), 250); }, 15000);
+    } else if(alertType === 'figé'){
+      _beep(500, 300);
+      _alertBeepInterval = setInterval(()=>_beep(500, 300), 30000);
+    } else if(alertType === 'error'){
+      _beep(400, 400);
+    }
+  }
+  _lastCamAlert = alertType;
+  if(_alertDismissed) return;
+  // Afficher la bannière
+  if(alertType === 'noir'){
+    banner.style.background = '#c0392b';
+    banner.style.color = '#fff';
+    text.textContent = '⚠ ALERTE : Image noire — Vérifiez la caméra';
+  } else if(alertType === 'figé'){
+    banner.style.background = '#e67e22';
+    banner.style.color = '#fff';
+    text.textContent = '⚠ Image figée — Le flux semble bloqué';
+  } else if(alertType === 'error'){
+    banner.style.background = '#e67e22';
+    banner.style.color = '#fff';
+    text.textContent = '⚠ Flux perdu — Reconnexion en cours...';
+  }
+  banner.style.display = '';
+}
+
+function dismissCamAlert(){
+  document.getElementById('camAlertBanner').style.display = 'none';
+  _alertDismissed = true;
+  if(_alertBeepInterval){ clearInterval(_alertBeepInterval); _alertBeepInterval = null; }
+}
+
 // ══════════════════════════════════════════
 // VIDEO ZOOM / PAN / FULLSCREEN
 // ══════════════════════════════════════════
@@ -990,8 +1092,8 @@ async function openAdvanced(){
     document.getElementById('advVoteThresh').value = s.vote_threshold;
     document.getElementById('advXbeeEnabled').checked = s.xbee_enabled || false;
     document.getElementById('advXbeeZone').value = s.xbee_zone || 'Parking';
-    document.getElementById('advXbeePort').value = s.xbee_port || '/dev/ttyUSB0';
-    document.getElementById('advXbeeBaud').value = s.xbee_baud || 9600;
+    document.getElementById('advXbeePort').value = s.xbee_port || 'auto';
+    document.getElementById('advXbeeBaud').value = s.xbee_baud || 115200;
     document.getElementById('advXbeeInterval').value = s.xbee_interval || 30;
     // Check live stats for xbee status
     const st = await fetch('/api/live/stats').then(r=>r.json());
@@ -1000,6 +1102,11 @@ async function openAdvanced(){
     else if(s.xbee_enabled){ xs.textContent = 'XBee activé mais non connecté'; xs.style.color = 'var(--yellow)'; }
     else { xs.textContent = 'XBee désactivé'; xs.style.color = 'var(--text-dim)'; }
   }catch(e){}
+  // Replier les sections par défaut
+  document.getElementById('advDetection').style.display = 'none';
+  document.getElementById('advDetectionChev').style.transform = 'rotate(-90deg)';
+  document.getElementById('advXbee').style.display = 'none';
+  document.getElementById('advXbeeChev').style.transform = 'rotate(-90deg)';
   document.getElementById('advModal').classList.add('on');
 }
 
@@ -1037,6 +1144,28 @@ async function toggleXbee(enabled){
       toast('XBee désactivé', 'ok');
     }
   }catch(e){ toast('Erreur XBee','err'); }
+}
+
+async function xbeeAutoDetect(){
+  const btn = document.getElementById('xbeeDetectBtn');
+  btn.disabled = true;
+  btn.textContent = 'Recherche en cours...';
+  try{
+    const r = await fetch('/api/xbee/detect', {method:'POST'}).then(r=>r.json());
+    if(r.ok){
+      document.getElementById('advXbeePort').value = r.port;
+      document.getElementById('advXbeeBaud').value = r.baud;
+      document.getElementById('xbeeStatus').textContent = `Trouvé : ${r.port} @ ${r.baud}`;
+      document.getElementById('xbeeStatus').style.color = 'var(--green)';
+      toast(`XBee détecté : ${r.port} @ ${r.baud}`, 'ok');
+    } else {
+      document.getElementById('xbeeStatus').textContent = r.error || 'Non trouvé';
+      document.getElementById('xbeeStatus').style.color = 'var(--red)';
+      toast(r.error || 'XBee non trouvé', 'err');
+    }
+  }catch(e){ toast('Erreur détection','err'); }
+  btn.disabled = false;
+  btn.textContent = 'Auto-détecter le XBee';
 }
 
 
@@ -1252,6 +1381,49 @@ function camChanged(){
   } else {
     document.getElementById('lActiveMask').textContent = '—';
   }
+  updateDefaultCamInfo();
+}
+
+async function setDefaultCam(){
+  const sel = document.getElementById('camSel');
+  if(!sel.value){ toast('Sélectionnez une caméra','err'); return; }
+  try{
+    await fetch('/api/settings', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({default_camera: sel.value})});
+    // Relancer la détection sur cette caméra immédiatement
+    const wasStreaming = liveRunning;
+    if(wasStreaming) await fetch('/api/live/stop',{method:'POST'});
+    await fetch('/api/live/stop_all',{method:'POST'});
+    await fetch('/api/live/start',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({camera_id: sel.value})});
+    if(!wasStreaming) await fetch('/api/live/stop',{method:'POST'});
+    const cam = cameras.find(c=>c.id===sel.value);
+    toast(`Détection relancée sur : ${cam ? cam.name : sel.value}`, 'ok');
+    updateDefaultCamInfo();
+  }catch(e){ toast('Erreur','err'); }
+}
+
+function updateDefaultCamInfo(){
+  fetch('/api/live/stats').then(r=>r.json()).then(s=>{
+    const el = document.getElementById('defaultCamInfo');
+    const defId = s.default_camera;
+    const engineId = s.engine_cam_id;
+    const defCam = cameras.find(c=>c.id===defId);
+    const engCam = cameras.find(c=>c.id===engineId);
+    let txt = '';
+    if(defCam) txt = `Par défaut : ${defCam.name}`;
+    else txt = 'Aucune caméra par défaut';
+    if(s.detection_running && engCam){
+      txt += ` — Détection : ${engCam.name}`;
+    }
+    el.textContent = txt;
+    // Highlight button if current cam is default
+    const btn = document.getElementById('defaultCamBtn');
+    const sel = document.getElementById('camSel');
+    if(sel.value && sel.value === defId){
+      btn.style.background = 'var(--accent)'; btn.style.color = '#000'; btn.style.borderColor = 'var(--accent)';
+    } else {
+      btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = '';
+    }
+  }).catch(()=>{});
 }
 
 function camAdd(){
@@ -1405,7 +1577,7 @@ function switchTab(name){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab'+name.charAt(0).toUpperCase()+name.slice(1)).classList.add('active');
   document.getElementById('panel'+name.charAt(0).toUpperCase()+name.slice(1)).classList.add('active');
-  if(name==='live'){ resizeLive(); camLoadAll(); loadDetectionSettings(); }
+  if(name==='live'){ resizeLive(); camLoadAll(); loadDetectionSettings(); if(!statsInterval) statsInterval = setInterval(fetchStats, 5000); fetchStats(); }
   if(name==='demo') demoLoadVideos();
 }
 
@@ -1604,33 +1776,39 @@ async function liveStop(){
   await fetch('/api/live/stop',{method:'POST'});
   liveRunning = false;
   clearInterval(statsInterval);
+  // Continuer à interroger les stats en background (détection tourne toujours)
+  statsInterval = setInterval(fetchStats, 5000);
   const img = document.getElementById('liveImg');
   img.src=''; img.style.display='none';
   const ov = document.getElementById('streamOverlay');
-  ov.innerHTML = '<div class="so-title">FLUX ARRÊTÉ</div><div class="so-sub">Cliquez sur Démarrer le flux</div>';
+  ov.innerHTML = '<div class="so-title">FLUX VIDÉO ARRÊTÉ</div><div class="so-sub">Détection en cours en arrière-plan<br>Cliquez Démarrer pour voir le flux</div>';
   ov.classList.remove('hidden');
   document.getElementById('lStartBtn').disabled = false;
   document.getElementById('lStopBtn').disabled = true;
   document.getElementById('liveDot').classList.remove('on');
-  document.getElementById('lFree').textContent = '—';
-  document.getElementById('lOcc').textContent = '—';
-  document.getElementById('lTot').textContent = '—';
-  document.getElementById('lPct').style.width = '0%';
-  camChanged(); // Restaurer l'affichage de la caméra sélectionnée
+  camChanged();
 }
 
 async function fetchStats(){
   try{
     const s = await fetch('/api/live/stats').then(r=>r.json());
-    document.getElementById('lFree').textContent = s.free;
-    document.getElementById('lOcc').textContent  = s.occ;
-    document.getElementById('lTot').textContent  = s.total;
-    const pct = s.total > 0 ? Math.round(s.free / s.total * 100) : 0;
-    document.getElementById('lPct').style.width  = pct + '%';
+    const isDetecting = s.detection_running;
+    const isStreaming = s.streaming;
+
+    // Toujours afficher les compteurs (même en headless)
+    if(isDetecting && !s.error){
+      document.getElementById('lFree').textContent = s.free;
+      document.getElementById('lOcc').textContent  = s.occ;
+      document.getElementById('lTot').textContent  = s.total;
+      const pct = s.total > 0 ? Math.round(s.free / s.total * 100) : 0;
+      document.getElementById('lPct').style.width  = pct + '%';
+    }
+
     const yb = document.getElementById('yoloBadge');
     if(!s.yolo_available){ yb.textContent='Non disponible'; yb.style.color='var(--red)'; }
     else if(s.yolo_enabled){ yb.textContent='Activée'; yb.style.color='var(--green)'; }
     else{ yb.textContent='Désactivée'; yb.style.color='var(--text-dim)'; }
+
     // Status bar performance
     const py = document.getElementById('perfYolo');
     const pf = document.getElementById('perfFrame');
@@ -1642,35 +1820,56 @@ async function fetchStats(){
       pt.textContent = s.cpu_temp + '°C';
       pt.style.color = s.cpu_temp > 75 ? 'var(--red)' : s.cpu_temp > 60 ? 'var(--yellow)' : 'var(--green)';
     }
-    // Santé caméra
-    if(s.cam_health === 'noir'){
+
+    // Santé caméra — alertes uniquement si détection active
+    let camAlert = null;
+    if(!isDetecting){
+      ps.textContent = 'Arrêté'; ps.style.color = 'var(--text-dim)';
+    } else if(s.cam_health === 'noir'){
       ps.textContent = 'Image noire'; ps.style.color = 'var(--red)';
+      camAlert = 'noir';
     } else if(s.cam_health === 'figé'){
       ps.textContent = 'Image figée'; ps.style.color = 'var(--yellow)';
+      camAlert = 'figé';
     } else if(s.error){
       ps.textContent = 'Reconnexion...'; ps.style.color = 'var(--yellow)';
-    } else if(liveRunning){
-      ps.textContent = 'OK'; ps.style.color = 'var(--green)';
+      camAlert = 'error';
+    } else if(isStreaming){
+      ps.textContent = 'Flux actif'; ps.style.color = 'var(--green)';
     } else {
-      ps.textContent = 'Arrêté'; ps.style.color = 'var(--text-dim)';
+      ps.textContent = 'Headless'; ps.style.color = 'var(--accent)';
     }
-    // Indicateur d'erreur de flux
+    handleCamAlert(camAlert);
+
+    // Indicateur dot
     const dot = document.getElementById('liveDot');
     if(s.error || s.cam_health === 'noir'){
       dot.style.background='var(--red)';
       dot.style.boxShadow='0 0 5px var(--red)';
-      if(s.error) document.getElementById('lSrcDisplay').innerHTML =
-        '<span style="color:var(--yellow)">Reconnexion en cours...</span>';
     } else if(s.cam_health === 'figé'){
       dot.style.background='var(--yellow)';
       dot.style.boxShadow='0 0 5px var(--yellow)';
     } else if(liveRunning){
       dot.style.background=''; dot.style.boxShadow='';
-      // Restaurer la source affichée après reconnexion
       const sel = document.getElementById('camSel');
       const cam = cameras.find(c=>c.id===sel.value);
       if(cam) document.getElementById('lSrcDisplay').innerHTML = `<span>${cam.name}</span><br>${cam.ip} — En direct`;
+    } else if(isDetecting){
+      dot.style.background=''; dot.style.boxShadow='';
     }
+
+    // Overlay headless info
+    if(!liveRunning && isDetecting && !s.error){
+      const ov = document.getElementById('streamOverlay');
+      if(!ov.classList.contains('hidden')){
+        ov.innerHTML = `<div class="so-title" style="font-size:16px">DÉTECTION EN ARRIÈRE-PLAN</div>
+          <div class="so-sub" style="font-size:22px;margin:12px 0;color:var(--green)">
+            ${s.free} libres / ${s.occ} occupées / ${s.total} total
+          </div>
+          <div class="so-sub">Cliquez Démarrer pour voir le flux vidéo</div>`;
+      }
+    }
+
     // XBee status
     const px = document.getElementById('perfXbee');
     if(s.xbee_active){ px.textContent = 'Actif'; px.style.color = 'var(--green)'; }
@@ -1988,6 +2187,30 @@ function toggleSrcSection(){
   }
 }
 
+function toggleAdvSection(id){
+  const content = document.getElementById(id);
+  const chevron = document.getElementById(id + 'Chev');
+  if(content.style.display === 'none'){
+    content.style.display = '';
+    chevron.style.transform = '';
+  } else {
+    content.style.display = 'none';
+    chevron.style.transform = 'rotate(-90deg)';
+  }
+}
+
+function toggleLiveSection(id){
+  const content = document.getElementById(id);
+  const chevron = document.getElementById(id + 'Chev');
+  if(content.style.display === 'none'){
+    content.style.display = '';
+    chevron.style.transform = '';
+  } else {
+    content.style.display = 'none';
+    chevron.style.transform = 'rotate(-90deg)';
+  }
+}
+
 function setMode(m){
   S.mode=m;S.curPts=[];S.sepLines=[];S.dragging=false;S.dragStart=null;S.editDrag=null;S.hovPt=null;
   cbox.classList.remove('editing','dragging-pt');cbox.style.cursor='crosshair';
@@ -2159,6 +2382,9 @@ document.addEventListener('keydown',e=>{
 applyTheme();
 camLoadAll();
 init();
+// Démarrer le polling stats dès le chargement (détection tourne peut-être déjà)
+if(!statsInterval) statsInterval = setInterval(fetchStats, 5000);
+fetchStats();
 </script>
 </body>
 </html>
