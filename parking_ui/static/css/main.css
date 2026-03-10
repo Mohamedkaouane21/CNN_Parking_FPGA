@@ -43,7 +43,6 @@
   .theme-toggle:hover{border-color:var(--accent);color:var(--accent);}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);color:var(--text);font-family:var(--sans);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-
   /* ── HEADER ── */
   header{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;}
   .logo{display:flex;align-items:center;gap:12px;}
@@ -54,7 +53,6 @@
   .spill{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--text-dim);}
   .sdot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
   /* ── TABS ── */
   .tabs{display:flex;align-items:flex-end;gap:2px;padding:0 24px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;}
   .tab{padding:10px 22px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border:1px solid transparent;border-bottom:none;border-radius:3px 3px 0 0;color:var(--text-dim);background:transparent;transition:all .15s;position:relative;top:1px;}
@@ -64,11 +62,9 @@
   .tab-demo.active{color:var(--yellow);}
   .live-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--red);margin-right:6px;vertical-align:middle;}
   .live-dot.on{background:var(--green);box-shadow:0 0 5px var(--green);animation:pulse 1.5s infinite;}
-
   /* ── PANELS ── */
   .tab-panel{display:none;flex:1;overflow:hidden;padding-bottom:28px;}
   .tab-panel.active{display:flex;}
-
   /* ══════════════════════════════
      EDITOR PANEL
   ══════════════════════════════ */
@@ -149,7 +145,6 @@
   .eico{font-size:48px;opacity:.15;font-family:var(--mono);}
   .etit{font-family:var(--mono);font-size:14px;color:var(--text-dim);letter-spacing:.1em;}
   .esub{font-size:12px;color:var(--text-dim);opacity:.6;}
-
   /* ══════════════════════════════
      LIVE PANEL
   ══════════════════════════════ */
@@ -180,7 +175,6 @@
   .yolo-badge{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:2px;border:1px solid;display:inline-block;}
   .yolo-badge.ok{color:var(--green);border-color:var(--green);}
   .yolo-badge.ko{color:var(--red);border-color:var(--red);}
-
   /* Toggle YOLO */
   .toggle-row{display:flex;align-items:center;justify-content:space-between;}
   .toggle-label{font-family:var(--mono);font-size:11px;color:var(--text-dim);}
@@ -190,11 +184,9 @@
   .toggle input:checked+.toggle-track{background:var(--green);}
   .toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none;}
   .toggle input:checked~.toggle-thumb{transform:translateX(18px);}
-
   /* Bouton parametres */
   .settings-btn{width:100%;padding:8px;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:var(--mono);font-size:11px;cursor:pointer;border-radius:3px;transition:all .2s;letter-spacing:.06em;}
   .settings-btn:hover{border-color:var(--accent);color:var(--accent);}
-
   /* Modal */
   .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
   .modal-bg.on{opacity:1;pointer-events:all;}
@@ -238,13 +230,11 @@
   .so-sub{font-size:12px;color:var(--text-dim);opacity:.5;}
   .spin{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg)}}
-
   /* ── SEEKBAR ── */
   .seek-bar{position:relative;height:8px;background:var(--border);border-radius:4px;cursor:pointer;margin-top:2px;}
   .seek-bar:hover .seek-head{opacity:1;}
   .seek-fill{position:absolute;left:0;top:0;height:100%;background:var(--accent);border-radius:4px;pointer-events:none;}
   .seek-head{position:absolute;top:50%;width:14px;height:14px;background:var(--accent);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .15s;}
-
   /* ── SHARED ── */
   #toast{position:fixed;bottom:32px;right:24px;background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--accent);padding:12px 18px;font-family:var(--mono);font-size:12px;border-radius:3px;opacity:0;transform:translateY(12px);transition:all .3s;pointer-events:none;z-index:10000;max-width:300px;}
   #toast.on{opacity:1;transform:translateY(0);}
@@ -262,10 +252,8 @@
   ══════════════════════════════ */
   .sidebar-toggle{display:none;width:100%;padding:6px;background:var(--panel);border:1px solid var(--border);border-radius:3px;cursor:pointer;color:var(--accent);font-size:11px;font-family:var(--mono);text-align:center;letter-spacing:.06em;}
   .sidebar-toggle:hover{background:var(--bg);}
-  
   @media (max-width: 768px) {
     .sidebar-toggle{display:block;}
-    
     /* Sidebar masquable — quand collapsed, masquer tout sauf le toggle */
     .sidebar.collapsed > *:not(.sidebar-toggle),
     .live-sidebar.collapsed > *:not(.sidebar-toggle){display:none !important;}
@@ -279,23 +267,19 @@
     .spill span{display:none;}
     .tabs{padding:0 8px;gap:1px;}
     .tab{padding:8px 12px;font-size:10px;letter-spacing:.05em;}
-    
     /* Editor */
     .workspace{flex-direction:column;}
     .sidebar{width:100%;max-height:40vh;overflow-y:auto;border-right:none;border-bottom:1px solid var(--border);}
     .ssec{padding:8px 12px;}
     .cwrap{min-height:50vh;}
-    
     /* Live */
     .live-panel{flex-direction:column;}
     .live-sidebar{width:100%;max-height:35vh;overflow-y:auto;padding:10px;padding-bottom:32px;gap:10px;border-right:none;border-bottom:1px solid var(--border);}
     .live-main{min-height:40vh;}
-    
     /* Modals */
     .modal{width:95vw;max-height:85vh;overflow-y:auto;}
     .modal-body{padding:12px;gap:10px;}
     .form-row{grid-template-columns:1fr;gap:8px;}
-    
     /* Buttons - bigger touch targets */
     .lbtn{padding:12px;font-size:12px;}
     .settings-btn{padding:10px;font-size:11px;}
@@ -307,31 +291,25 @@
     .toggle{width:46px;height:26px;}
     .toggle-thumb{width:20px;height:20px;}
     .toggle input:checked~.toggle-thumb{transform:translateX(20px);}
-    
     /* Status bar */
     #statusBar{font-size:9px;padding:0 6px;gap:3px;}
     #cd{display:none;}
-    
     /* Vid bar */
     .vid-bar{padding:4px 8px;gap:4px;flex-wrap:wrap;}
     .vid-btn{padding:6px 8px;font-size:10px;}
     .vid-btn.fs{padding:8px 14px;font-size:11px;background:var(--accent2);color:#000;border-color:var(--accent2);}
-    
     /* Scrollable zone list */
     .zlist{max-height:20vh;}
-    
     /* Font size for touch */
     select{font-size:13px;}
     .form-input{font-size:13px;}
   }
-  
   @media (max-width: 480px) {
     .tab{padding:6px 8px;font-size:9px;}
     .sidebar{max-height:35vh;}
     .live-sidebar{max-height:30vh;}
     .savebtn{margin:8px 12px;padding:10px;font-size:11px;}
   }
-
   /* Touch optimizations */
   @media (hover: none) and (pointer: coarse) {
     .zitem{padding:10px 8px;}
@@ -344,7 +322,6 @@
     *{-webkit-tap-highlight-color:transparent;}
     button,select,input,.tab,.zitem,.toggle{touch-action:manipulation;}
   }
-
   /* Tablet landscape — sidebar à gauche, vidéo à droite */
   @media (min-width: 769px) and (max-width: 1024px) {
     .live-sidebar{width:200px;padding:10px;gap:10px;}
@@ -352,15 +329,17 @@
     .lsec-title{font-size:9px;}
     .toggle-label{font-size:10px;}
   }
-  
   /* CSS fullscreen fallback (WebView Android) */
   .css-fullscreen{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;z-index:9990!important;background:#000!important;margin:0!important;padding:0!important;border:none!important;}
   .css-fullscreen .vid-btn.fs{display:none!important;}
   .css-fullscreen .ctbar .vid-btn.fs{display:none!important;}
   .css-fs-close{display:none;position:fixed;top:4px;right:4px;padding:6px 14px;background:rgba(255,60,60,.85);color:#fff;border-radius:4px;font-size:12px;font-family:var(--mono);cursor:pointer;z-index:99999;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
-
   /* Safe area for devices with notch */
   @supports (padding-top: env(safe-area-inset-top)) {
     header{padding-top:env(safe-area-inset-top);}
     #statusBar{padding-bottom:env(safe-area-inset-bottom);}
+  }
+  @media (max-width: 768px) {
+    .modal-body{max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+    .modal-footer{position:sticky;bottom:0;background:var(--panel);z-index:1;}
   }

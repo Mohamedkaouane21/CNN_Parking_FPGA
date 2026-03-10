@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Paramétrage du système Vision</title>
-<link rel="stylesheet" href="/static/css/main.css?v=20260309">
+<link rel="stylesheet" href="/static/css/main.css?v=20260314">
 </head>
 <body>
 
@@ -24,7 +24,7 @@
 </header>
 
 <div class="tabs">
-  <div class="tab active" id="tabEditor" onclick="switchTab('editor')">Éditeur de places</div>
+  <div class="tab" id="tabEditor" onclick="switchTab('editor')">Éditeur de places</div>
   <div class="tab tab-live" id="tabLive" onclick="switchTab('live')">
     <span class="live-dot" id="liveDot"></span>Live View
   </div>
@@ -473,20 +473,32 @@
 <div id="ld"><div class="spin2"></div></div>
 
 
-<script src="/static/js/parking.js?v=20260309"></script>
+<script src="/static/js/parking.js?v=20260314"></script>
 <script>
 applyTheme();
 camLoadAll();
 init();
 if(!statsInterval) statsInterval = setInterval(fetchStats, 5000);
 fetchStats();
-// Auto-masquer les sidebars sur petit écran
+setTimeout(restoreTab, 200);
 if(window.innerWidth <= 768){
   ['editorSidebar','liveSidebar','demoSidebar'].forEach(function(id){
     var el = document.getElementById(id);
     if(el){ el.classList.add('collapsed'); var btn = el.querySelector('.sidebar-toggle'); if(btn) btn.textContent = '▼ Menu'; }
   });
 }
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Enter') return;
+  var modal = document.querySelector('.modal-bg.on');
+  if(!modal) return;
+  var apply = modal.querySelector('.mf-btn.apply');
+  if(apply){ e.preventDefault(); apply.click(); }
+});
+document.addEventListener('focusin', function(e){
+  if(e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT'){
+    setTimeout(function(){ e.target.scrollIntoView({block:'center',behavior:'smooth'}); }, 300);
+  }
+});
 </script>
 </body>
 </html>
