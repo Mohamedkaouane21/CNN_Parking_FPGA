@@ -1,0 +1,10 @@
+services:
+  smart-parking:
+    build: .
+    container_name: smart-parking
+    volumes:
+      - ./dataset:/data/dataset:ro
+      - ./output:/output
+      - /tools/Xilinx:/tools/Xilinx:ro
+    stdin_open: true
+    tty: true

@@ -1,0 +1,49 @@
+# ── Données / volumes ────────────────────────────────────────────
+dataset/
+output/
+mnt/
+
+# ── Fichiers générés par les scripts ─────────────────────────────
+hls/*/src/weights.h
+hls/*/src/weights2.h
+hls/*/src/data_path.h
+hls/*/data/
+
+# ── Projets Vitis/Vivado HLS générés ─────────────────────────────
+hls/*/hls_prj/
+hls/*/*.log
+hls/*/*.jou
+vivado/ip_repo/
+vivado/*.log
+vivado/*.jou
+vivado/*.str
+vivado/*.xpr
+vivado/*.runs/
+vivado/*.cache/
+vivado/*.hw/
+vivado/*.ip_user_files/
+
+# ── Modèle et poids entraînés ─────────────────────────────────────
+*.h5
+*.bin
+*.bit
+*.hwh
+
+# ── Python ────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# ── Docker ────────────────────────────────────────────────────────
+.env
+
+# ── IDE / OS ──────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

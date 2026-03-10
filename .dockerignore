@@ -1,0 +1,13 @@
+dataset/
+output/
+__pycache__/
+*.pyc
+.git/
+.env
+README.md
+hls/*/hls_prj/
+hls/*/data/*.bin
+vivado/vivado_2ips/
+vivado/pynq_output/
+vivado/ip_repo/*.zip
+vivado/ip_repo/extracted/
