@@ -7,14 +7,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Paramétrage du système Vision</title>
-<link rel="stylesheet" href="/static/css/main.css?v=20260316">
+<link rel="stylesheet" href="/static/css/main.css?v=07">
 </head>
 <body>
 
 <header>
   <div class="logo">
     <div class="logo-icon"></div>
-    <div><div class="logo-text">Paramétrage du système Vision</div><div class="logo-sub">Beta V0.6</div></div>
+    <div><div class="logo-text">Paramétrage du système Vision</div><div class="logo-sub">Beta V0.7</div></div>
   </div>
   <div class="hstatus">
     <div class="spill"><div class="sdot"></div><span>RPI Connecté</span></div>
@@ -154,7 +154,7 @@
       En cas de perte du flux caméra, les valeurs passent à -1 :<br>
       <span style="color:var(--accent);font-family:var(--mono)">{"zone":"A","nb_places_libres":-1,"nb_places_total":-1,"device":"camera"}</span><br><br>
 
-      Le XBee démarre automatiquement au démarrage du Raspberry Pi si il était activé. Il continue d'envoyer même quand le flux vidéo est arrêté (mode headless).
+      Le XBee démarre automatiquement au démarrage du Raspberry Pi si il était activé. Il continue d'envoyer même quand le flux vidéo est arrêté (mode headless). Il est mis en pause pendant le mode démo et reprend automatiquement à la fin.
     </div>
   </div>
 
@@ -172,7 +172,7 @@
       Quand vous cliquez "Démarrer le flux", le système génère le flux vidéo avec l'overlay (places colorées, HUD, point d'ancrage). Plus gourmand en CPU mais permet de visualiser la détection.<br><br>
 
       <b style="color:var(--accent)">Mode démo</b><br>
-      Permet de tester la détection sur un fichier vidéo local (onglet Démo vidéo). Le lancement de la démo interrompt temporairement la détection en direct. À la fin de la démo, la détection live reprend automatiquement.<br><br>
+      Permet de tester la détection sur un fichier vidéo local (onglet Démo vidéo). Le lancement de la démo interrompt temporairement la détection en direct et met en pause le XBee. La détection utilise le centre du véhicule (pas de correction de perspective). À la fin de la démo, la détection live et le XBee reprennent automatiquement.<br><br>
 
       <b style="color:var(--accent)">Alertes caméra</b><br>
       Le système surveille en continu l'état du flux :<br>
@@ -246,7 +246,7 @@
         <button class="mtab a-draw" id="mgTab0" onclick="mgSetTab(0)">Images</button>
         <button class="mtab" id="mgTab1" onclick="mgSetTab(1)">Importer</button>
         <button class="mtab" id="mgTab2" onclick="mgSetTab(2)">Dupliquer masque</button>
-        <button class="mtab" id="mgTab3" onclick="mgSetTab(3)">Export CSV</button>
+        <button class="mtab" id="mgTab3" onclick="mgSetTab(3)">Export</button>
       </div>
 
       <!-- TAB 0 : liste images -->
@@ -268,7 +268,7 @@
 
       <!-- TAB 2 : dupliquer masque -->
       <div id="mgP2" style="display:none">
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:12px">
           <div class="form-label">Image source (avec masque existant)</div>
           <select id="mgDupSrc" style="width:100%"><option value="">— Sélectionner —</option></select>
         </div>
@@ -286,16 +286,50 @@
         <button class="mf-btn apply" onclick="mgDuplicateMask()" style="margin-top:10px;width:100%">Dupliquer le masque</button>
       </div>
 
-      <!-- TAB 3 : export CSV -->
+      <!-- TAB 3 : export JSON + image -->
       <div id="mgP3" style="display:none">
         <div class="form-group">
           <div class="form-label">Image à exporter</div>
           <select id="mgExportSrc" style="width:100%"><option value="">— Sélectionner —</option></select>
         </div>
-        <div class="form-hint">Télécharge un CSV avec les coordonnées de chaque coin de chaque place.</div>
-        <button class="mf-btn apply" onclick="mgExportCSV()" style="margin-top:10px;width:100%">Télécharger le CSV</button>
+        <div class="form-hint">Télécharge un ZIP contenant le fichier JSON des coordonnées et l'image source.</div>
+        <button class="mf-btn apply" onclick="mgExport()" style="margin-top:10px;width:100%">Télécharger le ZIP</button>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<!-- ══ ASSIGN IMAGE MODAL ══ -->
+<div class="modal-bg" id="assignModal">
+  <div class="modal" style="max-width:400px;width:90%">
+    <div class="modal-header">
+      <span class="modal-title">Attribuer à une caméra</span>
+      <button class="modal-close" onclick="document.getElementById('assignModal').classList.remove('on')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-hint" id="assignFilename" style="margin-bottom:10px"></div>
+      <div id="assignCamList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RENAME IMAGE MODAL ══ -->
+<div class="modal-bg" id="renameModal">
+  <div class="modal" style="max-width:400px;width:90%">
+    <div class="modal-header">
+      <span class="modal-title">Renommer l'image</span>
+      <button class="modal-close" onclick="document.getElementById('renameModal').classList.remove('on')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="form-label">Nouveau nom (sans extension)</div>
+        <input class="form-input" type="text" id="renameInput">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="mf-btn cancel" onclick="document.getElementById('renameModal').classList.remove('on')">Annuler</button>
+      <button class="mf-btn apply" onclick="doRename()">Renommer</button>
     </div>
   </div>
 </div>
@@ -308,6 +342,11 @@
       <button class="modal-close" onclick="camCloseModal()">×</button>
     </div>
     <div class="modal-body">
+      <div class="form-group" id="cfgIdGroup" style="display:none">
+        <div class="form-label">Identifiant (ID)</div>
+        <input class="form-input" type="text" id="cfgId" placeholder="cam1" style="font-family:var(--mono)">
+        <div class="form-hint">Lettres, chiffres, tirets et underscores uniquement. Utilisé dans les noms de fichiers.</div>
+      </div>
       <div class="form-group">
         <div class="form-label">Nom de la caméra</div>
         <input class="form-input" type="text" id="cfgName" placeholder="Caméra parking nord">
@@ -472,7 +511,7 @@
 <div id="ld"><div class="spin2"></div></div>
 
 
-<script src="/static/js/parking.js?v=20260316"></script>
+<script src="/static/js/parking.js?v=07"></script>
 <script>
 applyTheme();
 camLoadAll();

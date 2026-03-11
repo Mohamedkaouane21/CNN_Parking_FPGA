@@ -1,12 +1,12 @@
 """
-Parking Vision Setup Server
-============================
+Parking Vision Setup Server v0.7
+=================================
 - Éditeur de places (polygones)
 - Live View RTSP avec YOLO + masque
 - Démo vidéo avec YOLO + masque
 
 Usage:
-    python3 parking_setup_server_v2.py
+    python3 parking_server.py
     Ouvrir http://<IP_RPI>:5000 depuis un PC sur le même réseau.
 """
 
@@ -97,11 +97,11 @@ def load_cameras():
     default = [{
         "id": "cam1",
         "name": "Caméra 1",
-        "ip": "192.168.0.6",
+        "ip": "192.168.0.1",
         "port": "554",
-        "path": "h264Preview_01_sub",
+        "path": "",
         "user": "admin",
-        "pass": "TPRESEAU!",
+        "pass": "",
         "zone": "A"
     }]
     save_cameras(default)
@@ -115,6 +115,10 @@ def save_cameras(cameras):
 def camera_rtsp_url(cam):
     """Construit l'URL RTSP depuis un objet caméra."""
     return f"rtsp://{cam['user']}:{cam['pass']}@{cam['ip']}:{cam['port']}/{cam['path']}"
+
+def find_camera(cameras, cam_id):
+    """Trouve une caméra par son ID dans la liste. Retourne None si introuvable."""
+    return next((c for c in cameras if c["id"] == cam_id), None)
 
 
 # ══════════════════════════════════════════
@@ -332,7 +336,7 @@ class XBeeSender:
         if self._send_count % 10 == 0 and engine.cam_id:
             try:
                 cams = load_cameras()
-                cam = next((c for c in cams if c["id"] == engine.cam_id), None)
+                cam = find_camera(cams, engine.cam_id)
                 if cam:
                     self._zone_cache = cam.get("zone", "Z")
                     zone = self._zone_cache
@@ -376,7 +380,7 @@ def load_coords(W, H, cam_id=None):
     # Chercher le masque actif dans la config de la caméra
     if cam_id:
         cameras = load_cameras()
-        cam = next((c for c in cameras if c["id"] == cam_id), None)
+        cam = find_camera(cameras, cam_id)
         if cam and cam.get("active_mask"):
             jf = coords_filename(cam_id, cam["active_mask"])
             path = os.path.join(COORDS_DIR, jf)
@@ -403,41 +407,55 @@ def precompute_polys(coords):
     return polys, centers
 
 
+def _ascii_safe(text):
+    """Remplace les accents par leurs équivalents ASCII (é→e, ç→c, etc.)."""
+    _MAP = str.maketrans('àâäéèêëïîôùûüçÀÂÄÉÈÊËÏÎÔÙÛÜÇ—', 'aaaeeeeiiouuucAAAEEEEIIOUUUC-')
+    return text.translate(_MAP)
+
+
+def safe_name(text):
+    """Nettoie un nom pour l'utiliser dans un nom de fichier (é→e, espaces→_)."""
+    return re.sub(r'[^a-zA-Z0-9_-]', '_', _ascii_safe(text)).strip('_')
+
+
+def sensor_filename(cam_id=None, image_name=None):
+    """Construit le chemin du fichier capteur."""
+    if cam_id and image_name:
+        base = safe_name(os.path.splitext(image_name)[0])
+        return os.path.join(SENSORS_DIR, f"sensor_places_{cam_id}_{base}.json")
+    if cam_id:
+        return os.path.join(SENSORS_DIR, f"sensor_places_{cam_id}.json")
+    return os.path.join(SENSORS_DIR, "sensor_places.json")
+
+
 def load_sensor_flags(cam_id=None):
     """Charge la liste des places capteur. Retourne une liste de bool."""
     # Chercher le masque actif pour déterminer le bon fichier
     if cam_id:
         cameras = load_cameras()
-        cam = next((c for c in cameras if c["id"] == cam_id), None)
+        cam = find_camera(cameras, cam_id)
         if cam and cam.get("active_mask"):
-            base = re.sub(r'[^a-zA-Z0-9_-]', '_', os.path.splitext(cam["active_mask"])[0]).strip('_')
-            fname = os.path.join(SENSORS_DIR, f"sensor_places_{cam_id}_{base}.json")
+            fname = sensor_filename(cam_id, cam["active_mask"])
             if os.path.exists(fname):
                 with open(fname) as f:
                     return json.load(f)
-    # Fallback
+    # Fallback : fichier par cam_id
     if cam_id:
-        fname = os.path.join(SENSORS_DIR, f"sensor_places_{cam_id}.json")
+        fname = sensor_filename(cam_id)
         if os.path.exists(fname):
             with open(fname) as f:
                 return json.load(f)
-    fallback = os.path.join(SENSORS_DIR, "sensor_places.json")
-    if os.path.exists(fallback):
-        with open(fallback) as f:
+    # Fallback : fichier global
+    fname = sensor_filename()
+    if os.path.exists(fname):
+        with open(fname) as f:
             return json.load(f)
     return []
 
 
 def save_sensor_flags(flags, cam_id=None, image_name=None):
     """Sauvegarde la liste des places capteur."""
-    if cam_id and image_name:
-        base = re.sub(r'[^a-zA-Z0-9_-]', '_', os.path.splitext(image_name)[0]).strip('_')
-        fname = os.path.join(SENSORS_DIR, f"sensor_places_{cam_id}_{base}.json")
-    elif cam_id:
-        fname = os.path.join(SENSORS_DIR, f"sensor_places_{cam_id}.json")
-    else:
-        fname = os.path.join(SENSORS_DIR, "sensor_places.json")
-    with open(fname, "w") as f:
+    with open(sensor_filename(cam_id, image_name), "w") as f:
         json.dump(flags, f)
 
 def draw_overlay(frame, polys, centers, states, vehicles, detect_point=85, detect_horizontal=50, sensor_flags=None, show_crosshair=True):
@@ -494,11 +512,6 @@ def draw_hud(frame, free, occ, total, extra_text=""):
     cv2.rectangle(frame, (10,10), (10 + box_w, 54), (0,0,0), -1)
     cv2.rectangle(frame, (10,10), (10 + box_w, 54), (40,40,40), 1)
     cv2.putText(frame, label, (18,38), cv2.FONT_HERSHEY_SIMPLEX, 0.58, (0,229,255), 1)
-
-def _ascii_safe(text):
-    """Remplace les accents par leurs équivalents ASCII pour cv2.putText (police Hershey)."""
-    _MAP = str.maketrans('àâäéèêëïîôùûüçÀÂÄÉÈÊËÏÎÔÙÛÜÇ—', 'aaaeeeeiiouuucAAAEEEEIIOUUUC-')
-    return text.translate(_MAP)
 
 
 def draw_centered_text(frame, text, color=(60,60,60), scale=0.7, thickness=2):
@@ -775,33 +788,28 @@ class LiveEngine:
 
                 frame_time = time.time() - t0
 
+                # Mettre à jour les stats (commun streaming + headless)
+                new_stats = {"free": free, "occ": occ, "total": total,
+                             "total_places": len(polys),
+                             "n_sensor": n_sensor,
+                             "error": False,
+                             "cam_health": cam_health,
+                             "yolo_available": YOLODetector.get(),
+                             "yolo_enabled": self.yolo_enabled,
+                             "yolo_ms": round(YOLODetector._detect_total / max(YOLODetector._detect_count, 1) * 1000),
+                             "frame_ms": round(frame_time * 1000)}
+
                 if self.streaming:
                     draw_hud(frame, free, occ, total)
                     _, jpeg = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, SETTINGS['jpeg_quality']])
                     with self.lock:
                         self._annotated = jpeg.tobytes()
-                        self.stats = {"free": free, "occ": occ, "total": total,
-                                      "total_places": len(polys),
-                                      "n_sensor": n_sensor,
-                                      "error": False,
-                                      "cam_health": cam_health,
-                                      "yolo_available": YOLODetector.get(),
-                                      "yolo_enabled": self.yolo_enabled,
-                                      "yolo_ms": round(YOLODetector._detect_total / max(YOLODetector._detect_count, 1) * 1000),
-                                      "frame_ms": round(frame_time * 1000)}
+                        self.stats = new_stats
                     self.frame_event.set()
                     self.frame_event.clear()
                 else:
                     with self.lock:
-                        self.stats = {"free": free, "occ": occ, "total": total,
-                                      "total_places": len(polys),
-                                      "n_sensor": n_sensor,
-                                      "error": False,
-                                      "cam_health": cam_health,
-                                      "yolo_available": YOLODetector.get(),
-                                      "yolo_enabled": self.yolo_enabled,
-                                      "yolo_ms": round(YOLODetector._detect_total / max(YOLODetector._detect_count, 1) * 1000),
-                                      "frame_ms": round(frame_time * 1000)}
+                        self.stats = new_stats
 
                 # Limiter le FPS
                 delay = 1.0 / SETTINGS['stream_fps']
@@ -1005,12 +1013,10 @@ def find_images():
 
 def coords_filename(cam_id, image_name):
     """Génère le nom du fichier de masque : parking_coords_{cam_id}_{image_base}.json"""
-    base = os.path.splitext(os.path.basename(image_name))[0]
-    # Nettoyer le nom pour éviter les caractères spéciaux
-    safe = re.sub(r'[^a-zA-Z0-9_-]', '_', base).strip('_')
+    base = safe_name(os.path.splitext(os.path.basename(image_name))[0])
     if cam_id:
-        return f"parking_coords_{cam_id}_{safe}.json"
-    return f"parking_coords_{safe}.json"
+        return f"parking_coords_{cam_id}_{base}.json"
+    return f"parking_coords_{base}.json"
 
 @app.route("/")
 def index():
@@ -1018,7 +1024,13 @@ def index():
 
 @app.route("/api/images")
 def api_images():
-    return jsonify(find_images())
+    cam_id = request.args.get("cam_id", "")
+    all_imgs = find_images()
+    if not cam_id:
+        return jsonify(all_imgs)
+    # Filtrer : captures de cette caméra + images non-capture (uploadées manuellement)
+    filtered = [f for f in all_imgs if f.startswith(f"capture_{cam_id}_") or not f.startswith("capture_")]
+    return jsonify(filtered)
 
 @app.route("/api/image/<filename>")
 def api_image(filename):
@@ -1077,8 +1089,7 @@ def api_sensor_get():
     cam_id = request.args.get("cam_id")
     image_name = request.args.get("image_name")
     if cam_id and image_name:
-        base = re.sub(r'[^a-zA-Z0-9_-]', '_', os.path.splitext(image_name)[0]).strip('_')
-        fname = os.path.join(SENSORS_DIR, f"sensor_places_{cam_id}_{base}.json")
+        fname = sensor_filename(cam_id, image_name)
         if os.path.exists(fname):
             with open(fname) as f:
                 return jsonify({"flags": json.load(f)})
@@ -1114,7 +1125,7 @@ def api_set_active_mask():
 def api_get_active_mask():
     cam_id = request.args.get("cam_id", "")
     cameras = load_cameras()
-    cam = next((c for c in cameras if c["id"] == cam_id), None)
+    cam = find_camera(cameras, cam_id)
     mask = cam.get("active_mask", "") if cam else ""
     return jsonify({"cam_id": cam_id, "active_mask": mask})
 
@@ -1148,6 +1159,61 @@ def manage_rename():
                 os.rename(old_cf, new_cf)
     print(f"[MANAGE] Renommé : {old} → {new}")
     return jsonify({"ok": True})
+
+@app.route("/api/manage/assign", methods=["POST"])
+def manage_assign():
+    """Attribue une image à une caméra : renomme l'image et ses fichiers JSON associés."""
+    data     = request.json or {}
+    filename = os.path.basename(data.get("filename", ""))
+    cam_id   = data.get("cam_id", "")
+    if not filename or not cam_id:
+        return jsonify({"ok": False, "error": "Paramètres manquants"})
+    old_path = os.path.join(CAPTURES_DIR, filename)
+    if not os.path.exists(old_path):
+        return jsonify({"ok": False, "error": "Image introuvable"})
+
+    # Lire la résolution de l'image
+    img = cv2.imread(old_path)
+    if img is None:
+        return jsonify({"ok": False, "error": "Impossible de lire l'image"})
+    H, W = img.shape[:2]
+
+    # Trouver le nom de la caméra
+    cameras = load_cameras()
+    cam = find_camera(cameras, cam_id)
+    cam_label = safe_name(cam['name']) if cam else cam_id
+
+    # Construire le nouveau nom
+    ext = os.path.splitext(filename)[1]
+    new_name = f"capture_{cam_id}_{cam_label}_{W}x{H}{ext}"
+    new_path = os.path.join(CAPTURES_DIR, new_name)
+
+    # Éviter l'écrasement
+    if os.path.exists(new_path) and new_path != old_path:
+        return jsonify({"ok": False, "error": f"Le fichier {new_name} existe déjà"})
+
+    # Renommer l'image
+    if old_path != new_path:
+        os.rename(old_path, new_path)
+
+    # Renommer les fichiers de coords existants pour cette image → nouveau nom
+    old_base = safe_name(os.path.splitext(filename)[0])
+    new_base = safe_name(os.path.splitext(new_name)[0])
+    for d, prefix in [(COORDS_DIR, "parking_coords_"), (SENSORS_DIR, "sensor_places_")]:
+        for f in glob.glob(os.path.join(d, f"{prefix}*_{old_base}.json")):
+            new_f = f.replace(f"_{old_base}.json", f"_{new_base}.json")
+            # Remplacer aussi l'ancien cam_id par le nouveau dans le nom
+            bn = os.path.basename(new_f)
+            # Reconstruire proprement avec le bon cam_id
+            if prefix == "parking_coords_":
+                new_f = os.path.join(d, coords_filename(cam_id, new_name))
+            else:
+                new_f = os.path.join(d, os.path.basename(sensor_filename(cam_id, new_name)))
+            if not os.path.exists(new_f):
+                os.rename(f, new_f)
+
+    print(f"[MANAGE] Attribué : {filename} → {new_name} (caméra {cam_id})")
+    return jsonify({"ok": True, "old": filename, "new": new_name})
 
 @app.route("/api/manage/delete", methods=["POST"])
 def manage_delete():
@@ -1220,22 +1286,26 @@ def manage_duplicate_mask():
     print(f"[MANAGE] Masque dupliqué → {cam_id}_{dst_w}x{dst_h} ({len(new_coords)} places)")
     return jsonify({"ok": True, "file": os.path.basename(dst_cf), "count": len(new_coords)})
 
-@app.route("/api/manage/export_csv/<filename>")
-def manage_export_csv(filename):
-    """Exporte les coords d'une image en CSV."""
+@app.route("/api/manage/export/<filename>")
+def manage_export(filename):
+    """Exporte le masque JSON + l'image correspondante dans un ZIP."""
+    import zipfile, io
     cam_id = request.args.get("cam_id", "default")
-    cf = os.path.join(COORDS_DIR, coords_filename(cam_id, os.path.basename(filename)))
+    img_name = os.path.basename(filename)
+    cf = os.path.join(COORDS_DIR, coords_filename(cam_id, img_name))
+    img_path = os.path.join(CAPTURES_DIR, img_name)
     if not os.path.exists(cf):
         return jsonify({"error": "Aucun masque pour cette image/caméra"}), 404
-    with open(cf) as f:
-        coords = _normalize_coords(json.load(f))
-    lines = ["place,point,x,y"]
-    for i, zone in enumerate(coords):
-        for j, pt in enumerate(zone):
-            lines.append(f"{i+1},{j+1},{pt[0]},{pt[1]}")
-    csv_data = "\n".join(lines)
-    return Response(csv_data, mimetype="text/csv",
-                    headers={"Content-Disposition": f"attachment; filename=masque_{os.path.splitext(filename)[0]}.csv"})
+    # Créer le ZIP en mémoire
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, 'w', zipfile.ZIP_DEFLATED) as zf:
+        zf.write(cf, os.path.basename(cf))
+        if os.path.exists(img_path):
+            zf.write(img_path, img_name)
+    buf.seek(0)
+    base = safe_name(os.path.splitext(img_name)[0])
+    return Response(buf.read(), mimetype="application/zip",
+                    headers={"Content-Disposition": f"attachment; filename=export_{cam_id}_{base}.zip"})
 
 
 # ══════════════════════════════════════════
@@ -1270,7 +1340,7 @@ def demo_stop_route():
     # Relancer la détection live en headless
     cameras = load_cameras()
     default_id = SETTINGS.get('default_camera', '')
-    cam = next((c for c in cameras if c['id'] == default_id), None)
+    cam = find_camera(cameras, default_id)
     if not cam and cameras:
         cam = cameras[0]
     if cam:
@@ -1337,6 +1407,60 @@ def api_cameras_save():
     print(f"[CAMERAS] Sauvegardé : {len(cameras)} caméra(s)")
     return jsonify({"ok": True, "count": len(cameras)})
 
+@app.route("/api/cameras/rename_id", methods=["POST"])
+def api_cameras_rename_id():
+    """Renomme l'ID d'une caméra et met à jour tous les fichiers associés."""
+    data   = request.json or {}
+    old_id = data.get("old_id", "").strip()
+    new_id = data.get("new_id", "").strip()
+    if not old_id or not new_id:
+        return jsonify({"ok": False, "error": "IDs manquants"})
+    if not re.match(r'^[a-zA-Z0-9_-]+$', new_id):
+        return jsonify({"ok": False, "error": "ID invalide"})
+
+    # Vérifier que le nouvel ID n'existe pas déjà
+    cameras = load_cameras()
+    if find_camera(cameras, new_id):
+        return jsonify({"ok": False, "error": "Cet ID existe déjà"})
+
+    # 1. Mettre à jour le JSON caméras
+    cam = find_camera(cameras, old_id)
+    if not cam:
+        return jsonify({"ok": False, "error": "Caméra introuvable"})
+    cam["id"] = new_id
+    save_cameras(cameras)
+
+    # 2. Renommer les fichiers coords (parking_coords_{old_id}_xxx.json → parking_coords_{new_id}_xxx.json)
+    for f in glob.glob(os.path.join(COORDS_DIR, f"parking_coords_{old_id}_*.json")):
+        new_f = f.replace(f"parking_coords_{old_id}_", f"parking_coords_{new_id}_")
+        os.rename(f, new_f)
+
+    # 3. Renommer les fichiers sensor (sensor_places_{old_id}_xxx.json)
+    for f in glob.glob(os.path.join(SENSORS_DIR, f"sensor_places_{old_id}_*.json")):
+        new_f = f.replace(f"sensor_places_{old_id}_", f"sensor_places_{new_id}_")
+        os.rename(f, new_f)
+    # Fichier sensor sans suffixe image
+    old_sf = os.path.join(SENSORS_DIR, f"sensor_places_{old_id}.json")
+    if os.path.exists(old_sf):
+        os.rename(old_sf, os.path.join(SENSORS_DIR, f"sensor_places_{new_id}.json"))
+
+    # 4. Renommer les captures (capture_{old_id}_xxx.jpg → capture_{new_id}_xxx.jpg)
+    for f in glob.glob(os.path.join(CAPTURES_DIR, f"capture_{old_id}_*")):
+        new_f = f.replace(f"capture_{old_id}_", f"capture_{new_id}_")
+        os.rename(f, new_f)
+
+    # 5. Mettre à jour default_camera dans settings
+    if SETTINGS.get('default_camera') == old_id:
+        SETTINGS['default_camera'] = new_id
+        save_settings(SETTINGS)
+
+    # 6. Mettre à jour le moteur live si nécessaire
+    if engine.cam_id == old_id:
+        engine.cam_id = new_id
+
+    print(f"[CAMERAS] ID renommé : {old_id} → {new_id}")
+    return jsonify({"ok": True})
+
 @app.route("/api/cameras/scan", methods=["POST"])
 def api_cameras_scan():
     """Scanne le réseau local pour trouver les appareils avec un port RTSP ouvert (554 ou 8554)."""
@@ -1393,7 +1517,7 @@ def api_capture():
     if not cam_id:
         return jsonify({"ok": False, "error": "Aucune caméra spécifiée"})
     cameras = load_cameras()
-    cam = next((c for c in cameras if c["id"] == cam_id), None)
+    cam = find_camera(cameras, cam_id)
     if not cam:
         return jsonify({"ok": False, "error": "Caméra introuvable"})
     url = camera_rtsp_url(cam)
@@ -1408,9 +1532,9 @@ def api_capture():
     if not ret or frame is None:
         return jsonify({"ok": False, "error": "Impossible de lire une frame"})
     H, W = frame.shape[:2]
-    # Nom : camera + resolution
-    safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', cam['name']).strip('_')
-    filename = f"capture_{safe_name}_{W}x{H}.jpg"
+    # Nom : cam_id + nom caméra + resolution
+    cam_safe = safe_name(cam['name'])
+    filename = f"capture_{cam_id}_{cam_safe}_{W}x{H}.jpg"
     filepath = os.path.join(CAPTURES_DIR, filename)
     cv2.imwrite(filepath, frame, [cv2.IMWRITE_JPEG_QUALITY, 95])
     print(f"[CAPTURE] Sauvegardé : {filename} ({W}x{H})")
@@ -1428,7 +1552,7 @@ def live_start():
     cam_id = data.get("camera_id")
     if cam_id:
         cams = load_cameras()
-        cam = next((c for c in cams if c["id"] == cam_id), None)
+        cam = find_camera(cams, cam_id)
         if cam:
             source = camera_rtsp_url(cam)
             print(f"[LIVE] Caméra sélectionnée : {cam['name']} ({cam['ip']})")
@@ -1661,7 +1785,7 @@ def api_about():
     except:
         disk_free_mb = -1
     return jsonify({
-        "version": "0.6",
+        "version": "0.7",
         "platform": platform.machine(),
         "python": platform.python_version(),
         "yolo_model": YOLO_MODEL if yolo_ok else None,
@@ -1703,7 +1827,7 @@ if __name__ == "__main__":
     # Auto-démarrage détection en mode headless (pas de flux vidéo)
     if cameras:
         default_id = SETTINGS.get('default_camera', '')
-        cam = next((c for c in cameras if c['id'] == default_id), None)
+        cam = find_camera(cameras, default_id)
         if not cam:
             cam = cameras[0]
         source = camera_rtsp_url(cam)

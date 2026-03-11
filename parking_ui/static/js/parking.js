@@ -2,6 +2,18 @@ function updZoom(){document.getElementById('zdsp').textContent=`${Math.round(S.s
 function ptInPoly([px,py],poly){let ins=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const[xi,yi]=poly[i],[xj,yj]=poly[j];if(((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/(yj-yi)+xi))ins=!ins;}return ins;}
 function toast(msg,type='',dur=3500){const t=document.getElementById('toast');t.textContent=msg;t.className=`on ${type}`;clearTimeout(t._t);t._t=setTimeout(()=>t.className='',dur);}
 function showLoad(s){document.getElementById('ld').classList.toggle('on',s);}
+function showOverlay(id, title, subtitle){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.innerHTML = `<div class="so-title" style="font-size:16px">${title}</div><div class="so-sub">${subtitle}</div>`;
+  el.classList.remove('hidden');
+}
+function showOverlayLoading(id, text){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.innerHTML = `<div class="spin"></div><div class="so-sub">${text}</div>`;
+  el.classList.remove('hidden');
+}
 function toggleSidebar(id){
   const el = document.getElementById(id);
   const btn = el.querySelector('.sidebar-toggle');
@@ -421,32 +433,65 @@ async function mgRefreshImages(){
   list.innerHTML = imgs.map(name=>`
     <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg);border:1px solid var(--border);border-radius:3px">
       <span style="flex:1;font-family:var(--mono);font-size:12px;color:var(--text)">${name}</span>
+      <button class="mf-btn" onclick="mgAssign('${name}')"
+              style="padding:3px 8px;font-size:11px;border-color:var(--accent);color:var(--accent)">Attribuer</button>
       <button class="mf-btn" onclick="mgRename('${name}')"
               style="padding:3px 8px;font-size:11px">Renommer</button>
       <button class="mf-btn" onclick="mgDelete('${name}')"
               style="padding:3px 8px;font-size:11px;border-color:var(--red);color:var(--red)">Supprimer</button>
     </div>`).join('');
 }
-async function mgRename(oldName){
-  const ext     = oldName.substring(oldName.lastIndexOf('.'));
-  const base    = oldName.substring(0, oldName.lastIndexOf('.'));
-  const newBase = prompt(`Nouveau nom pour "${oldName}" (sans extension) :`, base);
-  if(!newBase || newBase === base) return;
+async function mgAssign(filename){
+  const cams = await fetch('/api/cameras').then(r=>r.json());
+  if(!cams.length){ toast('Aucune caméra configurée','err'); return; }
+  document.getElementById('assignFilename').textContent = filename;
+  document.getElementById('assignCamList').innerHTML = cams.map(c =>
+    `<button class="settings-btn" style="width:100%;margin:4px 0;padding:8px 12px;text-align:left;font-size:12px"
+       onclick="doAssign('${filename}','${c.id}')">${c.id} — ${c.name}</button>`
+  ).join('');
+  document.getElementById('assignModal').classList.add('on');
+}
+async function doAssign(filename, camId){
+  document.getElementById('assignModal').classList.remove('on');
+  try{
+    const r = await fetch('/api/manage/assign', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({filename, cam_id: camId})
+    }).then(r=>r.json());
+    if(r.ok){
+      toast(`${r.old} → ${r.new}`, 'ok');
+      await mgRefreshImages();
+      await refreshImageList();
+    } else {
+      toast(r.error || 'Erreur attribution', 'err');
+    }
+  }catch(e){ toast('Erreur réseau','err'); }
+}
+let _renameOldName = '';
+function mgRename(oldName){
+  _renameOldName = oldName;
+  const base = oldName.substring(0, oldName.lastIndexOf('.'));
+  document.getElementById('renameInput').value = base;
+  document.getElementById('renameModal').classList.add('on');
+  setTimeout(()=>document.getElementById('renameInput').focus(), 100);
+}
+async function doRename(){
+  const oldName = _renameOldName;
+  const ext = oldName.substring(oldName.lastIndexOf('.'));
+  const newBase = document.getElementById('renameInput').value.trim();
+  if(!newBase){ toast('Entrez un nom','err'); return; }
   const newName = newBase + ext;
+  if(newName === oldName){ document.getElementById('renameModal').classList.remove('on'); return; }
   const r = await fetch('/api/manage/rename', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({old: oldName, new: newName})
   }).then(r=>r.json());
+  document.getElementById('renameModal').classList.remove('on');
   if(r.ok){
     toast(`Renommé → ${newName}`, 'ok');
     await mgRefreshImages();
-    const sel = document.getElementById('imgSel');
-    const cur = sel.value;
-    sel.innerHTML = '<option value="">— Sélectionner une image —</option>';
-    const imgs = await fetch('/api/images').then(r=>r.json());
-    imgs.forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent=n; sel.appendChild(o); });
-    if(cur === oldName) sel.value = newName;
-    else sel.value = cur;
+    await refreshImageList();
+    if(S.imgName === oldName){ document.getElementById('imgSel').value = newName; S.imgName = newName; }
   } else {
     toast(r.error || 'Erreur renommage', 'err');
   }
@@ -460,10 +505,7 @@ async function mgDelete(name){
   if(r.ok){
     toast(`Supprimé : ${name}`, 'ok');
     await mgRefreshImages();
-    const sel = document.getElementById('imgSel');
-    const opt = [...sel.options].find(o=>o.value===name);
-    if(opt) sel.removeChild(opt);
-    if(sel.value === name){ sel.value=''; }
+    await refreshImageList();
   } else {
     toast(r.error || 'Erreur suppression', 'err');
   }
@@ -481,10 +523,7 @@ async function mgUpload(){
       hint.textContent = `✓ ${r.filename} importé avec succès.`;
       toast(`Image importée : ${r.filename}`, 'ok');
       await mgRefreshImages();
-      const sel = document.getElementById('imgSel');
-      if(![...sel.options].find(o=>o.value===r.filename)){
-        const o = document.createElement('option'); o.value=r.filename; o.textContent=r.filename; sel.appendChild(o);
-      }
+      await refreshImageList();
       input.value = '';
     } else {
       hint.textContent = r.error || 'Erreur upload';
@@ -505,10 +544,10 @@ async function mgDuplicateMask(){
   if(r.ok) toast(`Masque dupliqué → ${r.file} (${r.count} places)`, 'ok');
   else toast(r.error || 'Erreur duplication', 'err');
 }
-function mgExportCSV(){
+function mgExport(){
   const src = document.getElementById('mgExportSrc').value;
   if(!src){ toast('Sélectionnez une image','err'); return; }
-  window.location.href = `/api/manage/export_csv/${encodeURIComponent(src)}?cam_id=${encodeURIComponent(S.camId)}`;
+  window.location.href = `/api/manage/export/${encodeURIComponent(src)}?cam_id=${encodeURIComponent(S.camId)}`;
 }
 let cameras = [];
 let camEditingId = null;   // null = ajout, string = édition
@@ -597,9 +636,17 @@ function updateDefaultCamInfo(){
     }
   }).catch(()=>{});
 }
+function nextCamId(){
+  // Trouve le premier cam1, cam2, cam3... disponible (remplit les trous)
+  for(let n=1; n<=99; n++){
+    if(!cameras.find(c=>c.id==='cam'+n)) return 'cam'+n;
+  }
+  return 'cam' + Date.now();
+}
 function camAdd(){
   camEditingId = null;
   document.getElementById('camModalTitle').textContent = 'Ajouter une caméra';
+  document.getElementById('cfgIdGroup').style.display = 'none';
   document.getElementById('cfgName').value = '';
   document.getElementById('cfgIp').value   = '';
   document.getElementById('cfgPort').value = '554';
@@ -619,6 +666,7 @@ function camEdit(){
   if(!cam) return;
   camEditingId = cam.id;
   document.getElementById('camModalTitle').textContent = 'Éditer — ' + cam.name;
+  document.getElementById('cfgIdGroup').style.display = 'none';
   document.getElementById('cfgName').value = cam.name;
   document.getElementById('cfgIp').value   = cam.ip;
   document.getElementById('cfgPort').value = cam.port;
@@ -696,22 +744,24 @@ async function camSaveModal(){
   if(!ip){ toast('Entrez une adresse IP','err'); return; }
   const duplicate = cameras.find(c => c.name.toLowerCase() === name.toLowerCase() && c.id !== camEditingId);
   if(duplicate){ toast('Ce nom est déjà utilisé par une autre caméra','err'); return; }
+
+  let finalId;
   if(camEditingId){
     const cam = cameras.find(c=>c.id===camEditingId);
     if(cam){
       cam.name=name; cam.ip=ip; cam.port=port; cam.path=path; cam.user=user; cam.pass=pass; cam.zone=zone;
     }
+    finalId = camEditingId;
   } else {
-    const id = 'cam_' + Date.now();
-    cameras.push({id, name, ip, port, path, user, pass, zone});
+    finalId = nextCamId();
+    cameras.push({id: finalId, name, ip, port, path, user, pass, zone});
   }
   await fetch('/api/cameras/save', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(cameras)});
   camCloseModal();
   toast(camEditingId ? 'Caméra modifiée' : 'Caméra ajoutée', 'ok');
-  const selId = camEditingId || cameras[cameras.length-1].id;
   camRefreshSelect();
   editorRefreshCams();
-  document.getElementById('camSel').value = selId;
+  document.getElementById('camSel').value = finalId;
   camChanged();
   if(liveRunning && camEditingId){
     await liveStop();
@@ -823,8 +873,7 @@ async function liveStart(){
     clearInterval(demoStatsInterval);
     const dImg = document.getElementById('demoImg');
     if(dImg){ dImg.onerror=null; dImg.src=''; dImg.style.display='none'; }
-    const dov = document.getElementById('demoOverlay');
-    if(dov){ dov.innerHTML='<div class="so-title" style="font-size:16px">DÉMO INTERROMPUE</div><div class="so-sub">Flux en direct en cours de démarrage</div>'; dov.classList.remove('hidden'); }
+    showOverlay('demoOverlay', 'DÉMO INTERROMPUE', 'Flux en direct en cours de démarrage');
     document.getElementById('dStopBtn').disabled = true;
     document.getElementById('dPauseBtn').disabled = true;
     document.getElementById('demoDot').classList.remove('on');
@@ -832,9 +881,8 @@ async function liveStart(){
   }
   const img = document.getElementById('liveImg');
   img.src = ''; img.style.display = 'none';
+  showOverlayLoading('streamOverlay', 'Connexion au flux...');
   const ov = document.getElementById('streamOverlay');
-  ov.innerHTML = '<div class="spin"></div><div class="so-sub">Connexion au flux...</div>';
-  ov.classList.remove('hidden');
   try{
     await fetch('/api/live/stop_all', {method:'POST'});
     await new Promise(r => setTimeout(r, 500));
@@ -878,9 +926,7 @@ async function liveStop(){
   const img = document.getElementById('liveImg');
   img.onerror = null; img.onload = null; // Empêcher le flash "erreur de flux"
   img.src=''; img.style.display='none';
-  const ov = document.getElementById('streamOverlay');
-  ov.innerHTML = '<div class="so-title" style="font-size:16px">FLUX VIDÉO ARRÊTÉ</div><div class="so-sub">Détection en cours en arrière-plan<br>Cliquez Démarrer pour voir le flux</div>';
-  ov.classList.remove('hidden');
+  showOverlay('streamOverlay', 'FLUX VIDÉO ARRÊTÉ', 'Détection en cours en arrière-plan<br>Cliquez Démarrer pour voir le flux');
   document.getElementById('lStartBtn').disabled = false;
   document.getElementById('lStopBtn').disabled = true;
   document.getElementById('liveDot').classList.remove('on');
@@ -948,6 +994,11 @@ async function fetchStats(){
       if(cam) document.getElementById('lSrcDisplay').innerHTML = `<span>${cam.name}</span><br>${cam.ip} — En direct`;
     } else if(isDetecting){
       dot.style.background=''; dot.style.boxShadow='';
+      const engCam = cameras.find(c=>c.id===s.engine_cam_id);
+      if(engCam) document.getElementById('lSrcDisplay').innerHTML = `<span>${engCam.name}</span><br>${engCam.ip} — Arrière-plan`;
+    } else if(demoRunning){
+      dot.style.background=''; dot.style.boxShadow='';
+      document.getElementById('lSrcDisplay').innerHTML = '<span>Mode démo</span><br>Détection en direct en pause';
     }
     if(!liveRunning && demoRunning){
       const ov = document.getElementById('streamOverlay');
@@ -1010,9 +1061,8 @@ async function demoStart(){
   const video = document.getElementById('dVideoSel').value;
   if(!video){ toast('Sélectionnez une vidéo','err'); return; }
   document.getElementById('dStartBtn').disabled = true;
+  showOverlayLoading('demoOverlay', 'Arrêt du live et chargement de la vidéo...');
   const ov = document.getElementById('demoOverlay');
-  ov.innerHTML = '<div class="spin"></div><div class="so-sub">Arrêt du live et chargement de la vidéo...</div>';
-  ov.classList.remove('hidden');
   toast('Détection en direct interrompue pendant la démo', '', 6000);
   if(liveRunning){
     liveRunning = false;
@@ -1021,9 +1071,7 @@ async function demoStart(){
     document.getElementById('lStartBtn').disabled = false;
     document.getElementById('lStopBtn').disabled = true;
     document.getElementById('liveDot').classList.remove('on');
-    const lov = document.getElementById('streamOverlay');
-    lov.innerHTML = '<div class="so-title">FLUX INTERROMPU</div><div class="so-sub">Mode démo en cours...</div>';
-    lov.classList.remove('hidden');
+    showOverlay('streamOverlay', 'FLUX INTERROMPU', 'Mode démo en cours...');
   }
   try{
     const resp = await fetch('/api/demo/start', {
@@ -1055,9 +1103,7 @@ async function demoStop(){
   clearInterval(demoStatsInterval);
   const img = document.getElementById('demoImg');
   img.onerror=null; img.src=''; img.style.display='none';
-  const ov = document.getElementById('demoOverlay');
-  ov.innerHTML = '<div class="so-title" style="font-size:16px">DÉMO ARRÊTÉE</div><div class="so-sub">Détection en direct relancée en arrière-plan</div>';
-  ov.classList.remove('hidden');
+  showOverlay('demoOverlay', 'DÉMO ARRÊTÉE', 'Détection en direct relancée en arrière-plan');
   document.getElementById('dStartBtn').disabled = false;
   document.getElementById('dStopBtn').disabled  = true;
   document.getElementById('dPauseBtn').disabled = true;
@@ -1070,8 +1116,7 @@ async function demoStop(){
   document.getElementById('dSeekFill').style.width='0%';
   document.getElementById('dSeekHead').style.left='0%';
   document.getElementById('dFrameInfo').textContent='Frame — / —';
-  const lov = document.getElementById('streamOverlay');
-  lov.innerHTML = '<div class="so-title" style="font-size:16px">FLUX VIDÉO ARRÊTÉ</div><div class="so-sub">Détection en cours en arrière-plan<br>Cliquez Démarrer pour voir le flux</div>';
+  showOverlay('streamOverlay', 'FLUX VIDÉO ARRÊTÉ', 'Détection en cours en arrière-plan<br>Cliquez Démarrer pour voir le flux');
   toast('Détection en direct relancée', 'ok');
 }
 async function fetchDemoStats(){
@@ -1133,10 +1178,10 @@ let S={
 };
 const c2s=([ix,iy])=>[ix*S.sc+S.ox, iy*S.sc+S.oy];
 const s2i=(cx,cy)=>[Math.round((cx-S.ox)/S.sc), Math.round((cy-S.oy)/S.sc)];
-function editorCamChanged(){
+async function editorCamChanged(){
   const sel = document.getElementById('editorCamSel');
   S.camId = sel.value;
-  if(S.imgName) loadImg(S.imgName);
+  await refreshImageList();
 }
 async function editorRefreshCams(){
   try{
@@ -1155,6 +1200,16 @@ async function editorRefreshCams(){
     S.camId = sel.value;
   }catch(e){ console.error('editorRefreshCams', e); }
 }
+async function refreshImageList(){
+  const imgs = await fetch('/api/images?cam_id='+encodeURIComponent(S.camId)).then(r=>r.json());
+  const sel = document.getElementById('imgSel');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Sélectionner une image —</option>';
+  imgs.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
+  // Garder la sélection si l'image existe encore dans la liste
+  if(imgs.includes(cur)) sel.value = cur;
+  else { sel.value = ''; S.img=null; S.imgName=null; S.zones=[]; S.selZ=-1; render(); updateList(); updateStats(); }
+}
 async function captureFromCam(){
   if(!S.camId){ toast('Sélectionnez une caméra','err'); return; }
   const btn  = document.getElementById('captureBtn');
@@ -1172,13 +1227,8 @@ async function captureFromCam(){
       hint.textContent = `✓ ${r.filename} (${r.width}×${r.height})`;
       hint.style.color = 'var(--green)';
       toast(`Screenshot capturé : ${r.filename}`, 'ok');
-      const imgSel = document.getElementById('imgSel');
-      if(![...imgSel.options].find(o=>o.value===r.filename)){
-        const o = document.createElement('option');
-        o.value = r.filename; o.textContent = r.filename;
-        imgSel.appendChild(o);
-      }
-      imgSel.value = r.filename;
+      await refreshImageList();
+      document.getElementById('imgSel').value = r.filename;
       await loadImg(r.filename);
     } else {
       hint.textContent = r.error || 'Erreur capture';
@@ -1195,10 +1245,8 @@ async function captureFromCam(){
 }
 async function init(){
   await editorRefreshCams();
-  const imgs=await fetch('/api/images').then(r=>r.json());
-  const sel=document.getElementById('imgSel');
-  imgs.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
-  sel.addEventListener('change',()=>loadImg(sel.value));
+  await refreshImageList();
+  document.getElementById('imgSel').addEventListener('change',()=>loadImg(document.getElementById('imgSel').value));
   resize(); window.addEventListener('resize',()=>{resize();render();resizeLive();});
 }
 async function loadImg(name){
