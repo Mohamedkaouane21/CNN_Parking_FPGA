@@ -360,6 +360,17 @@ xbee = XBeeSender()
 # UTILITAIRES
 # ══════════════════════════════════════════
 
+def _normalize_coords(raw):
+    """Extrait les tableaux de points depuis le format coords (ancien = liste de pts, nouveau = objet {pts, type})."""
+    result = []
+    for item in raw:
+        if isinstance(item, dict) and "pts" in item:
+            result.append(item["pts"])
+        else:
+            result.append(item)
+    return result
+
+
 def load_coords(W, H, cam_id=None):
     """Charge le fichier de coordonnées correspondant au masque actif de la caméra."""
     # Chercher le masque actif dans la config de la caméra
@@ -371,7 +382,7 @@ def load_coords(W, H, cam_id=None):
             path = os.path.join(COORDS_DIR, jf)
             if os.path.exists(path):
                 with open(path) as f:
-                    return json.load(f), path
+                    return _normalize_coords(json.load(f)), path
 
     # Fallback : chercher par cam_id + résolution (ancien format)
     search = []
@@ -382,7 +393,7 @@ def load_coords(W, H, cam_id=None):
     for fname in search:
         if os.path.exists(fname):
             with open(fname) as f:
-                return json.load(f), fname
+                return _normalize_coords(json.load(f)), fname
     return [], None
 
 def precompute_polys(coords):
@@ -429,7 +440,7 @@ def save_sensor_flags(flags, cam_id=None, image_name=None):
     with open(fname, "w") as f:
         json.dump(flags, f)
 
-def draw_overlay(frame, polys, centers, states, vehicles, detect_point=85, detect_horizontal=50, sensor_flags=None):
+def draw_overlay(frame, polys, centers, states, vehicles, detect_point=85, detect_horizontal=50, sensor_flags=None, show_crosshair=True):
     """Dessine masque + vehicules. Retourne (free, occ)."""
     if sensor_flags is None:
         sensor_flags = []
@@ -439,10 +450,11 @@ def draw_overlay(frame, polys, centers, states, vehicles, detect_point=85, detec
         cy = y + h//2
         det_x = x + w * detect_horizontal // 100
         det_y = y + h * detect_point // 100
-        cv2.line(frame, (cx-4, cy), (cx+4, cy), (255,255,0), 2)
-        cv2.line(frame, (cx, cy-4), (cx, cy+4), (255,255,0), 2)
+        if show_crosshair:
+            cv2.line(frame, (cx-4, cy), (cx+4, cy), (255,255,0), 2)
+            cv2.line(frame, (cx, cy-4), (cx, cy+4), (255,255,0), 2)
+            cv2.line(frame, (cx, cy), (det_x, det_y), (0,255,255), 1)
         cv2.circle(frame, (det_x, det_y), 4, (0,255,255), -1)
-        cv2.line(frame, (cx, cy), (det_x, det_y), (0,255,255), 1)
 
     free = occ = 0
     if polys:
@@ -482,6 +494,22 @@ def draw_hud(frame, free, occ, total, extra_text=""):
     cv2.rectangle(frame, (10,10), (10 + box_w, 54), (0,0,0), -1)
     cv2.rectangle(frame, (10,10), (10 + box_w, 54), (40,40,40), 1)
     cv2.putText(frame, label, (18,38), cv2.FONT_HERSHEY_SIMPLEX, 0.58, (0,229,255), 1)
+
+def _ascii_safe(text):
+    """Remplace les accents par leurs équivalents ASCII pour cv2.putText (police Hershey)."""
+    _MAP = str.maketrans('àâäéèêëïîôùûüçÀÂÄÉÈÊËÏÎÔÙÛÜÇ—', 'aaaeeeeiiouuucAAAEEEEIIOUUUC-')
+    return text.translate(_MAP)
+
+
+def draw_centered_text(frame, text, color=(60,60,60), scale=0.7, thickness=2):
+    """Dessine un texte centré sur une frame (gère les accents)."""
+    H, W = frame.shape[:2]
+    safe = _ascii_safe(text)
+    (tw, th), _ = cv2.getTextSize(safe, cv2.FONT_HERSHEY_SIMPLEX, scale, thickness)
+    x = (W - tw) // 2
+    y = (H + th) // 2
+    cv2.putText(frame, safe, (x, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, thickness)
+
 
 def update_votes(polys, vehicles, votes, states, detect_point=85, detect_horizontal=50, sensor_flags=None):
     """Met à jour les votes de détection pour chaque place."""
@@ -697,8 +725,13 @@ class LiveEngine:
                     yolo_event.set()
 
                 # Récupérer le dernier résultat YOLO disponible
-                with yolo_lock:
-                    last_vehicles = yolo_result[0]
+                if self.yolo_enabled:
+                    with yolo_lock:
+                        last_vehicles = yolo_result[0]
+                else:
+                    last_vehicles = []
+                    with yolo_lock:
+                        yolo_result[0] = []
                 vehicles = last_vehicles
 
                 # Masque + détection
@@ -795,8 +828,7 @@ class LiveEngine:
         if not self.streaming:
             return
         blank = np.zeros((360, 640, 3), dtype=np.uint8)
-        cv2.putText(blank, message, (40, 180),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 80, 255), 2)
+        draw_centered_text(blank, message, color=(0, 80, 255))
         _, jpeg = cv2.imencode(".jpg", blank)
         with self.lock:
             self._annotated = jpeg.tobytes()
@@ -883,7 +915,7 @@ class DemoEngine:
                     mt = os.path.getmtime(cname)
                     if mt != coords_mtime:
                         with open(cname) as f:
-                            coords = json.load(f)
+                            coords = _normalize_coords(json.load(f))
                         polys, centers = precompute_polys(coords)
                         votes  = [deque(maxlen=SETTINGS['vote_window']) for _ in range(len(coords))]
                         states = [True] * len(coords)
@@ -918,10 +950,10 @@ class DemoEngine:
                 last_vehicles = YOLODetector.detect(frame) if self.yolo_enabled else []
             vehicles = last_vehicles
 
-            # Masque + détection
+            # Masque + détection (mode démo : centre YOLO, pas de correction de perspective)
             if polys:
-                update_votes(polys, vehicles, votes, states)
-                free, occ = draw_overlay(frame, polys, centers, states, vehicles)
+                update_votes(polys, vehicles, votes, states, detect_point=50, detect_horizontal=50)
+                free, occ = draw_overlay(frame, polys, centers, states, vehicles, detect_point=50, detect_horizontal=50, show_crosshair=False)
             else:
                 free = occ = 0
 
@@ -1023,8 +1055,10 @@ def api_save_coords(filename):
     path   = os.path.join(COORDS_DIR, jf)
     with open(path, "w") as f:
         json.dump(coords, f, indent=2)
-    print(f"[SAVE] {jf} — {len(coords)} places")
-    return jsonify({"success": True, "file": jf, "count": len(coords)})
+    # Compter les places (nouveau format objet ou ancien format tableau)
+    count = len(coords)
+    print(f"[SAVE] {jf} — {count} places")
+    return jsonify({"success": True, "file": jf, "count": count})
 
 @app.route("/api/image_size/<filename>")
 def api_image_size(filename):
@@ -1036,11 +1070,6 @@ def api_image_size(filename):
         return jsonify({"error": "lecture impossible"}), 500
     h, w = img.shape[:2]
     return jsonify({"width": w, "height": h})
-
-@app.route("/api/coords_list")
-def api_coords_list():
-    files = sorted(glob.glob(os.path.join(COORDS_DIR, "parking_coords*.json")))
-    return jsonify({"files": [os.path.basename(f) for f in files]})
 
 
 @app.route("/api/sensor_places", methods=["GET"])
@@ -1168,7 +1197,8 @@ def manage_duplicate_mask():
     if not os.path.exists(src_cf):
         return jsonify({"ok": False, "error": "Aucun masque pour cette image/caméra"})
     with open(src_cf) as f:
-        coords = json.load(f)
+        raw_coords = json.load(f)
+    coords = _normalize_coords(raw_coords)
     src_path = os.path.join(CAPTURES_DIR, src_img)
     img = cv2.imread(src_path)
     if img is None:
@@ -1176,7 +1206,14 @@ def manage_duplicate_mask():
     src_h, src_w = img.shape[:2]
     sx = dst_w / src_w
     sy = dst_h / src_h
-    new_coords = [[[int(p[0]*sx), int(p[1]*sy)] for p in zone] for zone in coords]
+    # Reconstruire avec type si présent dans le format d'origine
+    new_coords = []
+    for i, zone in enumerate(coords):
+        scaled_pts = [[int(p[0]*sx), int(p[1]*sy)] for p in zone]
+        if isinstance(raw_coords[i], dict) and "type" in raw_coords[i]:
+            new_coords.append({"pts": scaled_pts, "type": raw_coords[i]["type"]})
+        else:
+            new_coords.append(scaled_pts)
     dst_cf = os.path.join(COORDS_DIR, f"parking_coords_{cam_id}_{dst_w}x{dst_h}.json")
     with open(dst_cf, "w") as f:
         json.dump(new_coords, f, indent=2)
@@ -1191,7 +1228,7 @@ def manage_export_csv(filename):
     if not os.path.exists(cf):
         return jsonify({"error": "Aucun masque pour cette image/caméra"}), 404
     with open(cf) as f:
-        coords = json.load(f)
+        coords = _normalize_coords(json.load(f))
     lines = ["place,point,x,y"]
     for i, zone in enumerate(coords):
         for j, pt in enumerate(zone):
@@ -1221,7 +1258,8 @@ def demo_start():
     path = os.path.join(VIDEOS_DIR, os.path.basename(video))
     if not os.path.exists(path):
         return jsonify({"ok": False, "error": f"Fichier introuvable : {video}"})
-    # Mettre en pause le moteur live (libérer la caméra)
+    # Arrêter le XBee et le moteur live
+    xbee.stop()
     engine.stop()
     demo.start(path)
     return jsonify({"ok": True})
@@ -1240,6 +1278,9 @@ def demo_stop_route():
         engine.start(source, cam_id=cam['id'])
         engine.streaming = False
         print(f"[DEMO] Terminé — détection relancée sur {cam['name']}", flush=True)
+    # Relancer le XBee s'il était activé
+    if SETTINGS.get('xbee_enabled'):
+        xbee.start()
     return jsonify({"ok": True})
 
 @app.route("/api/demo/stats")
@@ -1272,8 +1313,7 @@ def demo_feed():
             jpeg = demo.get_jpeg()
             if jpeg is None:
                 blank = np.zeros((360,640,3), dtype=np.uint8)
-                cv2.putText(blank, "En attente de la vidéo...", (130,180),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.75, (60,60,60), 2)
+                draw_centered_text(blank, "En attente de la vidéo...")
                 _, j = cv2.imencode(".jpg", blank)
                 jpeg = j.tobytes()
             yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + jpeg + b"\r\n"
@@ -1392,7 +1432,8 @@ def live_start():
         if cam:
             source = camera_rtsp_url(cam)
             print(f"[LIVE] Caméra sélectionnée : {cam['name']} ({cam['ip']})")
-    # Arrêter si tourne encore
+    if demo.running:
+        demo.stop()
     if engine.running:
         engine.stop()
         time.sleep(0.5)
@@ -1415,6 +1456,9 @@ def live_stop_all():
 @app.route("/api/live/stats")
 def live_stats():
     stats = dict(engine.stats)
+    # Toujours refléter l'état actuel (pas le dict figé quand la boucle ne tourne pas)
+    stats["yolo_enabled"] = engine.yolo_enabled
+    stats["mask_enabled"] = engine.mask_enabled
     try:
         with open("/sys/class/thermal/thermal_zone0/temp") as f:
             stats["cpu_temp"] = round(int(f.read().strip()) / 1000, 1)
@@ -1559,8 +1603,7 @@ def video_feed():
             jpeg = engine.get_jpeg()
             if jpeg is None:
                 blank = np.zeros((360,640,3), dtype=np.uint8)
-                cv2.putText(blank, "Chargement du flux...", (140,175),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.75, (60,60,60), 2)
+                draw_centered_text(blank, "Chargement du flux...")
                 _, j = cv2.imencode(".jpg", blank)
                 jpeg = j.tobytes()
             yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + jpeg + b"\r\n"
@@ -1629,64 +1672,6 @@ def api_about():
         "app_dir": APP_DIR,
     })
 
-@app.route("/api/migrate", methods=["POST"])
-def api_migrate():
-    """Migration : déplace les fichiers de l'ancien format (~/flat) vers la nouvelle arborescence."""
-    moved = []
-    home = os.path.expanduser("~")
-    # Déplacer les captures
-    for ext in ['*.jpg', '*.jpeg', '*.png']:
-        for f in glob.glob(os.path.join(home, f"capture_*{ext[1:]}")):
-            dest = os.path.join(CAPTURES_DIR, os.path.basename(f))
-            if not os.path.exists(dest):
-                shutil.move(f, dest)
-                moved.append(os.path.basename(f))
-    for ext in ['*.jpg', '*.jpeg', '*.png']:
-        for f in glob.glob(os.path.join(home, f"frame_*{ext[1:]}")):
-            dest = os.path.join(CAPTURES_DIR, os.path.basename(f))
-            if not os.path.exists(dest):
-                shutil.move(f, dest)
-                moved.append(os.path.basename(f))
-    # Déplacer les images restantes (IMG_*, Test*)
-    for f in glob.glob(os.path.join(home, "IMG_*.*")) + glob.glob(os.path.join(home, "Test*.*")):
-        if f.lower().endswith(('.jpg','.jpeg','.png')):
-            dest = os.path.join(CAPTURES_DIR, os.path.basename(f))
-            if not os.path.exists(dest):
-                shutil.move(f, dest)
-                moved.append(os.path.basename(f))
-    # Déplacer les coords JSON
-    for f in glob.glob(os.path.join(home, "parking_coords_*.json")):
-        dest = os.path.join(COORDS_DIR, os.path.basename(f))
-        if not os.path.exists(dest):
-            shutil.move(f, dest)
-            moved.append(os.path.basename(f))
-    # Déplacer les sensor JSON
-    for f in glob.glob(os.path.join(home, "sensor_places_*.json")):
-        dest = os.path.join(SENSORS_DIR, os.path.basename(f))
-        if not os.path.exists(dest):
-            shutil.move(f, dest)
-            moved.append(os.path.basename(f))
-    # Déplacer le modèle YOLO
-    for f in glob.glob(os.path.join(home, "*.onnx")):
-        dest = os.path.join(MODELS_DIR, os.path.basename(f))
-        if not os.path.exists(dest):
-            shutil.move(f, dest)
-            moved.append(os.path.basename(f))
-    # Déplacer les vidéos
-    for ext in ['*.mp4', '*.avi', '*.mkv']:
-        for f in glob.glob(os.path.join(home, ext)):
-            dest = os.path.join(VIDEOS_DIR, os.path.basename(f))
-            if not os.path.exists(dest):
-                shutil.move(f, dest)
-                moved.append(os.path.basename(f))
-    # Déplacer cameras.json et settings.json
-    for name in ["cameras.json", "settings.json"]:
-        old = os.path.join(home, name)
-        new = os.path.join(DATA_DIR, name)
-        if os.path.exists(old) and not os.path.exists(new):
-            shutil.move(old, new)
-            moved.append(name)
-    return jsonify({"ok": True, "moved": moved, "count": len(moved)})
 
 
 # ══════════════════════════════════════════

@@ -241,12 +241,14 @@ function vidTouchEnd(e, id){
   if(e.touches.length < 2) _touchState[id] = null;
   if(e.touches.length === 0) vidState[id].dragging = false;
 }
+let yoloEnabled = true;
 async function toggleMask(enabled){
   try{
     await fetch('/api/live/mask', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({enabled})});
   }catch(e){ toast('Erreur','err'); }
 }
 async function toggleYolo(enabled){
+  yoloEnabled = enabled;
   try{
     await fetch('/api/live/yolo', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({enabled})});
   }catch(e){ toast('Erreur','err'); }
@@ -585,8 +587,12 @@ function updateDefaultCamInfo(){
     const engineId = s.engine_cam_id;
     const defCam = cameras.find(c=>c.id===defId);
     const engCam = cameras.find(c=>c.id===engineId);
-    let txt = defCam ? `Par défaut : ${defCam.name}` : 'Aucune caméra par défaut';
-    if(engCam) txt += ` — Actuel : ${engCam.name}`;
+    let txt = '';
+    if(defCam) txt = `Par défaut : ${defCam.name}`;
+    else txt = 'Aucune caméra par défaut';
+    if(s.detection_running && engCam){
+      txt += ` — Détection : ${engCam.name}`;
+    }
     el.textContent = txt;
     const btn = document.getElementById('defaultCamBtn');
     const sel = document.getElementById('camSel');
@@ -915,9 +921,7 @@ async function fetchStats(){
       pt.style.color = s.cpu_temp > 75 ? 'var(--red)' : s.cpu_temp > 60 ? 'var(--yellow)' : 'var(--green)';
     }
     let camAlert = null;
-    if(!isDetecting && demoRunning){
-      ps.textContent = 'Mode démo'; ps.style.color = 'var(--yellow)';
-    } else if(!isDetecting){
+    if(!isDetecting){
       ps.textContent = 'Arrêté'; ps.style.color = 'var(--text-dim)';
     } else if(s.cam_health === 'noir'){
       ps.textContent = 'Image noire'; ps.style.color = 'var(--red)';
@@ -949,13 +953,7 @@ async function fetchStats(){
     } else if(isDetecting){
       dot.style.background=''; dot.style.boxShadow='';
     }
-    if(!liveRunning && demoRunning){
-      const ov = document.getElementById('streamOverlay');
-      if(!ov.classList.contains('hidden')){
-        ov.innerHTML = `<div class="so-title" style="font-size:16px">MODE DÉMO EN COURS</div>
-          <div class="so-sub">La détection en direct est en pause<br>Elle reprendra automatiquement à la fin de la démo</div>`;
-      }
-    } else if(!liveRunning && isDetecting && !s.error){
+    if(!liveRunning && isDetecting && !s.error){
       const ov = document.getElementById('streamOverlay');
       if(!ov.classList.contains('hidden')){
         const yoloTxt = s.yolo_enabled ? '' : '<div class="so-sub" style="color:var(--yellow)">Détection YOLO désactivée</div>';
@@ -1221,11 +1219,7 @@ async function loadImg(name){
     S.img=img; S.imgName=name;
     S.curPts=[]; S.sepLines=[]; S.selZ=-1; S.editDrag=null; S.hovPt=null;
     const cd=await fetch(`/api/coords/${encodeURIComponent(name)}?cam_id=${encodeURIComponent(S.camId)}`).then(r=>r.json());
-    S.zones=(cd.coords||[]).map(z=>{
-      if(Array.isArray(z)&&Array.isArray(z[0])) return {pts:z, type:'manual'};
-      if(z.pts) return {pts:z.pts, type:z.type||'manual'};
-      return {pts:z, type:'manual'};
-    });
+    S.zones=(cd.coords||[]).map(z=>Array.isArray(z[0])?{pts:z,type:'manual'}:z);
     try{
       const sf=await fetch('/api/sensor_places?cam_id='+encodeURIComponent(S.camId)+'&image_name='+encodeURIComponent(name)).then(r=>r.json());
       const flags = sf.flags || [];
@@ -1595,7 +1589,7 @@ async function doSave(){
   btn.disabled=true;btn.textContent='Sauvegarde en cours...';
   try{
     const data=await fetch(`/api/coords/${encodeURIComponent(S.imgName)}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({coords:S.zones.map(z=>({pts:z.pts, type:z.type||'manual'})), cam_id:S.camId})
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({coords:S.zones.map(z=>z.pts), cam_id:S.camId})
     }).then(r=>r.json());
     if(data.success){
       const flags = S.zones.map(z => z.sensor || false);

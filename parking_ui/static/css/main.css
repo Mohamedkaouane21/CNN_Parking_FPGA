@@ -172,9 +172,6 @@
   .pct-fill{height:100%;background:var(--green);transition:width .5s;}
   .live-source{font-family:var(--mono);font-size:10px;color:var(--text-dim);word-break:break-all;line-height:1.5;}
   .live-source span{color:var(--accent);}
-  .yolo-badge{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:2px;border:1px solid;display:inline-block;}
-  .yolo-badge.ok{color:var(--green);border-color:var(--green);}
-  .yolo-badge.ko{color:var(--red);border-color:var(--red);}
   /* Toggle YOLO */
   .toggle-row{display:flex;align-items:center;justify-content:space-between;}
   .toggle-label{font-family:var(--mono);font-size:11px;color:var(--text-dim);}
