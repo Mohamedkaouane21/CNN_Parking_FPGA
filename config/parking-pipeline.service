@@ -1,0 +1,16 @@
+[Unit]
+Description=Parking Camera Pipeline (capture + ROI)
+After=network.target
+
+[Service]
+Type=simple
+User=xilinx
+WorkingDirectory=/home/xilinx/parking_system
+ExecStart=/usr/bin/python3 /home/xilinx/parking_system/code/gestion_des_frames.py
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/xilinx/parking_system/logs/pipeline.log
+StandardError=append:/home/xilinx/parking_system/logs/pipeline.log
+
+[Install]
+WantedBy=multi-user.target

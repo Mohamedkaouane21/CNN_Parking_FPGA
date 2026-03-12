@@ -1,0 +1,16 @@
+[Unit]
+Description=Parking System API Server
+After=network.target parking-pipeline.service
+
+[Service]
+Type=simple
+User=xilinx
+WorkingDirectory=/home/xilinx/parking_system
+ExecStart=/usr/bin/python3 /home/xilinx/parking_system/code/api_server.py
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/xilinx/parking_system/logs/api.log
+StandardError=append:/home/xilinx/parking_system/logs/api.log
+
+[Install]
+WantedBy=multi-user.target

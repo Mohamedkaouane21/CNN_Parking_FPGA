@@ -1,0 +1,17 @@
+[Unit]
+Description=Parking FPGA ROI Classifier (CNN conv1+conv2 FPGA + conv3+FC CPU)
+After=network.target parking-pipeline.service
+
+[Service]
+Type=simple
+User=root
+Environment=XILINX_XRT=/usr
+WorkingDirectory=/home/xilinx/parking_system
+ExecStart=/usr/local/share/pynq-venv/bin/python3 /home/xilinx/parking_system/code/send_rois_to_fpga.py
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/xilinx/parking_system/logs/fpga_send.log
+StandardError=append:/home/xilinx/parking_system/logs/fpga_send.log
+
+[Install]
+WantedBy=multi-user.target

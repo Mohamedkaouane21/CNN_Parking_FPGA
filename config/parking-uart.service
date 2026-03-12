@@ -1,0 +1,16 @@
+[Unit]
+Description=Parking UART → ESP32 (envoi résumé places libres)
+After=network.target parking-fpga.service
+
+[Service]
+Type=simple
+User=xilinx
+WorkingDirectory=/home/xilinx/parking_system
+ExecStart=/usr/local/share/pynq-venv/bin/python3 /home/xilinx/parking_system/code/send_uart.py
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/xilinx/parking_system/logs/uart_esp32.log
+StandardError=append:/home/xilinx/parking_system/logs/uart_esp32.log
+
+[Install]
+WantedBy=multi-user.target
