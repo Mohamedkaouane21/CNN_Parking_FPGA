@@ -37,6 +37,7 @@ https://drive.google.com/drive/u/2/folders/0AKBWix9Uk1aHUk9PVA
 
 
 Structure attendue :
+```bash
 
 dataset/
 ├── empty/
@@ -47,7 +48,7 @@ dataset/
     ├── img1.png
     ├── img2.png
     └── ...
-
+```
 Images : 48×48 pixels (grayscale)
 
 ## Structure du projet
