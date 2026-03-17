@@ -28,6 +28,28 @@ Temps total : environ 1 heure.
 
 Les outils Xilinx sont montés en volume dans le conteneur (pas besoin de les installer dans l'image Docker).
 
+
+## Dataset
+
+Le dataset utilisé pour l'entraînement du modèle CNN est disponible ici :
+
+https://drive.google.com/drive/u/2/folders/0AKBWix9Uk1aHUk9PVA
+
+
+Structure attendue :
+
+dataset/
+├── empty/
+│   ├── img1.png
+│   ├── img2.png
+│   └── ...
+└── occupied/
+    ├── img1.png
+    ├── img2.png
+    └── ...
+
+Images : 48×48 pixels (grayscale)
+
 ## Structure du projet
 
 ```
