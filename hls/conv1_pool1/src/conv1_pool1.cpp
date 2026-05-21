@@ -10,12 +10,14 @@
 
 #include "weights.h"
 
-static const int IN_H   = 48;
-static const int IN_W   = 48;
-static const int CONV_H = IN_H - KH + 1;   // 46
-static const int CONV_W = IN_W - KW + 1;   // 46
-static const int OUT_H  = CONV_H / 2;      // 23
-static const int OUT_W  = CONV_W / 2;      // 23
+static constexpr int IN_H        = 48;
+static constexpr int IN_W        = 48;
+static constexpr int CONV_H      = IN_H - KH + 1;   // 46
+static constexpr int CONV_W      = IN_W - KW + 1;   // 46
+static constexpr int OUT_H       = CONV_H / 2;      // 23
+static constexpr int OUT_W       = CONV_W / 2;      // 23
+static constexpr int IN_DEPTH    = IN_H * IN_W;             // 2304
+static constexpr int OUT_DEPTH   = OUT_C * OUT_H * OUT_W;   // 8464
 
 void conv1_pool1(
     const float *in,
@@ -33,7 +35,7 @@ void conv1_pool1(
 
     // ETAPE 1 : DDR -> BRAM
     LOAD:
-    for (int i = 0; i < IN_H * IN_W; i++) {
+    for (int i = 0; i < IN_DEPTH; i++) {
 #pragma HLS PIPELINE II=1
         in_buf[i / IN_W][i % IN_W] = in[i];
     }
@@ -74,13 +76,13 @@ void conv1_pool1(
             for (int px = 0; px < OUT_W; px++) {
 #pragma HLS PIPELINE II=1
 
-                int sy = py * 2;
-                int sx = px * 2;
+                const int sy = py * 2;
+                const int sx = px * 2;
 
-                float v00 = conv_buf[oc][sy    ][sx    ];
-                float v01 = conv_buf[oc][sy    ][sx + 1];
-                float v10 = conv_buf[oc][sy + 1][sx    ];
-                float v11 = conv_buf[oc][sy + 1][sx + 1];
+                const float v00 = conv_buf[oc][sy    ][sx    ];
+                const float v01 = conv_buf[oc][sy    ][sx + 1];
+                const float v10 = conv_buf[oc][sy + 1][sx    ];
+                const float v11 = conv_buf[oc][sy + 1][sx + 1];
 
                 float maxv = v00;
                 if (v01 > maxv) maxv = v01;

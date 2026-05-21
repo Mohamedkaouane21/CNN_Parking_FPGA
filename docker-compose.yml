@@ -1,7 +1,11 @@
 services:
   smart-parking:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: smart-parking:latest
     container_name: smart-parking
+    init: true
     volumes:
       - ./dataset:/data/dataset:ro
       - ./output:/output

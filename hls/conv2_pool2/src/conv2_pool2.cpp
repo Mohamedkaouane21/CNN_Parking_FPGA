@@ -1,15 +1,24 @@
-// conv2_pool2.cpp v4
+// ============================================================
+// conv2_pool2.cpp
+// Kernel HLS : Conv2D 3x3 valid + ReLU + MaxPool 2x2 stride 2
+//
+// Dimensions :
+//   Entree  : 16x23x23    (8464 floats, channel-first)
+//   Conv    : 32x21x21    (padding valid)
+//   Sortie  : 32x10x10    (3200 floats, channel-first)
+// ============================================================
+
 #include <ap_int.h>
 #include "weights2.h"
 
-#define IN_C   16
-#define IN_H   23
-#define IN_W   23
-#define CONV_H 21
-#define CONV_W 21
-#define OUT_C  32
-#define OUT_H  10
-#define OUT_W  10
+static constexpr int IN_C   = 16;
+static constexpr int IN_H   = 23;
+static constexpr int IN_W   = 23;
+static constexpr int CONV_H = 21;
+static constexpr int CONV_W = 21;
+static constexpr int OUT_C  = 32;
+static constexpr int OUT_H  = 10;
+static constexpr int OUT_W  = 10;
 
 void conv2_pool2(const float *in, float *out)
 {
@@ -22,6 +31,7 @@ void conv2_pool2(const float *in, float *out)
 
     float conv_buf[CONV_H][CONV_W];
 
+    // ETAPE 1 : DDR -> BRAM
     LOAD_IC:
     for (int ic = 0; ic < IN_C; ic++) {
         LOAD_IY:
@@ -34,6 +44,7 @@ void conv2_pool2(const float *in, float *out)
         }
     }
 
+    // ETAPE 2 + 3 : Conv + ReLU puis MaxPool, par canal de sortie
     CONV_OC:
     for (int oc = 0; oc < OUT_C; oc++) {
         CONV_OY:
@@ -48,7 +59,8 @@ void conv2_pool2(const float *in, float *out)
                         CONV_KX:
                         for (int kx = 0; kx < C2_KW; kx++) {
 #pragma HLS PIPELINE II=1
-                            acc += in_buf[ic][oy+ky][ox+kx] * WEIGHTS2[ky][kx][ic][oc];
+                            acc += in_buf[ic][oy + ky][ox + kx]
+                                 * WEIGHTS2[ky][kx][ic][oc];
                         }
                     }
                 }
@@ -61,11 +73,12 @@ void conv2_pool2(const float *in, float *out)
             POOL_PX:
             for (int px = 0; px < OUT_W; px++) {
 #pragma HLS PIPELINE II=1
-                int sy = py*2, sx = px*2;
-                float v00 = conv_buf[sy  ][sx  ];
-                float v01 = conv_buf[sy  ][sx+1];
-                float v10 = conv_buf[sy+1][sx  ];
-                float v11 = conv_buf[sy+1][sx+1];
+                const int sy = py * 2;
+                const int sx = px * 2;
+                const float v00 = conv_buf[sy    ][sx    ];
+                const float v01 = conv_buf[sy    ][sx + 1];
+                const float v10 = conv_buf[sy + 1][sx    ];
+                const float v11 = conv_buf[sy + 1][sx + 1];
                 float maxv = v00;
                 if (v01 > maxv) maxv = v01;
                 if (v10 > maxv) maxv = v10;

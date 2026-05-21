@@ -1,8 +1,10 @@
+# ============================================================
 # create_vivado_2ips.tcl
 # Block design : conv1_pool1 + conv2_pool2 sur PYNQ-Z2
 #
 # Usage :
 #   vivado -mode batch -source create_vivado_2ips.tcl
+# ============================================================
 
 set origin_dir [file normalize [file dirname [info script]]]
 set ip1_zip    "$origin_dir/ip_repo/conv1_pool1.zip"
@@ -15,6 +17,7 @@ puts "Block design : conv1_pool1 + conv2_pool2"
 puts "Origin : $origin_dir"
 puts "===================================================="
 
+# 0. Verification des IPs
 foreach {zip name} [list $ip1_zip conv1_pool1 $ip2_zip conv2_pool2] {
     if {![file exists $zip]} {
         puts "ERROR: IP manquante : $zip"
@@ -27,10 +30,16 @@ foreach {zip name} [list $ip1_zip conv1_pool1 $ip2_zip conv2_pool2] {
 set ip_dir "$origin_dir/ip_repo/extracted"
 file mkdir "$ip_dir/conv1_pool1"
 file mkdir "$ip_dir/conv2_pool2"
-exec unzip -o $ip1_zip -d "$ip_dir/conv1_pool1"
-exec unzip -o $ip2_zip -d "$ip_dir/conv2_pool2"
+if {[catch {exec unzip -o $ip1_zip -d "$ip_dir/conv1_pool1"} err]} {
+    puts "ERROR: extraction $ip1_zip a echoue : $err"
+    exit 1
+}
+if {[catch {exec unzip -o $ip2_zip -d "$ip_dir/conv2_pool2"} err]} {
+    puts "ERROR: extraction $ip2_zip a echoue : $err"
+    exit 1
+}
 
-# 2. Créer le projet Vivado
+# 2. Creer le projet Vivado
 file mkdir $proj_dir
 create_project $proj_name $proj_dir -part xc7z020clg400-1 -force
 
@@ -160,18 +169,24 @@ set wrapper_candidates [list \
     "$proj_dir/${proj_name}.gen/sources_1/bd/design_1/hdl/design_1_wrapper.v" \
     "$proj_dir/${proj_name}.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v" \
 ]
+set wrapper_found 0
 foreach w $wrapper_candidates {
     if {[file exists $w]} {
         add_files -norecurse $w
         set_property top design_1_wrapper [current_fileset]
+        set wrapper_found 1
         break
     }
 }
+if {!$wrapper_found} {
+    puts "ERROR: wrapper design_1_wrapper.v introuvable"
+    exit 1
+}
 update_compile_order -fileset sources_1
 
-# 8. Synthèse + Implementation + Bitstream
+# 8. Synthese + Implementation + Bitstream
 puts "===================================================="
-puts "Synthèse + Implementation + Bitstream (~20-30 min)..."
+puts "Synthese + Implementation + Bitstream (~20-30 min)..."
 puts "===================================================="
 launch_runs impl_1 -to_step write_bitstream -jobs 4
 wait_on_run impl_1
@@ -182,12 +197,18 @@ file mkdir "$origin_dir/pynq_output"
 set bit_candidates [list \
     "$proj_dir/${proj_name}.runs/impl_1/design_1_wrapper.bit" \
 ]
+set bit_copied 0
 foreach bit $bit_candidates {
     if {[file exists $bit]} {
         file copy -force $bit "$origin_dir/pynq_output/design_1_wrapper.bit"
         puts "Bitstream : $origin_dir/pynq_output/design_1_wrapper.bit"
+        set bit_copied 1
         break
     }
+}
+if {!$bit_copied} {
+    puts "ERROR: bitstream design_1_wrapper.bit introuvable"
+    exit 1
 }
 
 set hwh_candidates [list \

@@ -1,14 +1,14 @@
 """
-regen_golden.py — Génère les données de test (golden) pour les testbenches HLS
+regen_golden.py - Genere les donnees de test (golden) pour les testbenches HLS
 
-Extrait les activations intermédiaires du modèle Keras pour produire :
-  - conv1_pool1/data/input_48x48.bin   : entrée 48×48 normalisée
-  - conv1_pool1/data/golden_pool1.bin  : sortie attendue après conv1+pool1 (16×23×23)
-  - conv2_pool2/data/input_pool1.bin   : = golden_pool1 (entrée de conv2)
-  - conv2_pool2/data/golden_pool2.bin  : sortie attendue après conv2+pool2 (32×10×10)
+Extrait les activations intermediaires du modele Keras pour produire :
+  - conv1_pool1/data/input_48x48.bin   : entree 48x48 normalisee
+  - conv1_pool1/data/golden_pool1.bin  : sortie attendue apres conv1+pool1 (16x23x23)
+  - conv2_pool2/data/input_pool1.bin   : = golden_pool1 (entree de conv2)
+  - conv2_pool2/data/golden_pool2.bin  : sortie attendue apres conv2+pool2 (32x10x10)
 
 Les fichiers sont en float32, channel-first (C, H, W) pour correspondre
-à l'ordre mémoire des kernels HLS.
+a l'ordre memoire des kernels HLS.
 
 Usage :
   python regen_golden.py --model /output/models/parking_cnn.h5 \
@@ -18,99 +18,136 @@ Usage :
 from __future__ import annotations
 
 import argparse
-import glob
-import os
+import logging
+import sys
+from pathlib import Path
 
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
 
+logger = logging.getLogger("regen_golden")
 
-def find_test_image(data_dir: str) -> str:
-    """Trouve une image de test dans le dataset."""
-    for subdir in ["occupied", "empty"]:
-        pattern = os.path.join(data_dir, subdir, "*")
-        for f in sorted(glob.glob(pattern)):
-            if f.lower().endswith((".jpg", ".jpeg", ".png", ".bmp")):
+IMG_SIZE: tuple[int, int] = (48, 48)
+VALID_EXTS: frozenset[str] = frozenset({".jpg", ".jpeg", ".png", ".bmp"})
+
+
+def configure_logging() -> None:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        datefmt="%Y-%m-%dT%H:%M:%S",
+        stream=sys.stdout,
+    )
+
+
+def find_test_image(data_dir: Path) -> Path:
+    """Trouve la premiere image valide dans data_dir/{occupied,empty}."""
+    if not data_dir.exists():
+        raise FileNotFoundError(f"Dataset introuvable : {data_dir}")
+
+    for subdir in ("occupied", "empty"):
+        candidate_dir = data_dir / subdir
+        if not candidate_dir.is_dir():
+            continue
+        for f in sorted(candidate_dir.iterdir()):
+            if f.suffix.lower() in VALID_EXTS:
                 return f
-    raise FileNotFoundError(f"Aucune image trouvée dans {data_dir}")
+    raise FileNotFoundError(f"Aucune image trouvee dans {data_dir}")
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Génère golden pour HLS testbenches")
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Genere golden pour HLS testbenches",
+    )
     parser.add_argument("--model", default="/output/models/parking_cnn.h5")
-    parser.add_argument("--image", default=None,
-                        help="Image de test 48×48 (si omis, prend la 1ère du dataset)")
-    parser.add_argument("--data-dir", default="/data/dataset",
-                        help="Répertoire dataset pour trouver une image auto")
-    parser.add_argument("--out-dir", default="/app/hls",
-                        help="Répertoire racine HLS")
-    args = parser.parse_args()
+    parser.add_argument(
+        "--image", default=None,
+        help="Image de test 48x48 (si omis, prend la 1ere du dataset)",
+    )
+    parser.add_argument(
+        "--data-dir", default="/data/dataset",
+        help="Repertoire dataset pour trouver une image auto",
+    )
+    parser.add_argument(
+        "--out-dir", default="/app/hls",
+        help="Repertoire racine HLS",
+    )
+    return parser.parse_args()
 
-    # Trouver une image de test
+
+def main() -> int:
+    configure_logging()
+    args = parse_args()
+
     if args.image:
-        img_path = args.image
+        img_path = Path(args.image)
+        if not img_path.is_file():
+            logger.error("Image introuvable : %s", img_path)
+            return 1
     else:
-        img_path = find_test_image(args.data_dir)
-    print(f"Image de test : {img_path}")
+        img_path = find_test_image(Path(args.data_dir))
 
-    # Charger et préparer l'image
-    img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+    logger.info("Image de test : %s", img_path)
+
+    img = cv2.imread(str(img_path), cv2.IMREAD_GRAYSCALE)
     if img is None:
-        raise FileNotFoundError(f"Impossible de lire : {img_path}")
-    img = cv2.resize(img, (48, 48)).astype(np.float32) / 255.0
-    x = img.reshape(1, 48, 48, 1)
+        logger.error("Impossible de lire : %s", img_path)
+        return 1
+    img = cv2.resize(img, IMG_SIZE, interpolation=cv2.INTER_AREA).astype(np.float32) / 255.0
+    x = img.reshape(1, IMG_SIZE[1], IMG_SIZE[0], 1)
 
-    # Charger le modèle
-    model = load_model(args.model)
+    model_path = Path(args.model)
+    if not model_path.is_file():
+        logger.error("Modele introuvable : %s", model_path)
+        return 1
+    model = load_model(str(model_path))
 
-    # Extraire les activations couche par couche
-    # On fait passer x à travers chaque couche séquentiellement
-    # et on capture les sorties après chaque MaxPooling2D
-    pool_outputs = []
+    pool_outputs: list[np.ndarray] = []
     h = x
     for layer in model.layers:
         h = layer(h)
         if "max_pooling" in layer.name.lower():
-            pool_outputs.append(h.numpy() if hasattr(h, 'numpy') else np.array(h))
+            pool_outputs.append(h.numpy() if hasattr(h, "numpy") else np.asarray(h))
 
     if len(pool_outputs) < 2:
-        raise RuntimeError(f"Attendu >= 2 couches MaxPooling, trouvé {len(pool_outputs)}")
+        logger.error(
+            "Attendu >= 2 couches MaxPooling, trouve %d", len(pool_outputs),
+        )
+        return 1
 
     out_pool1 = pool_outputs[0][0]  # (23, 23, 16) Keras NHWC
     out_pool2 = pool_outputs[1][0]  # (10, 10, 32) Keras NHWC
 
-    # Convertir NHWC → channel-first (C, H, W) pour les kernels HLS
     out_pool1_chf = np.transpose(out_pool1, (2, 0, 1)).astype(np.float32)  # (16, 23, 23)
     out_pool2_chf = np.transpose(out_pool2, (2, 0, 1)).astype(np.float32)  # (32, 10, 10)
 
-    print(f"  pool1 : {out_pool1.shape} → channel-first {out_pool1_chf.shape}")
-    print(f"  pool2 : {out_pool2.shape} → channel-first {out_pool2_chf.shape}")
+    logger.info("  pool1 : %s -> channel-first %s", out_pool1.shape, out_pool1_chf.shape)
+    logger.info("  pool2 : %s -> channel-first %s", out_pool2.shape, out_pool2_chf.shape)
 
-    # Écrire les fichiers
-    conv1_data = os.path.join(args.out_dir, "conv1_pool1", "data")
-    conv2_data = os.path.join(args.out_dir, "conv2_pool2", "data")
-    os.makedirs(conv1_data, exist_ok=True)
-    os.makedirs(conv2_data, exist_ok=True)
+    out_dir = Path(args.out_dir)
+    conv1_data = out_dir / "conv1_pool1" / "data"
+    conv2_data = out_dir / "conv2_pool2" / "data"
+    conv1_data.mkdir(parents=True, exist_ok=True)
+    conv2_data.mkdir(parents=True, exist_ok=True)
 
-    # Conv1 : input + golden
-    input_path = os.path.join(conv1_data, "input_48x48.bin")
-    golden1_path = os.path.join(conv1_data, "golden_pool1.bin")
+    input_path = conv1_data / "input_48x48.bin"
+    golden1_path = conv1_data / "golden_pool1.bin"
     img.flatten().astype(np.float32).tofile(input_path)
     out_pool1_chf.flatten().tofile(golden1_path)
-    print(f"  ✅ {input_path}  ({48*48} floats)")
-    print(f"  ✅ {golden1_path}  ({out_pool1_chf.size} floats)")
+    logger.info("  %s  (%d floats)", input_path, IMG_SIZE[0] * IMG_SIZE[1])
+    logger.info("  %s  (%d floats)", golden1_path, out_pool1_chf.size)
 
-    # Conv2 : input (= pool1 output) + golden
-    input2_path = os.path.join(conv2_data, "input_pool1.bin")
-    golden2_path = os.path.join(conv2_data, "golden_pool2.bin")
+    input2_path = conv2_data / "input_pool1.bin"
+    golden2_path = conv2_data / "golden_pool2.bin"
     out_pool1_chf.flatten().tofile(input2_path)
     out_pool2_chf.flatten().tofile(golden2_path)
-    print(f"  ✅ {input2_path}  ({out_pool1_chf.size} floats)")
-    print(f"  ✅ {golden2_path}  ({out_pool2_chf.size} floats)")
+    logger.info("  %s  (%d floats)", input2_path, out_pool1_chf.size)
+    logger.info("  %s  (%d floats)", golden2_path, out_pool2_chf.size)
 
-    print("\n✅ Golden générés avec succès.")
+    logger.info("Golden generes avec succes.")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

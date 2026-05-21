@@ -1,33 +1,42 @@
-# run_all.tcl — Vitis HLS conv2_pool2
+# ============================================================
+# run_all.tcl - Vitis HLS conv2_pool2
 # Usage : vitis_hls -f run_all.tcl
+# ============================================================
+
 set script_dir [file normalize [file dirname [info script]]]
-set data_dir   "$script_dir/data"
+set data_dir   [file normalize "$script_dir/data"]
 
 puts "===================================================="
-puts "conv2_pool2 — Project root : $script_dir"
+puts "conv2_pool2 - Project root : $script_dir"
 puts "Data dir : $data_dir"
 puts "===================================================="
 
+# Verification des donnees golden
 foreach f {input_pool1.bin golden_pool2.bin} {
-    if {[file exists "$data_dir/$f"]} {
-        puts "OK: $data_dir/$f"
-    } else {
-        puts "ERROR: manquant : $data_dir/$f"
+    set full "$data_dir/$f"
+    if {![file exists $full]} {
+        puts "ERROR: fichier manquant : $full"
         exit 1
     }
+    puts "OK: $full"
 }
 
-# Générer data_path.h
+# Generer data_path.h
 set header_file "$script_dir/src/data_path.h"
-set fp [open $header_file w]
+if {[catch {open $header_file w} fp]} {
+    puts "ERROR: impossible d'ouvrir $header_file en ecriture : $fp"
+    exit 1
+}
+puts $fp "/* data_path.h - genere par run_all.tcl */"
 puts $fp "#pragma once"
 puts $fp "#define DATA_DIR \"$data_dir\""
 close $fp
-puts "Header généré : $header_file"
+puts "Header genere : $header_file"
 
-open_project -reset hls_prj
-add_files      src/conv2_pool2.cpp     -cflags "-I src"
-add_files -tb  src/tb_conv2_pool2.cpp  -cflags "-I src"
+# Projet HLS
+open_project   -reset hls_prj
+add_files      src/conv2_pool2.cpp    -cflags "-I src"
+add_files -tb  src/tb_conv2_pool2.cpp -cflags "-I src"
 open_solution  -reset solution1 -flow_target vitis
 set_top        conv2_pool2
 set_part       xc7z020clg400-1
@@ -49,5 +58,5 @@ puts "===================================================="
 export_design -format ip_catalog
 
 puts "===================================================="
-puts "Terminé. IP exportée."
+puts "Termine. IP exportee."
 puts "===================================================="

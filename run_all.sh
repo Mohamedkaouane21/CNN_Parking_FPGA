@@ -1,129 +1,177 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # =============================================================
-# run_all.sh — À exécuter DANS le conteneur Docker
+# run_all.sh - A executer DANS le conteneur Docker
 #
 # Pipeline complet :
-#   1. Entraînement CNN (Keras)
+#   1. Entrainement CNN (Keras)
 #   2. Export poids .bin (ARM)
 #   3. Export poids .h (FPGA headers)
-#   4. Génération golden (données test HLS)
+#   4. Generation golden (donnees test HLS)
 #   5. Vitis HLS conv1_pool1 (csim + csynth + export IP)
 #   6. Vitis HLS conv2_pool2 (csim + csynth + export IP)
-#   7. Vivado block design → bitstream
+#   7. Vivado block design -> bitstream
 #
 # Usage (dans le conteneur) :
 #   bash /app/run_all.sh
 # =============================================================
-set -e
+set -Eeuo pipefail
 
-echo "========================================================"
-echo "  SMART PARKING — Pipeline complet"
-echo "========================================================"
+readonly XILINX_BASE="${XILINX_BASE:-/tools/Xilinx}"
+readonly XILINX_VERSION="${XILINX_VERSION:-2024.2}"
+readonly APP_DIR="${APP_DIR:-/app}"
+readonly OUTPUT_DIR="${OUTPUT_DIR:-/output}"
+readonly LIBUDEV_PATH="/lib/x86_64-linux-gnu/libudev.so.1"
+readonly LIBUDEV_BACKUP="${LIBUDEV_PATH}.backup"
+
+log()  { printf '[%s] %s\n' "$(date -u +%FT%TZ)" "$*"; }
+fail() { printf '[%s] ERROR: %s\n' "$(date -u +%FT%TZ)" "$*" >&2; exit 1; }
+
+restore_libudev() {
+    if [[ -f "${LIBUDEV_BACKUP}" ]]; then
+        mv "${LIBUDEV_BACKUP}" "${LIBUDEV_PATH}"
+        log "libudev restaure : ${LIBUDEV_PATH}"
+    fi
+}
+
+on_exit() {
+    local rc=$?
+    restore_libudev
+    if (( rc != 0 )); then
+        log "Pipeline interrompu (code=${rc})"
+    fi
+    exit "${rc}"
+}
+trap on_exit EXIT
+trap 'fail "Interrompu (ligne ${LINENO})"' ERR
+
+require_file() {
+    [[ -f "$1" ]] || fail "Fichier requis manquant : $1"
+}
+
+log "========================================================"
+log "  SMART PARKING - Pipeline complet"
+log "========================================================"
 
 # --- Environnement Xilinx ---
-XILINX_BASE=${XILINX_BASE:-/tools/Xilinx}
-echo ""
-echo ">>> Chargement environnement Xilinx..."
-source ${XILINX_BASE}/Vitis_HLS/2024.2/settings64.sh
-export XILINX_VCXX=${XILINX_BASE}/Vitis/2024.2/vcxx
-echo "  XILINX_HLS  = $XILINX_HLS"
-echo "  XILINX_VCXX = $XILINX_VCXX"
+log ""
+log ">>> Chargement environnement Xilinx (version=${XILINX_VERSION})..."
+require_file "${XILINX_BASE}/Vitis_HLS/${XILINX_VERSION}/settings64.sh"
+# shellcheck disable=SC1090
+source "${XILINX_BASE}/Vitis_HLS/${XILINX_VERSION}/settings64.sh"
+export XILINX_VCXX="${XILINX_BASE}/Vitis/${XILINX_VERSION}/vcxx"
+log "  XILINX_HLS  = ${XILINX_HLS:-<unset>}"
+log "  XILINX_VCXX = ${XILINX_VCXX}"
 
 # =============================================================
-# ÉTAPE 1 : Entraînement
+# ETAPE 1 : Entrainement
 # =============================================================
-echo ""
-echo ">>> Étape 1/7 : Entraînement CNN..."
-python3 /app/scripts/train.py "$@"
+log ""
+log ">>> Etape 1/7 : Entrainement CNN..."
+python3 "${APP_DIR}/scripts/train.py" "$@"
 
 # =============================================================
-# ÉTAPE 2 : Export poids .bin (ARM)
+# ETAPE 2 : Export poids .bin (ARM)
 # =============================================================
-echo ""
-echo ">>> Étape 2/7 : Export poids .bin..."
-python3 /app/scripts/export_weights.py
+log ""
+log ">>> Etape 2/7 : Export poids .bin..."
+python3 "${APP_DIR}/scripts/export_weights.py"
 
 # =============================================================
-# ÉTAPE 3 : Export poids .h (headers FPGA)
+# ETAPE 3 : Export poids .h (headers FPGA)
 # =============================================================
-echo ""
-echo ">>> Étape 3/7 : Export poids → headers C..."
-python3 /app/scripts/export_weights_h.py --out-dir /app/hls
+log ""
+log ">>> Etape 3/7 : Export poids -> headers C..."
+python3 "${APP_DIR}/scripts/export_weights_h.py" --out-dir "${APP_DIR}/hls"
 
 # =============================================================
-# ÉTAPE 4 : Génération golden (test HLS)
+# ETAPE 4 : Generation golden (test HLS)
 # =============================================================
-echo ""
-echo ">>> Étape 4/7 : Génération données golden..."
-python3 /app/scripts/regen_golden.py --out-dir /app/hls
+log ""
+log ">>> Etape 4/7 : Generation donnees golden..."
+python3 "${APP_DIR}/scripts/regen_golden.py" --out-dir "${APP_DIR}/hls"
 
 # =============================================================
-# ÉTAPE 5 : Vitis HLS conv1_pool1
+# ETAPE 5 : Vitis HLS conv1_pool1
 # =============================================================
-echo ""
-echo ">>> Étape 5/7 : Vitis HLS conv1_pool1 (~15-20 min)..."
-cd /app/hls/conv1_pool1
-vitis_hls -f run_all.tcl
+log ""
+log ">>> Etape 5/7 : Vitis HLS conv1_pool1 (~15-20 min)..."
+(
+    cd "${APP_DIR}/hls/conv1_pool1"
+    vitis_hls -f run_all.tcl
+)
 
 # =============================================================
-# ÉTAPE 6 : Vitis HLS conv2_pool2
+# ETAPE 6 : Vitis HLS conv2_pool2
 # =============================================================
-echo ""
-echo ">>> Étape 6/7 : Vitis HLS conv2_pool2 (~15-20 min)..."
-cd /app/hls/conv2_pool2
-vitis_hls -f run_all.tcl
+log ""
+log ">>> Etape 6/7 : Vitis HLS conv2_pool2 (~15-20 min)..."
+(
+    cd "${APP_DIR}/hls/conv2_pool2"
+    vitis_hls -f run_all.tcl
+)
 
 # =============================================================
 # Copier les IPs pour Vivado
 # =============================================================
-echo ""
-echo ">>> Copie des IPs vers Vivado..."
-mkdir -p /app/vivado/ip_repo
-cp /app/hls/conv1_pool1/hls_prj/solution1/impl/ip/xilinx_com_hls_conv1_pool1_1_0.zip /app/vivado/ip_repo/conv1_pool1.zip
-cp /app/hls/conv2_pool2/hls_prj/solution1/impl/ip/xilinx_com_hls_conv2_pool2_1_0.zip /app/vivado/ip_repo/conv2_pool2.zip
-echo "  ✅ IPs copiées"
+log ""
+log ">>> Copie des IPs vers Vivado..."
+mkdir -p "${APP_DIR}/vivado/ip_repo"
+
+readonly IP1_SRC="${APP_DIR}/hls/conv1_pool1/hls_prj/solution1/impl/ip/xilinx_com_hls_conv1_pool1_1_0.zip"
+readonly IP2_SRC="${APP_DIR}/hls/conv2_pool2/hls_prj/solution1/impl/ip/xilinx_com_hls_conv2_pool2_1_0.zip"
+require_file "${IP1_SRC}"
+require_file "${IP2_SRC}"
+
+cp "${IP1_SRC}" "${APP_DIR}/vivado/ip_repo/conv1_pool1.zip"
+cp "${IP2_SRC}" "${APP_DIR}/vivado/ip_repo/conv2_pool2.zip"
+log "  IPs copiees"
 
 # =============================================================
-# ÉTAPE 7 : Vivado block design → bitstream
+# ETAPE 7 : Vivado block design -> bitstream
 # =============================================================
-echo ""
-echo ">>> Étape 7/7 : Vivado → bitstream (~20-30 min)..."
-source ${XILINX_BASE}/Vivado/2024.2/settings64.sh
+log ""
+log ">>> Etape 7/7 : Vivado -> bitstream (~20-30 min)..."
+require_file "${XILINX_BASE}/Vivado/${XILINX_VERSION}/settings64.sh"
+# shellcheck disable=SC1090
+source "${XILINX_BASE}/Vivado/${XILINX_VERSION}/settings64.sh"
 
-# Fix crash libudev/realloc() de Vivado dans conteneur Docker
+# Fix crash libudev/realloc() de Vivado dans conteneur Docker.
+# La restauration est garantie par le trap EXIT.
 mkdir -p /run/udev
-echo "" > /run/udev/control
-# Désactiver libudev qui cause le crash realloc() dans Docker
-if [ -f /lib/x86_64-linux-gnu/libudev.so.1 ]; then
-    mv /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.1.backup
+: > /run/udev/control
+if [[ -f "${LIBUDEV_PATH}" && ! -f "${LIBUDEV_BACKUP}" ]]; then
+    mv "${LIBUDEV_PATH}" "${LIBUDEV_BACKUP}"
 fi
 
-cd /app/vivado
-vivado -mode batch -source create_vivado_2ips.tcl
+(
+    cd "${APP_DIR}/vivado"
+    vivado -mode batch -source create_vivado_2ips.tcl
+)
 
-# Restaurer libudev après Vivado
-if [ -f /lib/x86_64-linux-gnu/libudev.so.1.backup ]; then
-    mv /lib/x86_64-linux-gnu/libudev.so.1.backup /lib/x86_64-linux-gnu/libudev.so.1
+restore_libudev
+
+# Copier les resultats vers /output
+mkdir -p "${OUTPUT_DIR}/bitstream"
+if [[ -d "${APP_DIR}/vivado/pynq_output" ]]; then
+    cp -v "${APP_DIR}/vivado/pynq_output/"* "${OUTPUT_DIR}/bitstream/" || true
+else
+    log "Avertissement : ${APP_DIR}/vivado/pynq_output absent"
 fi
 
-# Copier les résultats vers /output
-mkdir -p /output/bitstream
-cp -v /app/vivado/pynq_output/* /output/bitstream/ 2>/dev/null || true
-
 # =============================================================
-# RÉSUMÉ
+# RESUME
 # =============================================================
-echo ""
-echo "========================================================"
-echo "  PIPELINE TERMINÉ"
-echo "========================================================"
-echo "  /output/models/parking_cnn.h5       ← modèle Keras"
-echo "  /output/weights/*.bin               ← poids ARM"
-echo "  /output/bitstream/*.bit             ← bitstream FPGA"
-echo "  /output/bitstream/*.hwh             ← hardware handoff"
-echo "========================================================"
-echo ""
-echo "  Copier sur la PYNQ-Z2 :"
-echo "    scp output/weights/*.bin xilinx@pynq:~/jupyter_notebooks/weights/"
-echo "    scp output/bitstream/*  xilinx@pynq:~/jupyter_notebooks/"
-echo "========================================================"
+log ""
+log "========================================================"
+log "  PIPELINE TERMINE"
+log "========================================================"
+log "  ${OUTPUT_DIR}/models/parking_cnn.h5       <- modele Keras"
+log "  ${OUTPUT_DIR}/weights/*.bin               <- poids ARM"
+log "  ${OUTPUT_DIR}/bitstream/*.bit             <- bitstream FPGA"
+log "  ${OUTPUT_DIR}/bitstream/*.hwh             <- hardware handoff"
+log "========================================================"
+log ""
+log "  Copier sur la PYNQ-Z2 :"
+log "    scp output/weights/*.bin xilinx@pynq:~/jupyter_notebooks/weights/"
+log "    scp output/bitstream/*  xilinx@pynq:~/jupyter_notebooks/"
+log "========================================================"
